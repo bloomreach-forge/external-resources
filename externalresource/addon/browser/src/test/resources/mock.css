@@ -1,0 +1,118 @@
+.box {
+    margin: 0 auto;
+    width: 830px;
+    height: 600px;
+    border: 10px solid #000066;
+
+}
+
+.hippoexternal-browser-search {
+    padding: 5px 10px;
+}
+
+.hippoexternal-browser-search-input {
+    width: 700px;
+}
+
+.hippoexternal-browser-search-button {
+    width: 70px;
+}
+
+.hippoexternal-browser-results-summary {
+    padding: 0 10px;
+}
+
+.hippoexternal-browser-pager {
+    padding: 0 10px;
+    text-align: center;
+}
+
+.hippoexternal-browser-pager span span em span {
+    font-weight: bold;
+}
+
+.hippoexternal-browser-results {
+    padding: 0 0;
+    height: 485px;
+    overflow: auto;
+}
+
+.hippoexternal-browser-result {
+    margin: 5px 0;
+    padding: 5px 10px;
+    xclear: left;
+    overflow: auto;
+    width: 370px;
+    float: left;
+    margin-right: 10px;
+    height: 145px;
+}
+
+.hex-even {
+
+}
+
+.hex-odd {
+
+}
+
+.hippoexternal-browser-result {
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px #888;
+    box-shadow: 0 0 5px #888;
+}
+
+.existing-result {
+    background: #D2D259;
+}
+
+.selectable-result {
+    background: #d2b759;
+}
+
+.selected-result {
+    background: #89be50;
+
+}
+
+.hippoexternal-browser-result-column-1 {
+    width: 160px;
+    overflow: hidden;
+    float: left;
+}
+
+.hippoexternal-browser-result-image {
+    float: left;
+    width: 160px;
+    height: 120px;
+}
+
+.hippoexternal-browser-result-state {
+    float: left;
+    width: 160px;
+    height: 25px;
+}
+
+.hippoexternal-browser-result-column-2 {
+    width: 210px;
+    overflow: auto;
+    float: right;
+}
+
+.hippoexternal-browser-result-metadata {
+    padding: 0 5px;
+    float: left;
+    width: 200px;
+    height: 140px;
+    overflow: auto;
+}
+
+.hippoexternal-browser-result-metadata table {
+    width: 100%;
+}
+
+
+
+
+
+
