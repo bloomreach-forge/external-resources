@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -12,7 +11,7 @@
   <name>Hippo External Resource Project</name>
   <groupId>org.onehippo.forge</groupId>
   <artifactId>externalresource</artifactId>
-  <version>1.07.00-SNAPSHOT</version>
+  <version>1.07.00</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -47,9 +46,9 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:https://forge.onehippo.org/svn/external/trunk</connection>
-    <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/trunk</developerConnection>
-    <url>https://forge.onehippo.org/svn/external/trunk</url>
+    <connection>scm:svn:https://forge.onehippo.org/svn/external/tags/externalresource-1.07.00</connection>
+    <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/tags/externalresource-1.07.00</developerConnection>
+    <url>https://forge.onehippo.org/svn/external/tags/externalresource-1.07.00</url>
   </scm>
   <distributionManagement>
     <repository>

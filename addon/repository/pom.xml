@@ -18,7 +18,7 @@
   <parent>
     <groupId>org.onehippo.forge</groupId>
     <artifactId>externalresource-addon</artifactId>
-    <version>1.07.00-SNAPSHOT</version>
+    <version>1.07.00</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
