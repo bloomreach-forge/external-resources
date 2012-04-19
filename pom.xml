@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-project</artifactId>
-    <version>7</version>
+    <version>11</version>
   </parent>
 
   <name>Hippo External Resource Project</name>
@@ -23,12 +23,14 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <hippo.cms.version>2.21.01</hippo.cms.version>
-    <hippo.repository.version>2.21.01-alpha</hippo.repository.version>
-    <hippo.cms.reporting.version>2.21.01</hippo.cms.reporting.version>
-    <hippo.hst.version>2.22.00</hippo.hst.version>
-    <jcr.version>2.0</jcr.version>
-    <hippo-addon-reporting-dashboard.version>1.03.02-SNAPSHOT</hippo-addon-reporting-dashboard.version>
+
+    <!-- 7.7.1 versioning -->
+    <hippo.cms.version>2.22.03</hippo.cms.version>
+    <hippo.repository.version>2.22.04</hippo.repository.version>
+    <hippo.packages.version>2.22.02</hippo.packages.version>
+    <hippo.hst.version>2.24.03</hippo.hst.version>
+    <hippo-addon-reporting-dashboard.version>1.04.02</hippo-addon-reporting-dashboard.version>
+    <hippo.addon-publication-workflow.version>2.22.01</hippo.addon-publication-workflow.version>
 
     <lib.log4j.version>1.2.16</lib.log4j.version>
     <lib.slf4j.version>1.5.6</lib.slf4j.version>
@@ -73,7 +75,7 @@
       <dependency>
         <groupId>javax.jcr</groupId>
         <artifactId>jcr</artifactId>
-        <version>${jcr.version}</version>
+        <version>${javax.jcr.version}</version>
       </dependency>
 
       <!-- Logging -->
@@ -113,7 +115,7 @@
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-addon-publication-workflow-frontend</artifactId>
-        <version>${hippo.cms.version}</version>
+        <version>${hippo.addon-publication-workflow.version}</version>
         <scope>provided</scope>
       </dependency>
 
@@ -126,13 +128,7 @@
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-addon-publication-workflow-common</artifactId>
-        <version>${hippo.cms.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.onehippo.cms7</groupId>
-        <artifactId>hippo-cms-yui</artifactId>
-        <version>${hippo.cms.version}</version>
+        <version>${hippo.addon-publication-workflow.version}</version>
       </dependency>
 
       <dependency>
@@ -186,7 +182,7 @@
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-cms-reporting</artifactId>
-        <version>${hippo.cms.reporting.version}</version>
+        <version>${hippo.cms.version}</version>
       </dependency>
 
       <!-- apache http -->

@@ -1,12 +1,12 @@
 /*
  *  Copyright 2009 Hippo.
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,15 @@
  *  limitations under the License.
  */
 package org.onehippo.forge.externalresource.frontend.plugins.gallery;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
@@ -42,7 +51,15 @@ import org.hippoecm.frontend.service.ISettingsService;
 import org.hippoecm.frontend.session.UserSession;
 import org.hippoecm.frontend.translation.ILocaleProvider;
 import org.hippoecm.frontend.widgets.AbstractView;
-import org.hippoecm.repository.api.*;
+import org.hippoecm.repository.api.Document;
+import org.hippoecm.repository.api.HippoNode;
+import org.hippoecm.repository.api.HippoNodeType;
+import org.hippoecm.repository.api.MappingException;
+import org.hippoecm.repository.api.StringCodec;
+import org.hippoecm.repository.api.StringCodecFactory;
+import org.hippoecm.repository.api.WorkflowDescriptor;
+import org.hippoecm.repository.api.WorkflowException;
+import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.onehippo.forge.externalresource.api.ResourceManager;
@@ -50,14 +67,6 @@ import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
 import org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.imports.MediaMosaImportDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.rmi.RemoteException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<GalleryWorkflow> {
     private static final long serialVersionUID = 1L;
@@ -70,8 +79,8 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
     public class UploadDialog extends MultiFileUploadDialog {
         private static final long serialVersionUID = 1L;
 
-        public UploadDialog(String[] fileExtensions) {
-            super(fileExtensions);
+        public UploadDialog(IPluginConfig pluginConfig) {
+            super(pluginConfig);
         }
 
         public IModel getTitle() {
@@ -304,12 +313,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             typeComponent = new Label("type", "default").setVisible(false);
         }
 
-        String[] fileExtensions = new String[0];
-        if (getPluginConfig().containsKey("file.extensions")) {
-            fileExtensions = getPluginConfig().getStringArray("file.extensions");
-        }
-
-        UploadDialog dialog = new UploadDialog(fileExtensions);
+        UploadDialog dialog = new UploadDialog(getPluginConfig());
         dialog.add(typeComponent);
         return dialog;
     }
