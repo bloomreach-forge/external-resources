@@ -28,6 +28,12 @@
           <li>First release</li>
         </ul>
       </subsection>
+      <subsection name="1.07.01">
+        <ul>
+          <li>Second release</li>
+          <li>Works with the 7.7 GA release, previous version doesn't work with 7.7</li>
+        </ul>
+      </subsection>
     </section>
   </body>
 </document>

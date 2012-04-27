@@ -32,19 +32,19 @@
                 <dependency>
       <groupId>org.onehippo.forge</groupId>
       <artifactId>externalresource-addon-frontend</artifactId>
-      <version>1.07.00</version>
+      <version>1.07.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.onehippo.forge</groupId>
       <artifactId>externalresource-addon-repository</artifactId>
-      <version>1.07.00</version>
+      <version>1.07.01</version>
     </dependency>
 
     <dependency>
       <groupId>org.onehippo.forge</groupId>
       <artifactId>externalresource-addon-reports</artifactId>
-      <version>1.07.00</version>
+      <version>1.07.01</version>
     </dependency>
                 ]]></source>
         <p>Rebuild your project to include the add-on.</p>
@@ -56,7 +56,7 @@
                  <dependency>
       <groupId>org.onehippo.forge</groupId>
       <artifactId>externalresource-hst</artifactId>
-      <version>1.07.00</version>
+      <version>1.07.01</version>
     </dependency>
                 ]]></source>
         <p>Rebuild your project to include the add-on.</p>
