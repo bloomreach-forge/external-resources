@@ -11,7 +11,7 @@
   <name>Hippo External Resource Project</name>
   <groupId>org.onehippo.forge</groupId>
   <artifactId>externalresource</artifactId>
-  <version>1.07.01</version>
+  <version>1.07.02-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -48,9 +48,9 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:https://forge.onehippo.org/svn/external/tags/externalresource-1.07.01</connection>
-    <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/tags/externalresource-1.07.01</developerConnection>
-    <url>https://forge.onehippo.org/svn/external/tags/externalresource-1.07.01</url>
+    <connection>scm:svn:https://forge.onehippo.org/svn/external/trunk</connection>
+    <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/trunk</developerConnection>
+    <url>https://forge.onehippo.org/svn/external/trunk</url>
   </scm>
   <distributionManagement>
     <repository>
