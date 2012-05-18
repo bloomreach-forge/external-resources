@@ -9,15 +9,6 @@
   <sv:property sv:name="video.processor.id" sv:type="String">
     <sv:value>external.processor.service</sv:value>
   </sv:property>
-  <sv:property sv:name="videos.username" sv:type="String">
-    <sv:value>admin</sv:value>
-  </sv:property>
-  <sv:property sv:name="videos.password" sv:type="String">
-    <sv:value>admin</sv:value>
-  </sv:property>
-  <sv:property sv:name="videos.url" sv:type="String">
-    <sv:value>http://10.10.100.121:5080/externalvideo/index.html</sv:value>
-  </sv:property>
   <sv:node sv:name="hipporedfive:resource">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>frontend:pluginconfig</sv:value>
@@ -67,12 +58,7 @@
       <sv:value>0 0/1 * 1/1 * ? *</sv:value>
     </sv:property>
   </sv:node>
-  <!--<sv:property sv:name="videos.id" sv:type="String">
-    <sv:value>service.videos</sv:value>
-  </sv:property>
-  <sv:property sv:name="videos.root" sv:type="String">
-    <sv:value>/content/videos</sv:value>
-  </sv:property>
+  <!--
   <sv:node sv:name="hippoyoutube">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>frontend:pluginconfig</sv:value>
