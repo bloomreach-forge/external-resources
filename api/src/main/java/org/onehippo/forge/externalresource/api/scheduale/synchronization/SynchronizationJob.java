@@ -32,7 +32,7 @@ public class SynchronizationJob implements Job {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             String uuid = (String) jobDataMap.get("identifier");
             Synchronizable synchronizable = (Synchronizable) jobDataMap.get("synchronizable");
-            ResourceManager resourceManager = (ResourceManager) jobDataMap.get("resourcemanager");
+
             ExternalResourceSchedular scheduler = (ExternalResourceSchedular) context.getScheduler();
             Session session = ((JCRSchedulingContext) scheduler.getCtx()).getSession();
 
