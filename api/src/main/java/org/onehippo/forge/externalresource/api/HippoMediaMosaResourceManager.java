@@ -53,6 +53,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(HippoMediaMosaResourceManager.class);
 
+    private static final int DEFAULT_WIDTH = 320;
+
     private String url;
     private String username;
     private String password;
@@ -60,11 +62,14 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private int width;
     private boolean createThumbnail;
     private final MediaMosaService mediaMosaService;
-    private CacheManager singletonManager = CacheManager.create();
-    private static final String EMBED_CACHE = "EMBEDDED_CACHING_ENGINE";
-    private static final int EMBEDED_CACHE_SIZE = 500;
-    private static final int TIME_TO_LIVE = 30;
-    public static final String queryString = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
+
+    private final CacheManager cacheManager = CacheManager.create();
+    private static final String EMBEDDED_CACHE_NAME = "EMBEDDED_ASSETS_CACHE";
+    private static final int CACHE_DEFAULT_SIZE = 500;
+    private static final int CACHE_DEFAULT_TIME_TO_LIVE = 30;
+    private static final int CACHE_DEFAULT_TIME_TO_IDLE = 30;
+
+    public static final String RESOURCE_QUERY_STRING = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
 
     private static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
     private static final String MASS_SYNC_JOB_TRIGGER = MASS_SYNC_JOB + "Trigger";
@@ -93,31 +98,20 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             this.responseType = config.getString("responseType");
         }
         if (config.containsKey("width")) {
-            this.width = config.getInt("width", 320);
+            this.width = config.getInt("width", DEFAULT_WIDTH);
         }
         if (config.containsKey("createThumbnail")) {
             this.createThumbnail = config.getBoolean("createThumbnail");
         }
+
         this.mediaMosaService = new MediaMosaService(getUrl());
         try {
             this.mediaMosaService.setCredentials(getUsername(), getPassword());
         } catch (ServiceException e) {
-            log.error("Service exception on authenticating media mosa credentials", e);
+            log.error("Service exception on setting media mosa credentials", e);
         }
 
-        /*todo can make cache configurable */
-        if (!singletonManager.cacheExists(EMBED_CACHE)) {
-            Cache cache = new Cache(
-                    new CacheConfiguration(EMBED_CACHE, EMBEDED_CACHE_SIZE)
-                            .overflowToDisk(false)
-                            .eternal(false)
-                            .timeToLiveSeconds(TIME_TO_LIVE)
-                            .timeToIdleSeconds(TIME_TO_LIVE)
-            );
-            singletonManager.addCache(cache);
-            log.info("creating cache 'EMBEDDED_CACHING_ENGINE' : {}", cache);
-        }
-
+        createAssetCache(config);
     }
 
     @Override
@@ -267,7 +261,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
     public String getEmbedded(Node node) {
-        String embedded = "<p>something happened, can't show video</p>";
+        String embedded = "<p>Something happened, can't show video</p>";
         try {
             if (node.hasProperty("hippomediamosa:assetid")) {
                 String assetId = node.getProperty("hippomediamosa:assetid").getString();
@@ -296,27 +290,6 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         }
         return embedded;
     }
-
-    private String cacheRetrieve(String assetId) {
-        log.info("trying to retrieving from cache with assetId: {}", assetId);
-        Cache cache = singletonManager.getCache(EMBED_CACHE);
-        Element element = cache.get(assetId);
-        if (element == null) {
-            log.info("trying failed with assetId: {} .. return null", assetId);
-            return null;
-        } else {
-            log.info("trying succeeded to retrieving from cache with assetId: {}", assetId);
-            return (String) element.getObjectValue();
-        }
-    }
-
-    private void cacheStore(String assetId, String embeddedCode) {
-        log.info("storing to cache with assetId: {} and embedded code : {}", assetId, embeddedCode);
-        Cache cache = singletonManager.getCache(EMBED_CACHE);
-        Element element = new Element(assetId, embeddedCode);
-        cache.put(element);
-    }
-
 
     public static int submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
@@ -498,4 +471,46 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
 
+    /**
+     * Create a cache holding the embedded video codes per asset id
+     */
+    protected void createAssetCache(final IPluginConfig config) {
+
+        if (!cacheManager.cacheExists(EMBEDDED_CACHE_NAME)) {
+
+            final int cacheSize = config.getInt("cache.size", CACHE_DEFAULT_SIZE);
+            final boolean overflowToDisk = config.getBoolean("cache.overflowToDisk");
+            final boolean eternal = config.getBoolean("cache.eternal");
+            final int timeToLiveSeconds = config.getInt("cache.timeToLiveSeconds", CACHE_DEFAULT_TIME_TO_LIVE);
+            final int timeToIdleSeconds = config.getInt("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
+
+            Cache cache = new Cache(new CacheConfiguration(EMBEDDED_CACHE_NAME, cacheSize)
+                    .overflowToDisk(overflowToDisk)
+                    .eternal(eternal)
+                    .timeToLiveSeconds(timeToLiveSeconds)
+                    .timeToIdleSeconds(timeToIdleSeconds));
+            cacheManager.addCache(cache);
+            log.info("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
+        }
+    }
+
+    protected String cacheRetrieve(String assetId) {
+        log.info("trying to retrieving from cache with assetId: {}", assetId);
+        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
+        Element element = cache.get(assetId);
+        if (element == null) {
+            log.info("trying failed with assetId: {} .. return null", assetId);
+            return null;
+        } else {
+            log.info("trying succeeded to retrieving from cache with assetId: {}", assetId);
+            return (String) element.getObjectValue();
+        }
+    }
+
+    protected void cacheStore(String assetId, String embeddedCode) {
+        log.info("storing to cache with assetId: {} and embedded code : {}", assetId, embeddedCode);
+        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
+        Element element = new Element(assetId, embeddedCode);
+        cache.put(element);
+    }
 }
