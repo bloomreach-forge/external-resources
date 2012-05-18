@@ -43,7 +43,7 @@ public class MediaMosaThumbnailJob implements Job {
                 HippoMediaMosaResourceManager resourceManager = (HippoMediaMosaResourceManager) jobDataMap.get("resourceManager");
 
                 QueryManager queryManager = session.getWorkspace().getQueryManager();
-                Query query = queryManager.createQuery(String.format(HippoMediaMosaResourceManager.queryString, assetId), "xpath");
+                Query query = queryManager.createQuery(String.format(HippoMediaMosaResourceManager.RESOURCE_QUERY_STRING, assetId), "xpath");
                 NodeIterator it = query.execute().getNodes();
                 while (it.hasNext()) {
                     Node mediamosaAsset = it.nextNode();

@@ -426,7 +426,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         try {
             if (!node.hasProperty("hippomediamosa:assetid")) {
                 log.debug("no available hippomediamosa:assetid on node {}", node.getPath());
-                return  SynchronizationState.UNKNOWN;
+                return SynchronizationState.UNKNOWN;
             }
 
             String assetId = node.getProperty("hippomediamosa:assetid").getString();
