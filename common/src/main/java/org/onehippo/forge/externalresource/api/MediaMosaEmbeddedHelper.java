@@ -70,11 +70,11 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
     protected void createAssetCache() {
 
         if (!cacheManager.cacheExists(EMBEDDED_CACHE_NAME)) {
-            final int cacheSize = (Integer) getProperty("cache.size", CACHE_DEFAULT_SIZE);
+            final int cacheSize = ((Long) getProperty("cache.size", CACHE_DEFAULT_SIZE)).intValue();
             final boolean overflowToDisk = (Boolean) getProperty("cache.overflowToDisk", false);
             final boolean eternal = (Boolean) getProperty("cache.eternal", false);
-            final int timeToLiveSeconds = (Integer) getProperty("cache.timeToLiveSeconds", CACHE_DEFAULT_TIME_TO_LIVE);
-            final int timeToIdleSeconds = (Integer) getProperty("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
+            final long timeToLiveSeconds = (Long) getProperty("cache.timeToLiveSeconds", CACHE_DEFAULT_TIME_TO_LIVE);
+            final long timeToIdleSeconds = (Long) getProperty("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
 
             Cache cache = new Cache(new CacheConfiguration(EMBEDDED_CACHE_NAME, cacheSize)
                     .overflowToDisk(overflowToDisk)
