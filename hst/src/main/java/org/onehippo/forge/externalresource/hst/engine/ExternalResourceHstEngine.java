@@ -1,13 +1,10 @@
 package org.onehippo.forge.externalresource.hst.engine;
 
-import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.hst.content.beans.Node;
 import org.hippoecm.hst.content.beans.standard.HippoBean;
 import org.hippoecm.hst.content.beans.standard.HippoMirrorBean;
 import org.onehippo.forge.externalresource.api.Embeddable;
-import org.onehippo.forge.externalresource.api.ResourceManager;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
-import org.onehippo.forge.externalresource.api.utils.NodePluginConfig;
+import org.onehippo.forge.externalresource.api.EmbeddedHelper;
 import org.onehippo.forge.externalresource.hst.beans.HippoExternalVideoResourceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,22 +30,31 @@ public class ExternalResourceHstEngine {
 
     private static String location = "/hippo:configuration/hippo:frontend/cms/cms-services/externalResourceService";
 
-    public String getEmbeddableVideo(HippoBean inBean, String relPath, Class<? extends HippoExternalVideoResourceBean> beanMappingClass) {
+    public String getEmbeddableVideo(HippoBean inBean, String relPath, Class<? extends HippoExternalVideoResourceBean> beanMappingClass, EmbeddedHelper helper) {
         HippoBean bean = getLinkedBean(inBean, relPath, beanMappingClass);
-        Embeddable embeddable = getEmbeddable(bean);
+        Embeddable embeddable = getEmbeddable(bean, helper);
         return embeddable.getEmbedded(bean.getNode());
     }
 
-    public Embeddable getEmbeddable(HippoBean linkedBean) {
-        ResourceManager manager = getResourceManager(linkedBean);
-        if (manager instanceof Embeddable) {
-            return (Embeddable) manager;
-        }
-        return null;
+    public Embeddable getEmbeddable(HippoBean linkedBean, EmbeddedHelper helper) {
+        Embeddable embeddable = initEmbedConfiguration(linkedBean, helper);
+        return embeddable;
     }
 
-    public String getEmbedded(HippoBean linkedBean) {
-        Embeddable embeddable = getEmbeddable(linkedBean);
+    private Embeddable initEmbedConfiguration(HippoBean bean, EmbeddedHelper helper) {
+        try {
+            String type = bean.getClass().getAnnotation(Node.class).jcrType();
+            Session session = getSession(bean);
+            javax.jcr.Node configuration = session.getNode(location + "/" + type);
+            helper.initialize(configuration);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+        return helper;
+    }
+
+    public String getEmbedded(HippoBean linkedBean, EmbeddedHelper helper) {
+        Embeddable embeddable = getEmbeddable(linkedBean, helper);
         return embeddable.getEmbedded(linkedBean.getNode());
     }
 
@@ -56,22 +62,23 @@ public class ExternalResourceHstEngine {
         return bean.getNode().getSession();
     }
 
-    public ResourceManager getResourceManager(HippoBean bean) {
-        try {
-            String type = bean.getClass().getAnnotation(Node.class).jcrType();
-            //String resourcePath = location;//String.format(location, type);
-            Session session = getSession(bean);
-
-            IPluginConfig iPluginConfig = new NodePluginConfig(session.getNode(location));
-            ExternalResourceService service = new ExternalResourceService(iPluginConfig);
-
-            ResourceManager processor = service.getResourceProcessor(type);
-            return processor;
-        } catch (RepositoryException e) {
-            log.error("", e);
-        }
-        return null;
-    }
+//    public ResourceManager getResourceManager(HippoBean bean) {
+//        try {
+//            String type = bean.getClass().getAnnotation(Node.class).jcrType();
+//            //String resourcePath = location;//String.format(location, type);
+//            Session session = getSession(bean);
+//
+//            IPluginConfig iPluginConfig = new NodePluginConfig(session.getNode(location));
+//
+//            ExternalResourceService service = new ExternalResourceService(iPluginConfig);
+//
+//            ResourceManager processor = service.getResourceProcessor(type);
+//            return processor;
+//        } catch (RepositoryException e) {
+//            log.error("", e);
+//        }
+//        return null;
+//    }
 
 
     public <T extends HippoBean> T getLinkedBean(HippoBean inBean, String relPath, Class<T> beanMappingClass) {

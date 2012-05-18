@@ -38,4 +38,7 @@ addon/repository/src/main/resources/hippoexternal.cnd -text
 addon/repository/src/main/resources/types/mediamosa/hippo-mediamosa.cnd -text
 addon/repository/src/main/resources/types/red5/hippo-red5.cnd -text
 addon/repository/src/main/resources/types/youtube/hippo-youtube.cnd -text
+common/src/main/java/org/onehippo/forge/externalresource/api/Embeddable.java -text
+common/src/main/java/org/onehippo/forge/externalresource/api/EmbeddedHelper.java -text
+common/src/main/java/org/onehippo/forge/externalresource/api/MediaMosaEmbeddedHelper.java -text
 src/site/resources/MANUAL_NL -text

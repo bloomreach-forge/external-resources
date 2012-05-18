@@ -110,6 +110,12 @@
       <type>jar</type>
     </dependency>
 
+    <dependency>
+      <groupId>org.onehippo.forge</groupId>
+      <artifactId>externalresource-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>

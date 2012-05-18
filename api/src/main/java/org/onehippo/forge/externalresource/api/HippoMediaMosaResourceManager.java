@@ -1,9 +1,6 @@
 package org.onehippo.forge.externalresource.api;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
 import nl.uva.mediamosa.MediaMosaService;
 import nl.uva.mediamosa.model.*;
 import nl.uva.mediamosa.util.ServiceException;
@@ -77,6 +74,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private static final String MASS_SYNC_JOB_GROUP = MASS_SYNC_JOB + "Group";
 
     private final static Map<String, String> map = new HashMap<String, String>();
+    private final EmbeddedHelper embeddedHelper;
 
     static {
         map.put("hippomediamosa:title", "title");
@@ -111,7 +109,18 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             log.error("Service exception on setting media mosa credentials", e);
         }
 
-        createAssetCache(config);
+        Map<String, Object> propertyMap = new HashMap<String, Object>();
+        propertyMap.put("url", url);
+        propertyMap.put("username", username);
+        propertyMap.put("password", password);
+        propertyMap.put("width", width);
+        propertyMap.put("cache.size", config.get("cache.size"));
+        propertyMap.put("cache.overflowToDisk", config.get("cache.overflowToDisk"));
+        propertyMap.put("cache.eternal", config.get("cache.eternal"));
+        propertyMap.put("cache.timeToLiveSeconds", config.get("cache.timeToLiveSeconds"));
+        propertyMap.put("cache.timeToIdleSeconds", config.get("cache.timeToIdleSeconds"));
+        embeddedHelper = new MediaMosaEmbeddedHelper();
+        embeddedHelper.initialize(propertyMap);
     }
 
     @Override
@@ -261,34 +270,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
     public String getEmbedded(Node node) {
-        String embedded = "<p>Something happened, can't show video</p>";
-        try {
-            if (node.hasProperty("hippomediamosa:assetid")) {
-                String assetId = node.getProperty("hippomediamosa:assetid").getString();
-                String cache = cacheRetrieve(assetId);
-                if (cache == null) {
-                    AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
-                    MediafileDetailsType mediafileDetails = assetDetails.getMediafiles().getMediafile().get(0);
-                    LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), this.width);
-                    if (embedLink != null) {
-                        embedded = embedLink.getOutput();
-                        cacheStore(assetId, embedded);
-                    }
-                } else {
-                    embedded = cache;
-                }
-            }
-        } catch (RepositoryException e) {
-            log.error("", e);
-            embedded = e.getLocalizedMessage();
-        } catch (ServiceException e) {
-            log.error("", e);
-            embedded = e.getLocalizedMessage();
-        } catch (IOException e) {
-            log.error("", e);
-            embedded = e.getLocalizedMessage();
-        }
-        return embedded;
+        return embeddedHelper.getEmbedded(node);
     }
 
     public static int submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName) throws Exception {
@@ -471,46 +453,46 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
 
-    /**
-     * Create a cache holding the embedded video codes per asset id
-     */
-    protected void createAssetCache(final IPluginConfig config) {
-
-        if (!cacheManager.cacheExists(EMBEDDED_CACHE_NAME)) {
-
-            final int cacheSize = config.getInt("cache.size", CACHE_DEFAULT_SIZE);
-            final boolean overflowToDisk = config.getBoolean("cache.overflowToDisk");
-            final boolean eternal = config.getBoolean("cache.eternal");
-            final int timeToLiveSeconds = config.getInt("cache.timeToLiveSeconds", CACHE_DEFAULT_TIME_TO_LIVE);
-            final int timeToIdleSeconds = config.getInt("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
-
-            Cache cache = new Cache(new CacheConfiguration(EMBEDDED_CACHE_NAME, cacheSize)
-                    .overflowToDisk(overflowToDisk)
-                    .eternal(eternal)
-                    .timeToLiveSeconds(timeToLiveSeconds)
-                    .timeToIdleSeconds(timeToIdleSeconds));
-            cacheManager.addCache(cache);
-            log.info("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
-        }
-    }
-
-    protected String cacheRetrieve(String assetId) {
-        log.info("trying to retrieving from cache with assetId: {}", assetId);
-        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
-        Element element = cache.get(assetId);
-        if (element == null) {
-            log.info("trying failed with assetId: {} .. return null", assetId);
-            return null;
-        } else {
-            log.info("trying succeeded to retrieving from cache with assetId: {}", assetId);
-            return (String) element.getObjectValue();
-        }
-    }
-
-    protected void cacheStore(String assetId, String embeddedCode) {
-        log.info("storing to cache with assetId: {} and embedded code : {}", assetId, embeddedCode);
-        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
-        Element element = new Element(assetId, embeddedCode);
-        cache.put(element);
-    }
+//    /**
+//     * Create a cache holding the embedded video codes per asset id
+//     */
+//    protected void createAssetCache(final IPluginConfig config) {
+//
+//        if (!cacheManager.cacheExists(EMBEDDED_CACHE_NAME)) {
+//
+//            final int cacheSize = config.getInt("cache.size", CACHE_DEFAULT_SIZE);
+//            final boolean overflowToDisk = config.getBoolean("cache.overflowToDisk");
+//            final boolean eternal = config.getBoolean("cache.eternal");
+//            final int timeToLiveSeconds = config.getInt("cache.timeToLiveSeconds", CACHE_DEFAULT_TIME_TO_LIVE);
+//            final int timeToIdleSeconds = config.getInt("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
+//
+//            Cache cache = new Cache(new CacheConfiguration(EMBEDDED_CACHE_NAME, cacheSize)
+//                    .overflowToDisk(overflowToDisk)
+//                    .eternal(eternal)
+//                    .timeToLiveSeconds(timeToLiveSeconds)
+//                    .timeToIdleSeconds(timeToIdleSeconds));
+//            cacheManager.addCache(cache);
+//            log.info("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
+//        }
+//    }
+//
+//    protected String cacheRetrieve(String assetId) {
+//        log.info("trying to retrieving from cache with assetId: {}", assetId);
+//        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
+//        Element element = cache.get(assetId);
+//        if (element == null) {
+//            log.info("trying failed with assetId: {} .. return null", assetId);
+//            return null;
+//        } else {
+//            log.info("trying succeeded to retrieving from cache with assetId: {}", assetId);
+//            return (String) element.getObjectValue();
+//        }
+//    }
+//
+//    protected void cacheStore(String assetId, String embeddedCode) {
+//        log.info("storing to cache with assetId: {} and embedded code : {}", assetId, embeddedCode);
+//        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
+//        Element element = new Element(assetId, embeddedCode);
+//        cache.put(element);
+//    }
 }

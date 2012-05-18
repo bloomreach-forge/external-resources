@@ -13,14 +13,19 @@
   <packaging>jar</packaging>
 
   <dependencies>
-    <dependency>
-      <groupId>org.onehippo.cms7</groupId>
-      <artifactId>hippo-cms-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.onehippo.cms7</groupId>-->
+      <!--<artifactId>hippo-cms-api</artifactId>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.onehippo.forge</groupId>-->
+      <!--<artifactId>externalresource-api-utils</artifactId>-->
+      <!--<version>${project.version}</version>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.onehippo.forge</groupId>
-      <artifactId>externalresource-api-utils</artifactId>
+      <artifactId>externalresource-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
