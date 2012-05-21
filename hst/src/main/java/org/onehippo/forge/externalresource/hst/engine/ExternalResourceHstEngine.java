@@ -1,5 +1,8 @@
 package org.onehippo.forge.externalresource.hst.engine;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import org.hippoecm.hst.content.beans.Node;
 import org.hippoecm.hst.content.beans.standard.HippoBean;
 import org.hippoecm.hst.content.beans.standard.HippoMirrorBean;
@@ -8,9 +11,6 @@ import org.onehippo.forge.externalresource.api.EmbeddedHelper;
 import org.onehippo.forge.externalresource.hst.beans.HippoExternalVideoResourceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 /**
  * @version $Id$
@@ -48,7 +48,7 @@ public class ExternalResourceHstEngine {
             javax.jcr.Node configuration = session.getNode(location + "/" + type);
             helper.initialize(configuration);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            log.error("can't find the {} node, please be sure that the type exist or the siteuser has access to {}", location);
         }
         return helper;
     }
