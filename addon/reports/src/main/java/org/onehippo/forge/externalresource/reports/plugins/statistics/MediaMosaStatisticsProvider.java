@@ -39,7 +39,7 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
     protected Map<String, String> statisticsServiceParameters = new HashMap<String, String>();
 
     //--------- The following are meant to be overridden by extending classes ---------//
-    //but enums cannot be ovverriden..
+    //but enums cannot be overridden.
     protected enum ColumnName {
     }
 
@@ -56,7 +56,7 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
             throw new RuntimeException("Error in statistics provider configuration. Service is null");
         }
 
-        ResourceManager manager = service.getResourceProcessor(HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID);
+        ResourceManager manager = service.getResourceProcessor(getResourceManagerId());
         if(manager == null && ! (manager instanceof HippoMediaMosaResourceManager)){
             throw new RuntimeException("Error in statistics provider configuration. ResourceManager is not a HippoMediaMosaResourceManager");
         }
@@ -126,6 +126,14 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
     protected String getMMServiceParameter(String name, String defaultValue){
         return statisticsServiceParameters.containsKey(name) ?
                 statisticsServiceParameters.get(name) : defaultValue;
+    }
+    
+    /**
+     * @see #HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID
+     * @return the value of HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID
+     */
+    protected String getResourceManagerId() {
+        return HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID;
     }
 
     // ==================================== Columns ====================================
