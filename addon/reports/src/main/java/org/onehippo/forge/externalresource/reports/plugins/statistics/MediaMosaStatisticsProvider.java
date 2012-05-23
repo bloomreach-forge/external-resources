@@ -127,7 +127,7 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
         return statisticsServiceParameters.containsKey(name) ?
                 statisticsServiceParameters.get(name) : defaultValue;
     }
-    
+
     /**
      * @see #HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID
      * @return the value of HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID
@@ -248,85 +248,4 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
             return null;
         }
     }
-
-
-/*
-
-    private static class NameColumn implements IDocumentListColumn {
-
-        private static final String DATA_INDEX = "name";
-        private static final ExtField EXT_FIELD = new ExtField(DATA_INDEX);
-
-        @Override
-        public ExtField getExtField() {
-            return EXT_FIELD;
-        }
-
-        @Override
-        public JSONObject getExtColumnConfig() throws JSONException {
-            JSONObject config = new JSONObject();
-            config.put("dataIndex", DATA_INDEX);
-            config.put("id", DATA_INDEX);
-            config.put("header", getResourceValue("column-name-header"));
-            config.put("width", Integer.parseInt(getResourceValue("column-name-width")));
-            return config;
-        }
-
-        @Override
-        public String getValue(final Node node) throws RepositoryException {
-            if (node instanceof HippoNode) {
-                HippoNode hippoNode = (HippoNode) node;
-                return hippoNode.getLocalizedName();
-            } else {
-                return NodeNameCodec.decode(node.getName());
-            }
-        }
-    }
-
-    private static class PathColumn implements IDocumentListColumn {
-
-        private static final String DATA_INDEX = "path";
-        private static final ExtField EXT_FIELD = new ExtField(DATA_INDEX);
-
-        @Override
-        public ExtField getExtField() {
-            return EXT_FIELD;
-        }
-
-        @Override
-        public JSONObject getExtColumnConfig() throws JSONException {
-            // never include the path as a visible column
-            return null;
-        }
-
-        @Override
-        public String getValue(final Node node) throws RepositoryException {
-            return node.getPath();
-        }
-    }
-
-    private static class ShareColumn implements IDocumentListColumn {
-
-        private static final ExtField EXT_FIELD = new ExtField("share");
-
-        @Override
-        public ExtField getExtField() {
-            return EXT_FIELD;
-        }
-
-        @Override
-        public JSONObject getExtColumnConfig() throws JSONException {
-            JSONObject config = new JSONObject();
-            config.put("id", "share");
-            config.put("header", getResourceValue("column-share-header"));
-            return config;
-        }
-
-        @Override
-        public String getValue(final Node node) throws RepositoryException {
-            // column value is set in Javascript
-            return null;
-        }
-    }
-*/
 }
