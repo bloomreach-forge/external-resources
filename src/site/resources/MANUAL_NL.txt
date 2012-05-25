@@ -90,7 +90,7 @@ Geselecteerde plaatje wordt de nieuwe still.
 
 Rapporten
 
-Toont een aantal diverse rapporten. Bij perspectief "reports" en item "exernal resource statistics" kun je deze rapporten inzien.
+Toont een aantal diverse rapporten. Bij perspectief "reports" en item "external resource statistics" kun je deze rapporten inzien.
 
 ------------------------------------
 Site koppeling
