@@ -23,13 +23,13 @@
   </properties>
   <body>
     <section name="Using the MediaMosa Video Platform">
-
-      <subsection name="Download manual (NL)">
+      <subsection name="Manual (in Dutch)">
         <p>
-          <a href="/MANUAL_NL.txt">Manual</a>
+          <a href="/MANUAL_NL.txt">Textual manual</a>
         </p>
         <p>
-          Don't forget first to have a media mosa instance running and insert credential info at: <b>/hippo:configuration/hippo:frontend/cms/cms-services/externalResourceService/hippomediamosa:resource</b>
+          Don't forget to have a mediamosa instance running and insert credential info at:
+          <code>/hippo:configuration/hippo:frontend/cms/cms-services/externalResourceService/hippomediamosa:resource</code>
         </p>
       </subsection>
 
