@@ -41,14 +41,14 @@
 
       <subsection name="Getting started">
         <p>
-          <a href="install.html">Install</a> the external resource  Add-ons, and
+          <a href="install.html">Install</a> the external resource add-ons, and
           <a href="usage.html">use it</a>!
         </p>
       </subsection>
 
       <subsection name="Project Status">
-        <p>The latest version of the External Resource Project is <b>1.07.00</b>. This version is compatible with
-           Hippo CMS 7.7 (release 2.21.00).</p>
+        <p>The latest version of the External Resource Project is <b>1.07.03</b>. This version is compatible with
+           Hippo CMS 7.7.</p>
       </subsection>
 
     </section>
