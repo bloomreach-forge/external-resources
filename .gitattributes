@@ -41,4 +41,5 @@ addon/repository/src/main/resources/types/youtube/hippo-youtube.cnd -text
 common/src/main/java/org/onehippo/forge/externalresource/api/Embeddable.java -text
 common/src/main/java/org/onehippo/forge/externalresource/api/EmbeddedHelper.java -text
 common/src/main/java/org/onehippo/forge/externalresource/api/MediaMosaEmbeddedHelper.java -text
+/pom.xml -text svneol=unset#text/plain
 src/site/resources/MANUAL_NL.txt -text
