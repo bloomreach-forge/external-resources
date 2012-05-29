@@ -36,7 +36,7 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
     private static final long CACHE_DEFAULT_TIME_TO_LIVE = 30;
     private static final long CACHE_DEFAULT_TIME_TO_IDLE = 30;
     
-    private static final long DEFAULT_WIDTH = 320;
+    private static final Long DEFAULT_WIDTH = new Long(320L);
 
     public void initialize(Map<String, Object> properties) {
         this.map = properties;
