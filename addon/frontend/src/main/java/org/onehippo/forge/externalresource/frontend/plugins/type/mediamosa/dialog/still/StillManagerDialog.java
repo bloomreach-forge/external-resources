@@ -74,12 +74,14 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
 
     private boolean created;
     private HippoMediaMosaResourceManager resourceManager;
+    
+    protected static final String HIPPO_RESOURCE_MANAGER_ID = "hippomediamosa:resource";
 
 
     public StillManagerDialog(IModel iModel, IPluginContext context, IPluginConfig config) {
         super(iModel, context, config);
 
-        this.resourceManager = (HippoMediaMosaResourceManager) getExternalResourceService().getResourceProcessor("hippomediamosa:resource");
+        this.resourceManager = (HippoMediaMosaResourceManager) getExternalResourceService().getResourceProcessor(getResourceManagerId());
         this.service = resourceManager.getMediaMosaService();
 
         Node node = (Node) getModelObject();
@@ -482,6 +484,13 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             return false;
         }
     }
-
+    
+    /**
+     * @see #HIPPO_RESOURCE_MANAGER_ID
+     * @return the resource manager id
+     */
+    protected String getResourceManagerId() {
+        return HIPPO_RESOURCE_MANAGER_ID;
+    }
 
 }

@@ -64,12 +64,17 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
     private static final int pageSize = 5;
     private String search = "";
     private List<AssetType> assetsToBeImported;
+    
+    /**
+     * The resource manager id
+     */
+    protected static final String HIPPO_RESOURCE_MANAGER_ID = "hippomediamosa:resource";
 
     public MediaMosaImportDialog(IModel model, final IPluginContext context, IPluginConfig config) {
         super(model, context, config);
         setOutputMarkupId(true);
         //this.service = service;
-        HippoMediaMosaResourceManager manager = (HippoMediaMosaResourceManager) getExternalResourceService().getResourceProcessor("hippomediamosa:resource");
+        HippoMediaMosaResourceManager manager = (HippoMediaMosaResourceManager) getExternalResourceService().getResourceProcessor(getResourceManagerId());
         if (manager == null) {
             return;
         }
@@ -377,12 +382,12 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
                 } else {
                     title = NodeNameCodec.encode(title, true);
                 }
-                Document doc = workflow.createGalleryItem(title, "hippomediamosa:resource");
+                Document doc = workflow.createGalleryItem(title, getResourceManagerId());
                 if (folder.getSession().itemExists(doc.getIdentity())) {
                     Node node = folder.getSession().getNode(doc.getIdentity()); //getnode from doc
                     node.setProperty("hippomediamosa:assetid", type.getAssetId());
                     node.getSession().save();
-                    Synchronizable synchronizer = getExternalResourceService().getSynchronizableProcessor("hippomediamosa:resource");
+                    Synchronizable synchronizer = getExternalResourceService().getSynchronizableProcessor(getResourceManagerId());
                     SynchronizedActionsWorkflow synchronizedActionsWorkflow = (SynchronizedActionsWorkflow) workspace.getWorkflowManager().getWorkflow("synchronization", node);
                     synchronizedActionsWorkflow.update(synchronizer);
                     log.info("just created: " + type.getAssetId());
@@ -397,5 +402,13 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
         } catch (WorkflowException e) {
             log.error("", e);
         }
+    }
+    
+    /**
+     * @see #HIPPO_RESOURCE_MANAGER_ID
+     * @return the resource manager id
+     */
+    protected String getResourceManagerId() {
+        return HIPPO_RESOURCE_MANAGER_ID;
     }
 }
