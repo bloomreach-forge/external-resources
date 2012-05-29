@@ -20,7 +20,6 @@ import nl.uva.mediamosa.model.LinkType;
 import nl.uva.mediamosa.model.MediafileDetailsType;
 import nl.uva.mediamosa.util.ServiceException;
 
-
 public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
 
     private static Logger log = LoggerFactory.getLogger(MediaMosaEmbeddedHelper.class);
@@ -36,7 +35,8 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
     private static final long CACHE_DEFAULT_SIZE = 500;
     private static final long CACHE_DEFAULT_TIME_TO_LIVE = 30;
     private static final long CACHE_DEFAULT_TIME_TO_IDLE = 30;
-
+    
+    private static final long DEFAULT_WIDTH = 320;
 
     public void initialize(Map<String, Object> properties) {
         this.map = properties;
@@ -51,9 +51,8 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
         createAssetCache();
     }
 
-
     public Object getProperty(String name, Object def) {
-        if (map.containsKey(name) && map.get(name)!=null) {
+        if (map.containsKey(name) && map.get(name) != null) {
             return map.get(name);
         }
         return def;
@@ -79,9 +78,7 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
             final long timeToIdleSeconds = (Long) getProperty("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
 
             Cache cache = new Cache(new CacheConfiguration(EMBEDDED_CACHE_NAME, cacheSize)
-                    .overflowToDisk(overflowToDisk)
-                    .eternal(eternal)
-                    .timeToLiveSeconds(timeToLiveSeconds)
+                    .overflowToDisk(overflowToDisk).eternal(eternal).timeToLiveSeconds(timeToLiveSeconds)
                     .timeToIdleSeconds(timeToIdleSeconds));
             cacheManager.addCache(cache);
             log.info("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
@@ -97,7 +94,10 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
                 if (cache == null) {
                     AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
                     MediafileDetailsType mediafileDetails = assetDetails.getMediafiles().getMediafile().get(0);
-                    LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), (String) getProperty("username"), Integer.valueOf((Integer) getProperty("width", new Integer(300))));
+                    LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(),
+                            (String) getProperty("username"),
+                            Integer.valueOf(((Long) getProperty("width", DEFAULT_WIDTH)).intValue())
+                    );
                     if (embedLink != null) {
                         embedded = embedLink.getOutput();
                         cacheStore(assetId, embedded);
