@@ -32,9 +32,9 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
 
     private static final String EMBEDDED_CACHE_NAME = "EMBEDDED_ASSETS_CACHE";
 
-    private static final long CACHE_DEFAULT_SIZE = 500;
-    private static final long CACHE_DEFAULT_TIME_TO_LIVE = 30;
-    private static final long CACHE_DEFAULT_TIME_TO_IDLE = 30;
+    private static final long CACHE_DEFAULT_SIZE = 500L;
+    private static final long CACHE_DEFAULT_TIME_TO_LIVE = 30L;
+    private static final long CACHE_DEFAULT_TIME_TO_IDLE = 30L;
     
     private static final Long DEFAULT_WIDTH = new Long(320L);
 

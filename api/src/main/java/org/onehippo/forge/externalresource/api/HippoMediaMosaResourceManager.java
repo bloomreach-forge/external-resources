@@ -1,6 +1,5 @@
 package org.onehippo.forge.externalresource.api;
 
-import net.sf.ehcache.CacheManager;
 import nl.uva.mediamosa.MediaMosaService;
 import nl.uva.mediamosa.model.*;
 import nl.uva.mediamosa.util.ServiceException;
@@ -50,28 +49,22 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(HippoMediaMosaResourceManager.class);
 
-    private static final int DEFAULT_WIDTH = 320;
-
     private String url;
     private String username;
     private String password;
     private String responseType;
-    private int width;
+    private Long width;
     private boolean createThumbnail;
     private final MediaMosaService mediaMosaService;
-
-    private final CacheManager cacheManager = CacheManager.create();
-    private static final String EMBEDDED_CACHE_NAME = "EMBEDDED_ASSETS_CACHE";
-    private static final int CACHE_DEFAULT_SIZE = 500;
-    private static final int CACHE_DEFAULT_TIME_TO_LIVE = 30;
-    private static final int CACHE_DEFAULT_TIME_TO_IDLE = 30;
-
+    
     public static final String RESOURCE_QUERY_STRING = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
 
     private static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
     private static final String MASS_SYNC_JOB_TRIGGER = MASS_SYNC_JOB + "Trigger";
     private static final String MASS_SYNC_JOB_TRIGGER_GROUP = MASS_SYNC_JOB_TRIGGER + "Group";
     private static final String MASS_SYNC_JOB_GROUP = MASS_SYNC_JOB + "Group";
+    
+    private static final Long DEFAULT_WIDTH = 320L;
 
     private final static Map<String, String> map = new HashMap<String, String>();
     private final EmbeddedHelper embeddedHelper;
@@ -96,7 +89,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             this.responseType = config.getString("responseType");
         }
         if (config.containsKey("width")) {
-            this.width = config.getInt("width", DEFAULT_WIDTH);
+            this.width = config.getLong("width", DEFAULT_WIDTH);
         }
         if (config.containsKey("createThumbnail")) {
             this.createThumbnail = config.getBoolean("createThumbnail");
@@ -161,9 +154,13 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     public MediaMosaService getMediaMosaService() {
         return mediaMosaService;
     }
-
+    
+    /**
+     * Return the width as an integer. Internally a Long value is used.
+     * @return the width
+     */
     public int getWidth() {
-        return width;
+        return width.intValue();
     }
 
     @Override
@@ -203,7 +200,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             Calendar modified = assetDetails.getVideotimestampmodified();
             node.setProperty("hippoexternal:lastModifiedSyncDate", modified);
 
-            LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), this.width);
+            LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), getWidth());
 
             Utils.addEmbeddedNode(node, embedLink.getOutput());
 
