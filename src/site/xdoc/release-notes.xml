@@ -23,6 +23,11 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="1.07.04">
+        <ul>
+          <li>Convert the MediaMosa resource manager configuration setting 'width' from int to Long as JCR only supports Long values.</li>
+        </ul>
+      </subsection>
       <subsection name="1.07.03">
         <ul>
           <li>Better extendability of org.onehippo.forge.externalresource.reports.plugins.statistics.MediaMosaStatisticsProvider</li>
