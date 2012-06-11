@@ -235,11 +235,11 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                     String filename = upload.getClientFileName();
                     String mimeType = upload.getContentType();
 
-                    UploadTicketType ticket = service.createUploadTicket(mediaId, "Hippo", true);
+                    UploadTicketType ticket = service.createUploadTicket(mediaId, resourceManager.getUsername(), true);
                     String action = ticket.getAction();
                     String uploadTicket = action.substring(action.indexOf("=") + 1);
 
-                    Map map = new HashMap();
+                    Map<String,String> map = new HashMap<String,String>();
                     map.put("upload_ticket", uploadTicket);
                     map.put("mediafile_id", mediaId);
 
