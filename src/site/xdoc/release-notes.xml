@@ -23,7 +23,12 @@
   </properties>
   <body>
     <section name="Release Notes">
-      <subsection name="1.07.04">
+      <subsection name="1.07.05">
+        <ul>
+          <li>In StillManagerDialog, replace a hard coded user name 'Hippo' with resourcemanager.getUsername().</li>
+        </ul>
+      </subsection>
+     <subsection name="1.07.04">
         <ul>
           <li>Convert the MediaMosa resource manager configuration setting 'width' from int to Long as JCR only supports Long values.</li>
         </ul>
