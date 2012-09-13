@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
  */
 @Node(jcrType = "hippoexternal:video")
 public class HippoExternalVideoResourceBean extends HippoExternalResourceBean {
+
+    private HippoExternalDisplayImageBean thumbnail;
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(HippoExternalVideoResourceBean.class);
 
@@ -32,5 +35,11 @@ public class HippoExternalVideoResourceBean extends HippoExternalResourceBean {
         return getProperty("hippoexternal:duration");
     }
 
-
+    public HippoExternalDisplayImageBean getThumbnail() {
+        if (thumbnail == null) {
+            // lazy within one request
+            thumbnail = getBean("hippoexternal:thumbnail", HippoExternalDisplayImageBean.class);
+        }
+        return thumbnail;
+    }
 }
