@@ -23,6 +23,11 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="1.07.06-SNAPSHOT (unreleased)">
+        <ul>
+          <li>Add HST bean for the display image (thumbnail) of a video</li>
+        </ul>
+      </subsection>
       <subsection name="1.07.05">
         <ul>
           <li>In StillManagerDialog, replace a hard coded user name 'Hippo' with resourcemanager.getUsername().</li>
