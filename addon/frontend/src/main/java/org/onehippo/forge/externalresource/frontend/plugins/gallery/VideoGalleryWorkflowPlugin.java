@@ -79,8 +79,8 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
     public class UploadDialog extends MultiFileUploadDialog {
         private static final long serialVersionUID = 1L;
 
-        public UploadDialog(IPluginConfig pluginConfig) {
-            super(pluginConfig);
+        public UploadDialog(IPluginContext pluginContext, IPluginConfig pluginConfig) {
+            super(pluginContext, pluginConfig);
         }
 
         public IModel getTitle() {
@@ -313,7 +313,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             typeComponent = new Label("type", "default").setVisible(false);
         }
 
-        UploadDialog dialog = new UploadDialog(getPluginConfig());
+        UploadDialog dialog = new UploadDialog(getPluginContext(), getPluginConfig());
         dialog.add(typeComponent);
         return dialog;
     }
