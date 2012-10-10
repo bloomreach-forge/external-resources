@@ -23,6 +23,13 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <!--
+      <subsection name="1.07.07-SNAPSHOT">
+        <ul>
+          <li>Add hippo:availability to prototypes, for usage in repository 2.22.08+, see similar selection-plugins issue HIPPLUG-497</li>
+        </ul>
+      </subsection>
+      -->
       <subsection name="1.07.06">
         <ul>
           <li>Compatibility with CMS 2.22.11 (changed UploadDialog constructor)</li>
