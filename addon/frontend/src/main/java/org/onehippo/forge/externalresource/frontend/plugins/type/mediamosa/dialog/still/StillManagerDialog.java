@@ -37,7 +37,7 @@ import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidget;
 import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidgetSettings;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
-import org.onehippo.forge.externalresource.api.scheduale.mediamosa.MediaMosaJobState;
+import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobState;
 import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.AbstractExternalResourceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
 
     private boolean created;
     private HippoMediaMosaResourceManager resourceManager;
-    
+
     protected static final String HIPPO_RESOURCE_MANAGER_ID = "hippomediamosa:resource";
 
 
@@ -484,7 +484,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             return false;
         }
     }
-    
+
     /**
      * @see #HIPPO_RESOURCE_MANAGER_ID
      * @return the resource manager id

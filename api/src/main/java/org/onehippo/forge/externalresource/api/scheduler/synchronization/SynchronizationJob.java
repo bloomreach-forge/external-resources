@@ -1,12 +1,11 @@
-package org.onehippo.forge.externalresource.api.scheduale.synchronization;
+package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 
 import org.hippoecm.repository.api.HippoNode;
 import org.hippoecm.repository.api.HippoWorkspace;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.quartz.JCRSchedulingContext;
-import org.onehippo.forge.externalresource.api.ResourceManager;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.scheduale.ExternalResourceSchedular;
+import org.onehippo.forge.externalresource.api.scheduler.ExternalResourceScheduler;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.quartz.*;
@@ -33,7 +32,7 @@ public class SynchronizationJob implements Job {
             String uuid = (String) jobDataMap.get("identifier");
             Synchronizable synchronizable = (Synchronizable) jobDataMap.get("synchronizable");
 
-            ExternalResourceSchedular scheduler = (ExternalResourceSchedular) context.getScheduler();
+            ExternalResourceScheduler scheduler = (ExternalResourceScheduler) context.getScheduler();
             Session session = ((JCRSchedulingContext) scheduler.getCtx()).getSession();
 
             Node node = ((HippoNode) session.getNodeByIdentifier(uuid)).getCanonicalNode();

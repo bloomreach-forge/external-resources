@@ -1,8 +1,8 @@
-package org.onehippo.forge.externalresource.api.scheduale.synchronization;
+package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 
 import org.hippoecm.repository.quartz.JCRSchedulingContext;
 import org.onehippo.forge.externalresource.api.ResourceManager;
-import org.onehippo.forge.externalresource.api.scheduale.ExternalResourceSchedular;
+import org.onehippo.forge.externalresource.api.scheduler.ExternalResourceScheduler;
 import org.quartz.*;
 
 import javax.jcr.Node;
@@ -21,7 +21,7 @@ public class SynchronizationExecutorJob implements Job {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
            // String query = (String) jobDataMap.get("synchronization-query"); //"content/documents//element(*,hippoexternal:synchronizable)"
             ResourceManager resourceManager = (ResourceManager) jobDataMap.get("resourcemanager");
-            ExternalResourceSchedular scheduler = (ExternalResourceSchedular) context.getScheduler();
+            ExternalResourceScheduler scheduler = (ExternalResourceScheduler) context.getScheduler();
             Session session = ((JCRSchedulingContext) scheduler.getCtx()).getSession();
 
             javax.jcr.NodeIterator it = session.getWorkspace()

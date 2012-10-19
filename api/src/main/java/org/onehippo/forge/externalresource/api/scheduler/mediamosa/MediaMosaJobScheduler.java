@@ -1,4 +1,4 @@
-package org.onehippo.forge.externalresource.api.scheduale.mediamosa;
+package org.onehippo.forge.externalresource.api.scheduler.mediamosa;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

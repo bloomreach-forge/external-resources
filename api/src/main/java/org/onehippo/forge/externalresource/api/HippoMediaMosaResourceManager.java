@@ -18,11 +18,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
-import org.onehippo.forge.externalresource.api.scheduale.mediamosa.MediaMosaJobContext;
-import org.onehippo.forge.externalresource.api.scheduale.mediamosa.MediaMosaJobListener;
-import org.onehippo.forge.externalresource.api.scheduale.mediamosa.MediaMosaJobScheduler;
-import org.onehippo.forge.externalresource.api.scheduale.mediamosa.MediaMosaThumbnailJob;
-import org.onehippo.forge.externalresource.api.scheduale.synchronization.SynchronizationExecutorJob;
+import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobContext;
+import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobListener;
+import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobScheduler;
+import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaThumbnailJob;
+import org.onehippo.forge.externalresource.api.scheduler.synchronization.SynchronizationExecutorJob;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.onehippo.forge.externalresource.api.utils.Utils;
@@ -56,14 +56,14 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private Long width;
     private boolean createThumbnail;
     private final MediaMosaService mediaMosaService;
-    
+
     public static final String RESOURCE_QUERY_STRING = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
 
     private static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
     private static final String MASS_SYNC_JOB_TRIGGER = MASS_SYNC_JOB + "Trigger";
     private static final String MASS_SYNC_JOB_TRIGGER_GROUP = MASS_SYNC_JOB_TRIGGER + "Group";
     private static final String MASS_SYNC_JOB_GROUP = MASS_SYNC_JOB + "Group";
-    
+
     private static final Long DEFAULT_WIDTH = 320L;
 
     private final static Map<String, String> map = new HashMap<String, String>();
@@ -154,7 +154,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     public MediaMosaService getMediaMosaService() {
         return mediaMosaService;
     }
-    
+
     /**
      * Return the width as an integer. Internally a Long value is used.
      * @return the width

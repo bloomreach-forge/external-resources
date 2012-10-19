@@ -8,8 +8,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
-import org.onehippo.forge.externalresource.api.scheduale.synchronization.FakeMassSync;
-import org.onehippo.forge.externalresource.api.scheduale.synchronization.FakeSync;
+import org.onehippo.forge.externalresource.api.scheduler.synchronization.FakeMassSync;
+import org.onehippo.forge.externalresource.api.scheduler.synchronization.FakeSync;
 import org.onehippo.forge.externalresource.api.utils.ExresDaemonModule;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.quartz.*;
@@ -61,7 +61,7 @@ public class QuartzTest {
     private Scheduler scheduler;
 
     @Test
-    public void testSchedualing() throws Exception {
+    public void testScheduling() throws Exception {
         ExresDaemonModule daemonModule = new ExresDaemonModule();
         daemonModule.initialize(session);
         Node resourcemanagerNode = session.getNode("/hippo:configuration/hippo:frontend/cms/cms-services/externalResourceService/hippomediamosa:resource");
@@ -131,7 +131,7 @@ public class QuartzTest {
 
         Thread.sleep(20000);
 
-        System.out.println("unschedualing");
+        System.out.println("unscheduling");
 
         scheduler.unscheduleJob(MassSyncJobTriggerName, MassSyncJobTriggerGROUP);
 
@@ -143,7 +143,7 @@ public class QuartzTest {
     }
 
     @Test
-    public void testReschedualing() throws Exception {
+    public void testRescheduling() throws Exception {
 
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
@@ -153,7 +153,7 @@ public class QuartzTest {
 
     }
 
-    private class ExternalResourceSchedualer extends StdScheduler implements Scheduler {
+    private class ExternalResourceScheduler extends StdScheduler implements Scheduler {
 
         /**
          * <p>
@@ -161,26 +161,26 @@ public class QuartzTest {
          * <code>QuartzScheduler</code> instance, and with the given <code>SchedulingContext</code>.
          * </p>
          */
-        public ExternalResourceSchedualer(QuartzScheduler sched, SchedulingContext schedCtxt) {
+        public ExternalResourceScheduler(QuartzScheduler sched, SchedulingContext schedCtxt) {
             super(sched, schedCtxt);
         }
 
-        public ExternalResourceSchedualer(QuartzScheduler sched, ExternalResourceSchedualingContext schedCtxt) {
+        public ExternalResourceScheduler(QuartzScheduler sched, ExternalResourceSchedulingContext schedCtxt) {
             super(sched, schedCtxt);
         }
 
 
     }
 
-    private class ExternalResourceSchedualingContext extends SchedulingContext {
+    private class ExternalResourceSchedulingContext extends SchedulingContext {
 
         private Session session;
 
-        public ExternalResourceSchedualingContext() {
+        public ExternalResourceSchedulingContext() {
             super();
         }
 
-        public ExternalResourceSchedualingContext(Session session) {
+        public ExternalResourceSchedulingContext(Session session) {
             super();
             this.session = session;
         }

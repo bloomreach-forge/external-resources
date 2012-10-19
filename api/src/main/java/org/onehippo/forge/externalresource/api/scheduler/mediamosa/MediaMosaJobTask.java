@@ -1,4 +1,4 @@
-package org.onehippo.forge.externalresource.api.scheduale.mediamosa;
+package org.onehippo.forge.externalresource.api.scheduler.mediamosa;
 
 import nl.uva.mediamosa.util.ServiceException;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;

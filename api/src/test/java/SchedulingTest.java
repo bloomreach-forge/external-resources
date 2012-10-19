@@ -15,7 +15,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
 import org.onehippo.forge.externalresource.api.ResourceManager;
-import org.onehippo.forge.externalresource.api.scheduale.mediamosa.MediaMosaJobListener;
+import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobListener;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +31,9 @@ import java.util.concurrent.*;
  * @version $Id$
  */
 @Ignore(value = "no external stuff for tests")
-public class SchedualingTest {
+public class SchedulingTest {
     @SuppressWarnings({"UnusedDeclaration"})
-    private static Logger log = LoggerFactory.getLogger(SchedualingTest.class);
+    private static Logger log = LoggerFactory.getLogger(SchedulingTest.class);
 
     private final static ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(3);

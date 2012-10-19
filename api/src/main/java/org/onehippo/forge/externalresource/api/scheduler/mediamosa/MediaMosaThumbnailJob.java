@@ -1,4 +1,4 @@
-package org.onehippo.forge.externalresource.api.scheduale.mediamosa;
+package org.onehippo.forge.externalresource.api.scheduler.mediamosa;
 
 import nl.uva.mediamosa.model.AssetDetailsType;
 import nl.uva.mediamosa.util.ServiceException;
@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hippoecm.repository.quartz.JCRSchedulingContext;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
-import org.onehippo.forge.externalresource.api.scheduale.ExternalResourceSchedular;
+import org.onehippo.forge.externalresource.api.scheduler.ExternalResourceScheduler;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class MediaMosaThumbnailJob implements Job {
         try {
             JobDetail jobDetail = context.getJobDetail();
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            ExternalResourceSchedular scheduler = (ExternalResourceSchedular) context.getScheduler();
+            ExternalResourceScheduler scheduler = (ExternalResourceScheduler) context.getScheduler();
             Session session = ((JCRSchedulingContext) scheduler.getCtx()).getSession();
             synchronized (session) {
                 session.refresh(false);

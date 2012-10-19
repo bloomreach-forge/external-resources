@@ -1,4 +1,4 @@
-package org.onehippo.forge.externalresource.api.scheduale;
+package org.onehippo.forge.externalresource.api.scheduler;
 
 import org.hippoecm.repository.quartz.JCRSchedulingContext;
 import org.quartz.Scheduler;
@@ -13,9 +13,9 @@ import javax.jcr.Session;
 /**
  * @version $Id$
  */
-public class ExternalResourceSchedular extends StdScheduler implements Scheduler {
+public class ExternalResourceScheduler extends StdScheduler implements Scheduler {
     @SuppressWarnings({"UnusedDeclaration"})
-    private static Logger log = LoggerFactory.getLogger(ExternalResourceSchedular.class);
+    private static Logger log = LoggerFactory.getLogger(ExternalResourceScheduler.class);
 
     private QuartzScheduler qs;
     private SchedulingContext ctx;
@@ -27,7 +27,7 @@ public class ExternalResourceSchedular extends StdScheduler implements Scheduler
      * <code>QuartzScheduler</code> instance, and with the given <code>SchedulingContext</code>.
      * </p>
      */
-    public ExternalResourceSchedular(QuartzScheduler sched, SchedulingContext schedCtxt) {
+    public ExternalResourceScheduler(QuartzScheduler sched, SchedulingContext schedCtxt) {
         super(sched, schedCtxt);
         this.qs = sched;
         this.ctx = schedCtxt;
@@ -35,7 +35,7 @@ public class ExternalResourceSchedular extends StdScheduler implements Scheduler
     }
 
 
-    public ExternalResourceSchedular(ExternalResourceSchedular sched, Session session) {
+    public ExternalResourceScheduler(ExternalResourceScheduler sched, Session session) {
         super(sched.qs, new JCRSchedulingContext(sched.ctx, session));
     }
 

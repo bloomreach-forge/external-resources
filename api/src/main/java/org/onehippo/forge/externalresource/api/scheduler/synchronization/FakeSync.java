@@ -1,4 +1,4 @@
-package org.onehippo.forge.externalresource.api.scheduale.synchronization;
+package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.quartz.*;

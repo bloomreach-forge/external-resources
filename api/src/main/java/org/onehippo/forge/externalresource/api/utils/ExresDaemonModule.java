@@ -1,10 +1,8 @@
 package org.onehippo.forge.externalresource.api.utils;
 
 import org.hippoecm.repository.ext.DaemonModule;
-import org.hippoecm.repository.quartz.JCRJobStore;
-import org.hippoecm.repository.quartz.JCRScheduler;
 import org.hippoecm.repository.quartz.JCRSchedulingContext;
-import org.onehippo.forge.externalresource.api.scheduale.ExternalResourceSchedular;
+import org.onehippo.forge.externalresource.api.scheduler.ExternalResourceScheduler;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.core.QuartzScheduler;
@@ -26,12 +24,12 @@ public class ExresDaemonModule implements DaemonModule {
     private static Logger log = LoggerFactory.getLogger(ExresDaemonModule.class);
 
     static Session session = null;
-    static ExternalResourceSchedular scheduler = null;
+    static ExternalResourceScheduler scheduler = null;
     static ExternalResourceSchedulerFactory schedFactory = null;
 
     public void initialize(final Session s) throws RepositoryException {
         ExresDaemonModule.session = s;
-        log.info("***Initialized ExresDaemonModule for quartz schedualar***");
+        log.info("*** Initialized ExresDaemonModule for quartz scheduler ***");
         Properties properties = new Properties();
         try {
             properties.put("org.quartz.scheduler.instanceName", "External Resource Quartz Job Scheduler");
@@ -43,7 +41,7 @@ public class ExresDaemonModule implements DaemonModule {
             properties.put("org.quartz.threadPool.threadPriority", "5");
             schedFactory = new ExternalResourceSchedulerFactory(session);
             schedFactory.initialize(properties);
-            scheduler = (ExternalResourceSchedular) schedFactory.getScheduler();
+            scheduler = (ExternalResourceScheduler) schedFactory.getScheduler();
             scheduler.start();
         } catch (SchedulerException ex) {
             ex.printStackTrace(System.err);
@@ -56,8 +54,8 @@ public class ExresDaemonModule implements DaemonModule {
     }
 
 
-    public static ExternalResourceSchedular getScheduler() {
-        return new ExternalResourceSchedular(scheduler, session);
+    public static ExternalResourceScheduler getScheduler() {
+        return new ExternalResourceScheduler(scheduler, session);
     }
 
     public void shutdown() {
@@ -98,7 +96,7 @@ public class ExresDaemonModule implements DaemonModule {
             JCRSchedulingContext schedCtxt = new JCRSchedulingContext(session);
             schedCtxt.setInstanceId(rsrcs.getInstanceId());
             schedCtxt.setSession(session);
-            Scheduler scheduler = new ExternalResourceSchedular(qs, schedCtxt);
+            Scheduler scheduler = new ExternalResourceScheduler(qs, schedCtxt);
             return scheduler;
         }
     }
