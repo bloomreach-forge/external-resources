@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.onehippo.forge</groupId>
     <artifactId>externalresource</artifactId>
-    <version>1.07.07-SNAPSHOT</version>
+    <version>1.08.00-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -115,7 +115,6 @@
       <artifactId>externalresource-common</artifactId>
       <version>${project.version}</version>
     </dependency>
-
   </dependencies>
 
   <build>

@@ -146,8 +146,8 @@ public class HippoRedFiveResourceManager extends ResourceManager {
         //doesn't have an ImageReader. Simply replacing the mimetype with image/jpeg solves this.
         //For more info see http://www.iana.org/assignments/media-types/image/ and
         //http://groups.google.com/group/comp.infosystems.www.authoring.images/msg/7706603e4bd1d9d4?hl=en
-        if (mimeType.equals(ResourceHelper.MIME_IMAGE_PJPEG)) {
-            mimeType = ResourceHelper.MIME_IMAGE_JPEG;
+        if (mimeType.equals(ResourceHelper.MIME_TYPE_PJPEG)) {
+            mimeType = ResourceHelper.MIME_TYPE_JPEG;
         }
 
         ImageReader reader = null;

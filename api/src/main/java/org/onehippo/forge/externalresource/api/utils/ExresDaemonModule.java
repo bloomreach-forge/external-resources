@@ -95,7 +95,6 @@ public class ExresDaemonModule implements DaemonModule {
         protected Scheduler instantiate(QuartzSchedulerResources rsrcs, QuartzScheduler qs) {
             JCRSchedulingContext schedCtxt = new JCRSchedulingContext(session);
             schedCtxt.setInstanceId(rsrcs.getInstanceId());
-            schedCtxt.setSession(session);
             Scheduler scheduler = new ExternalResourceScheduler(qs, schedCtxt);
             return scheduler;
         }

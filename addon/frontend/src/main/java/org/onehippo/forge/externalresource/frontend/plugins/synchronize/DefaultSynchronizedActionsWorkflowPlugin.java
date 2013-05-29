@@ -275,7 +275,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                         new Object[]{docName});
                 IModel<String> title = new StringResourceModel("delete-title", DefaultSynchronizedActionsWorkflowPlugin.this, null,
                         new Object[]{docName});
-                return new DeleteDialog(title, message, this, getEditorManager());
+                return new DeleteDialog(title, this.getModel(), message, this, getEditorManager());
             }
 
             @Override
