@@ -126,11 +126,13 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         try {
             if (getPluginConfig().getAsBoolean("synchronization.enabled", false)) {
                 if (getPluginConfig().containsKey("synchronization.cronexpression")) {
+                    final String cronExpression = getPluginConfig().getString("synchronization.cronexpression");
+
                     JobDataMap dataMap = new JobDataMap();
                     dataMap.put("resourcemanager", this);
                     dataMap.put("synchronizable", this);
                     JobDetail jobDetail = new JobDetail(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
-                    CronTrigger trigger = new CronTrigger(MASS_SYNC_JOB_TRIGGER, MASS_SYNC_JOB_TRIGGER_GROUP, MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, getPluginConfig().getString("synchronization.cronexpression"));
+                    CronTrigger trigger = new CronTrigger(MASS_SYNC_JOB_TRIGGER, MASS_SYNC_JOB_TRIGGER_GROUP, MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, cronExpression);
                     jobDetail.setJobDataMap(dataMap);
                     if (triggerExists(trigger)) {
                         if (triggerChanged(trigger)) {
@@ -144,9 +146,9 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 resourceScheduler.unscheduleJob(MASS_SYNC_JOB_TRIGGER, MASS_SYNC_JOB_TRIGGER_GROUP);
             }
         } catch (ParseException e) {
-            log.error("", e);
+            log.error("ParseException for new CronTrigger", e);
         } catch (SchedulerException e) {
-            log.error("", e);
+            log.error("SchedulerException (re)scheduling job", e);
         }
     }
 
@@ -270,6 +272,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         return embeddedHelper.getEmbedded(node);
     }
 
+
     public static int submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -360,12 +363,12 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             }
             node.getSession().save();
             return true;
-        } catch (RepositoryException e) {
-            log.error("", e);
         } catch (ServiceException e) {
-            log.error("", e);
+            log.error("ServiceException on update", e);
         } catch (IOException e) {
-            log.error("", e);
+            log.error("IOException on update", e);
+        } catch (RepositoryException e) {
+            log.error("RepositoryException on update", e);
         } finally {
             IOUtils.closeQuietly(is);
         }
@@ -379,24 +382,22 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             Map map = new HashMap();
             map.put("title", node.getProperty("hippoexternal:title").getString());
             map.put("description", node.getProperty("hippoexternal:description").getString());
-            //map.put("action", "replace");
-            try {
-                Response r = mediaMosaService.setMetadata(assetId, getUsername(), map);
-                log.debug(r.getHeader().getRequestResult());
 
-                //lastsyncdate up!
-                AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
-                Calendar modified = assetDetails.getVideotimestampmodified();
-                node.setProperty("hippoexternal:lastModifiedSyncDate", modified);
-                node.getSession().save();
-                return true;
-            } catch (ServiceException e) {
-                log.error("", e);
-            } catch (IOException e) {
-                log.error("", e);
-            }
+            Response r = mediaMosaService.setMetadata(assetId, getUsername(), map);
+            log.debug(r.getHeader().getRequestResult());
+
+            //lastsyncdate up!
+            AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
+            Calendar modified = assetDetails.getVideotimestampmodified();
+            node.setProperty("hippoexternal:lastModifiedSyncDate", modified);
+            node.getSession().save();
+            return true;
+        } catch (ServiceException e) {
+            log.error("ServiceException while committing", e);
+        } catch (IOException e) {
+            log.error("IOException while committing", e);
         } catch (RepositoryException e) {
-            log.error("", e);
+            log.error("RepositoryException while committing", e);
         }
         return false;
     }
