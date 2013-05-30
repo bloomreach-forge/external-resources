@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2007-2009 Hippo
+  Copyright 2007-2013 Hippo
 
   Licensed under the Apache License, Version 2.0 (the  "License");
   you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
   limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.onehippo.forge</groupId>
     <artifactId>externalresource-addon</artifactId>
     <version>1.08.00-SNAPSHOT</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.onehippo.forge</groupId>
   <artifactId>externalresource-addon-frontend</artifactId>
   <name>External Resources CMS Package</name>
 
@@ -35,9 +35,9 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-      <scope>provided</scope>
+      <groupId>org.onehippo.forge</groupId>
+      <artifactId>externalresource-common</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <!--logging -->
@@ -66,7 +66,18 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!--cms dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!--repository dependencies -->
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.onehippo.cms7</groupId>
@@ -74,11 +85,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+    <!--cms dependencies -->
 
     <dependency>
       <groupId>org.onehippo.cms7</groupId>
@@ -99,15 +106,10 @@
     </dependency>
 
     <dependency>
-      <groupId>org.onehippo.forge</groupId>
-      <artifactId>externalresource-common</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-cms-editor-frontend</artifactId>
+      <scope>provided</scope>
     </dependency>
-      <dependency>
-          <groupId>org.onehippo.cms7</groupId>
-          <artifactId>hippo-cms-editor-frontend</artifactId>
-          <version>2.24.02</version>
-      </dependency>
 
   </dependencies>
 

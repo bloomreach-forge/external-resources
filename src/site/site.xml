@@ -17,19 +17,18 @@
 <project name="Hippo Forge External Resource Project">
 
   <skin>
-    <groupId>org.onehippo.ecm.skin</groupId>
-    <artifactId>maven-skin</artifactId>
-    <version>1.01.10</version>
+    <groupId>org.onehippo.forge.mavenskin</groupId>
+    <artifactId>forge-maven-skin</artifactId>
+    <version>1.01.01</version>
   </skin>
 
-  <publishDate position="navigation-bottom" format="MM-dd-yy"/>
-  <version position="navigation-bottom" />
+  <publishDate format="d MMMM yyyy" />
 
-  <bannerLeft>
-    <name>Hippo CMS</name>
-    <src>/images/style/hippo-logo.gif</src>
-    <href>/</href>
-  </bannerLeft>
+  <custom>
+    <hippoSkin>
+      <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+    </hippoSkin>
+  </custom>
 
   <body>
 

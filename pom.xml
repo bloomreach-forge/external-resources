@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-project</artifactId>
-    <version>14</version>
+    <version>22</version>
   </parent>
 
   <name>Hippo External Resource Project</name>
@@ -23,33 +23,21 @@
 
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- 7.8.3 versioning -->
+    <hippo.cms.version>2.24.03</hippo.cms.version>
+    <hippo.hst.version>2.26.03</hippo.hst.version>
+    <hippo.repository.version>2.24.04</hippo.repository.version>
 
-    <!-- 7.8.2 versioning (plus extra releases for CMS, package and HST) -->
-    <hippo.commons.version>1.02.02</hippo.commons.version>
-    <hippo.services.version>1.02.02</hippo.services.version>
-    <hippo.utilities.version>1.01.03</hippo.utilities.version>
-    <hippo.repository.version>2.24.03</hippo.repository.version>
-    <hippo.cms.version>2.24.02</hippo.cms.version>
-    <hippo.addon-hst-configuration-editor.version>1.11.02</hippo.addon-hst-configuration-editor.version>
-    <hippo.addon-search-service.version>1.01.00</hippo.addon-search-service.version>
-    <hippo.addon-channel-manager.version>2.24.02</hippo.addon-channel-manager.version>
-    <hippo.packages.version>2.24.01</hippo.packages.version>
-    <hippo.hst.version>2.26.02</hippo.hst.version>
+    <!-- third party -->
+    <ehcache.version>2.2.0</ehcache.version>
+    <commons-httpclient.version>3.1</commons-httpclient.version>
+    <httpcomponents-httpclient.version>4.1</httpcomponents-httpclient.version>
+    <httpcomponents-httpmime.version>4.1-beta1</httpcomponents-httpmime.version>
+    <mediamosa-api.version>0.0.4h</mediamosa-api.version>
 
-    <lib.log4j.version>1.2.17</lib.log4j.version>
-    <lib.slf4j.version>1.7.2</lib.slf4j.version>
-
-    <jsp.api.version>2.1</jsp.api.version>
-
-    <plugin.surefire.version>2.6</plugin.surefire.version>
-    <plugin.compiler.version>2.3.2</plugin.compiler.version>
-    <plugin.jar.version>2.3.1</plugin.jar.version>
-    <plugin.jetty.version>6.1.26</plugin.jetty.version>
-    <plugin.release.version>2.1</plugin.release.version>
-    <extension.wagon-svn.version>1.9</extension.wagon-svn.version>
-
+    <!-- dev related -->
     <junit.version>4.10</junit.version>
+    <extension.wagon-svn.version>1.9</extension.wagon-svn.version>
   </properties>
 
   <scm>
@@ -57,6 +45,7 @@
     <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/trunk</developerConnection>
     <url>https://forge.onehippo.org/svn/external/trunk</url>
   </scm>
+
   <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
@@ -64,6 +53,7 @@
       <url>svn:https://forge.onehippo.org/svn/external/maven2/</url>
     </repository>
   </distributionManagement>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -72,45 +62,10 @@
     </license>
   </licenses>
 
-
   <dependencyManagement>
-
     <dependencies>
 
-      <dependency>
-        <groupId>javax.jcr</groupId>
-        <artifactId>jcr</artifactId>
-        <version>${javax.jcr.version}</version>
-      </dependency>
-
-      <!-- Logging -->
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${lib.slf4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${lib.slf4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
-        <version>${lib.slf4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${lib.log4j.version}</version>
-      </dependency>
-
       <!-- cms -->
-
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-repository-engine</artifactId>
@@ -154,7 +109,6 @@
         <scope>provided</scope>
       </dependency>
 
-
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-cms-gallery-frontend</artifactId>
@@ -173,34 +127,40 @@
 
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
+        <artifactId>hippo-cms-editor-frontend</artifactId>
+        <version>${hippo.cms.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-cms-reporting-repository</artifactId>
         <version>${hippo.cms.version}</version>
       </dependency>
 
-        <dependency>
-            <groupId>org.onehippo.cms7</groupId>
-            <artifactId>hippo-cms-reporting-frontend</artifactId>
-            <version>${hippo.cms.version}</version>
-        </dependency>
+      <dependency>
+        <groupId>org.onehippo.cms7</groupId>
+        <artifactId>hippo-cms-reporting-frontend</artifactId>
+        <version>${hippo.cms.version}</version>
+      </dependency>
 
       <!-- apache http -->
 
       <dependency>
         <groupId>commons-httpclient</groupId>
         <artifactId>commons-httpclient</artifactId>
-        <version>3.1</version>
+        <version>${commons-httpclient.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.1</version>
+        <version>${httpcomponents-httpclient.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpmime</artifactId>
-        <version>4.1-beta1</version>
+        <version>${httpcomponents-httpmime.version}</version>
       </dependency>
 
       <!--other-->
@@ -208,7 +168,7 @@
       <dependency>
         <groupId>mediamosa</groupId>
         <artifactId>mediamosa-api</artifactId>
-        <version>0.0.4h</version>
+        <version>${mediamosa-api.version}</version>
         <type>jar</type>
       </dependency>
 
@@ -219,21 +179,13 @@
         <scope>test</scope>
       </dependency>
 
+      <dependency>
+        <groupId>net.sf.ehcache</groupId>
+        <artifactId>ehcache-core</artifactId>
+        <version>${ehcache.version}</version>
+      </dependency>
+
       <!--hst dependencies-->
-
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>${servlet-api.version}</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.servlet.jsp</groupId>
-        <artifactId>jsp-api</artifactId>
-        <version>${jsp.api.version}</version>
-        <scope>provided</scope>
-      </dependency>
 
       <dependency>
         <groupId>org.onehippo.cms7.hst</groupId>
@@ -274,7 +226,7 @@
   <repositories>
     <repository>
       <id>hippo-maven2-forge</id>
-      <name>Hippo Forge Maven 2 repository.</name>
+      <name>Hippo Maven 2 Forge Repository.</name>
       <url>http://maven.onehippo.com/maven2-forge/</url>
       <snapshots>
         <enabled>false</enabled>
@@ -286,9 +238,9 @@
     </repository>
     <repository>
       <id>hippo-maven2</id>
-       <name>Hippo maven 2 repository.</name>
+      <name>Hippo Maven 2 Repository.</name>
       <url>http://maven.onehippo.com/maven2/</url>
-      <snapshots />
+      <snapshots/>
       <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
@@ -305,46 +257,6 @@
         <version>${extension.wagon-svn.version}</version>
       </extension>
     </extensions>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${plugin.compiler.version}</version>
-          <configuration>
-            <source>1.5</source>
-            <target>1.5</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>${plugin.release.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${plugin.jar.version}</version>
-          <configuration>
-            <archive>
-              <manifest>
-                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              </manifest>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${plugin.surefire.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>maven-jetty-plugin</artifactId>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
-
 
 </project>
