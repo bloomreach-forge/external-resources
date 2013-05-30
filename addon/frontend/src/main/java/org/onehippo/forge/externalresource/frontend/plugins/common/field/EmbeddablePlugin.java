@@ -1,5 +1,9 @@
 package org.onehippo.forge.externalresource.frontend.plugins.common.field;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -19,10 +23,10 @@ import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 /**
+ * Editor Plugin rendering the HTML embed code for videos, getting it from a type processor when available from the
+ * CMS external resources service.
+ *
  * @version $Id$
  */
 public class EmbeddablePlugin extends RenderPlugin<Node> {
@@ -31,16 +35,6 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
 
     private JcrNodeModel nodeModel;
     private FieldPluginHelper helper;
-
-    protected ExternalResourceService getExternalResourceService() {
-        IPluginContext context = getPluginContext();
-        ExternalResourceService service = context.getService(getPluginConfig().getString("external.processor.id",
-                "external.processor.service"), ExternalResourceService.class);
-        if (service != null) {
-            return service;
-        }
-        return null;
-    }
 
     public EmbeddablePlugin(IPluginContext context, IPluginConfig config) {
         super(context, config);
@@ -52,6 +46,18 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
         add(new Label("name", getCaptionModel()));
 
         add(createResourceFragment("fragment"));
+    }
+
+    /**
+     * Get the CMS service by id (as defined by external.processor.id) and class ExternalResourceService.
+     */
+    protected ExternalResourceService getExternalResourceService() {
+        final String serviceId = getPluginConfig().getString("external.processor.id", "external.processor.service");
+        final ExternalResourceService service = getPluginContext().getService(serviceId, ExternalResourceService.class);
+        if (service == null) {
+            log.warn("No external resource service found by id {} (id configured by property external.processor.id)", service);
+        }
+        return service;
     }
 
     protected IModel<String> getCaptionModel() {
@@ -73,37 +79,49 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
 
 
     private Fragment createResourceFragment(String id) {
+
+        final Node node = nodeModel.getNode();
+        String primaryNodeType = null;
         try {
-            final Node node = nodeModel.getNode();
+            primaryNodeType = node.getPrimaryNodeType().getName();
+        } catch (RepositoryException e) {
+            log.error("RepositoryException creating resource fragment", e);
+        }
+
+        if (primaryNodeType != null) {
 
             ExternalResourceService service = getExternalResourceService();
 
-            Embeddable processor = service.getEmbeddableProcessor(node.getPrimaryNodeType().getName());
+            if (service != null) {
+                Embeddable processor = service.getEmbeddableProcessor(primaryNodeType);
 
-            final String embedded = processor.getEmbedded(node);
-
-            WebMarkupContainer frame = new WebMarkupContainer("value") {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                protected void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag) {
-                    if (embedded != null) {
-                        replaceComponentTagBody(markupStream, openTag, embedded);
-                    } else {
-                        renderComponentTagBody(markupStream, openTag);
-                    }
+                if (processor == null) {
+                    log.warn("No embeddable processor found in ExternalResourceService by primaryNodeType {}",  primaryNodeType);
                 }
-            };
+                else {
+                    final String embedded = processor.getEmbedded(node);
 
-            Fragment fragment = new Fragment(id, "html", this);
+                    WebMarkupContainer frame = new WebMarkupContainer("value") {
+                        private static final long serialVersionUID = 1L;
 
-            fragment.add(frame);
+                        @Override
+                        protected void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag) {
+                            if (embedded != null) {
+                                replaceComponentTagBody(markupStream, openTag, embedded);
+                            } else {
+                                renderComponentTagBody(markupStream, openTag);
+                            }
+                        }
+                    };
 
-            return fragment;
+                    Fragment fragment = new Fragment(id, "html", this);
+                    fragment.add(frame);
 
-        } catch (RepositoryException e) {
-            log.error("", e);
+                    return fragment;
+                }
+            }
         }
+
         return new Fragment(id, "unknown", this);
     }
 
