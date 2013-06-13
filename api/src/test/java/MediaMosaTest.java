@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 import static junit.framework.Assert.assertTrue;
@@ -230,7 +231,8 @@ public class MediaMosaTest {
         UploadTicketType ticket = mediaMosaService.createUploadTicket(mediaFile, userId, true);
         String action = ticket.getAction();
         //String uploadTicket = action.substring(action.indexOf("?"));
-
+        URL actionUrl = new URL(action);
+        String uploadHost = actionUrl.getProtocol() +"://"+ actionUrl.getAuthority();
 
         String url = String.format("/asset/%s/still/upload", assetId);
 
@@ -244,7 +246,7 @@ public class MediaMosaTest {
         impl.setHostname(this.url);
         impl.setCredentials(userId, password);
         impl.login();
-        impl.doPostRequest(serverURL, uploadTicket + "&mediafile_id=" + mediaFile, inputStream, "image/png", "Untitled.png");
+        impl.doPostRequest(uploadHost,serverURL, uploadTicket + "&mediafile_id=" + mediaFile, inputStream, "image/png", "Untitled.png");
 
 
         StillType stills2 = mediaMosaService.getStills(assetId, userId, null);

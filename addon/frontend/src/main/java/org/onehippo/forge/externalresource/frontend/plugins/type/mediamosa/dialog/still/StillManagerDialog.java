@@ -46,6 +46,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -239,11 +240,14 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                     String action = ticket.getAction();
                     String uploadTicket = action.substring(action.indexOf("=") + 1);
 
+                    URL actionUrl = new URL(action);
+                    String uploadHost = actionUrl.getProtocol() +"://"+ actionUrl.getAuthority();
+
                     Map<String,String> map = new HashMap<String,String>();
                     map.put("upload_ticket", uploadTicket);
                     map.put("mediafile_id", mediaId);
 
-                    Response response = service.uploadStill(assetId, map, stream, mimeType, filename);
+                    Response response = service.uploadStill(uploadHost,assetId, map, stream, mimeType, filename);
                     //timer.put(viewPanel, response.getHeader().getRequestResult().equals("success"));
                     timer.put(viewPanel, true);
                 } catch (IOException e) {
