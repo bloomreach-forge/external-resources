@@ -11,7 +11,7 @@
   <name>Hippo External Resource Project</name>
   <groupId>org.onehippo.forge</groupId>
   <artifactId>externalresource</artifactId>
-  <version>1.08.00-SNAPSHOT</version>
+  <version>1.08.00</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -41,9 +41,9 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:https://forge.onehippo.org/svn/external/trunk</connection>
-    <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/trunk</developerConnection>
-    <url>https://forge.onehippo.org/svn/external/trunk</url>
+    <connection>scm:svn:https://forge.onehippo.org/svn/external/tags/externalresource-1.08.00</connection>
+    <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/tags/externalresource-1.08.00</developerConnection>
+    <url>https://forge.onehippo.org/svn/external/tags/externalresource-1.08.00</url>
   </scm>
 
   <distributionManagement>
@@ -240,7 +240,7 @@
       <id>hippo-maven2</id>
       <name>Hippo Maven 2 Repository.</name>
       <url>http://maven.onehippo.com/maven2/</url>
-      <snapshots/>
+      <snapshots />
       <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
