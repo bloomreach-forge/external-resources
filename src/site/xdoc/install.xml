@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE document PUBLIC
-  "-//Apache Software Foundation//DTD XDOC 1.0//EN"
-  "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN" "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2011-2012 Hippo
+    Copyright 2011-2013 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -26,7 +24,7 @@
       <p>This section assumes you are using <a href="http://maven.apache.org/">Maven</a>
          to manage your Hippo CMS project.</p>
 
-      <subsection name="Hippo CMS 7.7 (2.22.xx) CMS">
+      <subsection name="The CMS">
         <p>Add the following dependencies to your custom CMS project's pom.xml file:</p>
         <source><![CDATA[
     <dependency>
@@ -50,7 +48,7 @@
         <p>Rebuild your project to include the add-on.</p>
       </subsection>
 
-       <subsection name="Hippo CMS 7.7 (2.24.xx) site">
+       <subsection name="The site">
         <p>Add the following dependencies to your custom site project's pom.xml file:</p>
         <source><![CDATA[
     <dependency>
