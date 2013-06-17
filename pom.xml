@@ -33,7 +33,7 @@
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <httpcomponents-httpclient.version>4.1</httpcomponents-httpclient.version>
     <httpcomponents-httpmime.version>4.1-beta1</httpcomponents-httpmime.version>
-    <mediamosa-api.version>0.0.5h-SNAPSHOT</mediamosa-api.version>
+    <mediamosa-api.version>0.0.5h</mediamosa-api.version>
 
     <!-- dev related -->
     <junit.version>4.10</junit.version>
