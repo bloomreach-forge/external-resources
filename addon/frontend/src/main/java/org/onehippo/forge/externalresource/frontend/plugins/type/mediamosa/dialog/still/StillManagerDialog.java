@@ -247,7 +247,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                     map.put("upload_ticket", uploadTicket);
                     map.put("mediafile_id", mediaId);
 
-                    Response response = service.uploadStill(uploadHost,assetId, map, stream, mimeType, filename);
+                    Response response = service.uploadStill(uploadHost, assetId, map, stream, mimeType, filename);
                     //timer.put(viewPanel, response.getHeader().getRequestResult().equals("success"));
                     timer.put(viewPanel, true);
                 } catch (IOException e) {

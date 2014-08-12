@@ -21,6 +21,11 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="1.08.01">
+        <ul>
+          <li>Add transcode profile parameter to configuration and MediaMosa upload properties</li>
+        </ul>
+      </subsection>
       <subsection name="1.08.00">
         <ul>
           <li><strong>Compatibility with Hippo 7.8.3</strong>, including bump mediamosa-api version to 0.0.5h</li>

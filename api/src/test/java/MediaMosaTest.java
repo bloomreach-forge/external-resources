@@ -246,7 +246,7 @@ public class MediaMosaTest {
         impl.setHostname(this.url);
         impl.setCredentials(userId, password);
         impl.login();
-        impl.doPostRequest(uploadHost,serverURL, uploadTicket + "&mediafile_id=" + mediaFile, inputStream, "image/png", "Untitled.png");
+        impl.doPostRequest(uploadHost, serverURL, uploadTicket + "&mediafile_id=" + mediaFile, inputStream, "image/png", "Untitled.png");
 
 
         StillType stills2 = mediaMosaService.getStills(assetId, userId, null);
