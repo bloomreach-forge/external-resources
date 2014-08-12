@@ -6,6 +6,7 @@ import nl.uva.mediamosa.util.ServiceException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -14,6 +15,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
@@ -40,6 +42,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,6 +55,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private String url;
     private String username;
     private String password;
+    private String[] profiles = new String[0];
+    private String playbackVideoCodec;
     private String responseType;
     private Long width;
     private boolean createThumbnail;
@@ -93,6 +98,12 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         }
         if (config.containsKey("createThumbnail")) {
             this.createThumbnail = config.getBoolean("createThumbnail");
+        }
+        if (config.containsKey("profiles")) {
+            this.profiles = config.getStringArray("profiles");
+        }
+        if (config.containsKey("playbackVideoCodec")) {
+            this.playbackVideoCodec = config.getString("playbackVideoCodec");
         }
 
         this.mediaMosaService = new MediaMosaService(getUrl());
@@ -178,19 +189,29 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
             String uploadUrl = uploadTicketType.getAction();
 
-            int code = submitFile(istream, uploadUrl, mimetype, node.getName());
-            //create image
-            node.setProperty("hippomediamosa:assetid", assetId);
-            node.setProperty("hippomediamosa:mediaid", mediaFile);
+            int code = submitFile(istream, uploadUrl, mimetype, node.getName(), profiles);
 
             AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
 
-            MediafileDetailsType mediafileDetails = assetDetails.getMediafiles().getMediafile().get(0);
+            List<MediafileDetailsType> mediafiles = mediaMosaService.getAssetDetails(assetId).getMediafiles().getMediafile();
+            MediafileDetailsType mediafileDetails = mediafiles.get(0);
+
+            if (StringUtils.isNotBlank(playbackVideoCodec)) {
+                for (MediafileDetailsType mf : mediafiles) {
+                    if (playbackVideoCodec.equals(mf.getMetadata().getVideoCodec())) {
+                        mediafileDetails = mf;
+                        break;
+                    }
+                }
+            }
+            mediaFile = mediafileDetails.getMediafileId();
 
             int size = mediafileDetails.getMetadata().getFilesize();
             int height = mediafileDetails.getMetadata().getHeight();
             int width = mediafileDetails.getMetadata().getWidth();
 
+            node.setProperty("hippomediamosa:assetid", assetId);
+            node.setProperty("hippomediamosa:mediaid", mediaFile);
             node.setProperty("hippoexternal:size", size);
             node.setProperty("hippoexternal:height", height);
             node.setProperty("hippoexternal:width", width);
@@ -272,8 +293,12 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         return embeddedHelper.getEmbedded(node);
     }
 
-
+    @Deprecated
     public static int submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName) throws Exception {
+        return submitFile(inputStream, serverUrl, mimeType, fileName, ArrayUtils.EMPTY_STRING_ARRAY);
+    }
+
+    public static int submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName, String[] profiles) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
@@ -282,6 +307,10 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         ContentBody cbFile = new InputStreamBody(inputStream, mimeType, fileName);
 
         mpEntity.addPart("file", cbFile);
+
+        for (String profile : profiles) {
+            mpEntity.addPart("transcode[]", new StringBody(profile));
+        }
         httppost.setEntity(mpEntity);
         HttpResponse response = httpclient.execute(httppost);
         int statusCode = response.getStatusLine().getStatusCode();
