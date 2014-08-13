@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2011-2012 Hippo
+  Copyright 2011-2014 Hippo
 
   Licensed under the Apache License, Version 2.0 (the  "License");
   you may not use this file except in compliance with the License.
@@ -19,16 +19,8 @@
   <skin>
     <groupId>org.onehippo.forge.mavenskin</groupId>
     <artifactId>forge-maven-skin</artifactId>
-    <version>1.01.01</version>
+    <version>1.02.00</version>
   </skin>
-
-  <publishDate format="d MMMM yyyy" />
-
-  <custom>
-    <hippoSkin>
-      <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
-    </hippoSkin>
-  </custom>
 
   <body>
 
