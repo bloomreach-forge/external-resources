@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN" "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2011-2013 Hippo
+    Copyright 2011-2014 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@
       </subsection>
 
       <subsection name="Project Status">
-        <p>The latest version of the External Resource Project is <b>1.08.00</b>. This version is compatible with
+        <p>The latest version of the External Resource Project is <b>1.08.01</b>. This version is compatible with
            Hippo CMS 7.8.</p>
       </subsection>
 
