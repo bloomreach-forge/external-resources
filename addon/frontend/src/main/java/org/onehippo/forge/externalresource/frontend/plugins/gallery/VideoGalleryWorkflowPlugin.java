@@ -172,7 +172,11 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
                     node.getSession().save();
                     processor.afterSave(node);
                 } catch (Exception ex) {
-                    VideoGalleryWorkflowPlugin.log.info(ex.getMessage());
+                    if (VideoGalleryWorkflowPlugin.log.isDebugEnabled()) {
+                        VideoGalleryWorkflowPlugin.log.info(ex.getMessage(),ex);
+                    } else {
+                        VideoGalleryWorkflowPlugin.log.info(ex.getMessage());
+                    }
                     error(ex);
                     try {
                         DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);

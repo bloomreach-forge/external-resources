@@ -21,6 +21,11 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="1.08.02">
+        <ul>
+          <li>Do not create stills in MediaMosa for audio files.</li>
+        </ul>
+      </subsection>
       <subsection name="1.08.01">
         <ul>
           <li>Add transcode profile parameter to configuration and MediaMosa upload properties</li>

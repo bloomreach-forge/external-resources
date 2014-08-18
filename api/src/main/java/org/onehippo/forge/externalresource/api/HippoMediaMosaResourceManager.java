@@ -227,41 +227,44 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
             Utils.addEmbeddedNode(node, embedLink.getOutput());
 
-            Map map = new HashMap();
-            map.put("still_type", "NORMAL");
-            map.put("still_per_mediafile", 6);
+            String videoCodec = mediafileDetails.getMetadata().getVideoCodec();
+            if (StringUtils.isNotBlank(videoCodec)) {
+                Map map = new HashMap();
+                map.put("still_type", "NORMAL");
+                map.put("still_per_mediafile", 6);
 
-            JobType job = mediaMosaService.createStill(assetId, mediaFile, getUsername(), map);
+                JobType job = mediaMosaService.createStill(assetId, mediaFile, getUsername(), map);
 
-            MediaMosaJobListener listener = new MediaMosaJobListener() {
-                public void whileInprogress(String assetId) {
-                }
+                MediaMosaJobListener listener = new MediaMosaJobListener() {
+                    public void whileInprogress(String assetId) {
+                    }
 
-                public void onFinished(String assetId) {
-                    JobDataMap dataMap = new JobDataMap();
-                    dataMap.put("assetId", assetId);
-                    dataMap.put("resourceManager", HippoMediaMosaResourceManager.this);
-                    scheduleNowOnce(MediaMosaThumbnailJob.class, dataMap);
-                }
+                    public void onFinished(String assetId) {
+                        JobDataMap dataMap = new JobDataMap();
+                        dataMap.put("assetId", assetId);
+                        dataMap.put("resourceManager", HippoMediaMosaResourceManager.this);
+                        scheduleNowOnce(MediaMosaThumbnailJob.class, dataMap);
+                    }
 
-                public void whileWaiting(String assetId) {
-                }
+                    public void whileWaiting(String assetId) {
+                    }
 
-                public void onFailed(String assetId) {
-                }
+                    public void onFailed(String assetId) {
+                    }
 
-                public void onCancelled(String assetId) {
-                }
-            };
+                    public void onCancelled(String assetId) {
+                    }
+                };
 
-            MediaMosaJobContext context = new MediaMosaJobContext();
-            context.add(listener);
-            context.setResourceManager(this);
-            context.setJobId(String.valueOf(job.getJobId()));
-            context.setAssetId(assetId);
+                MediaMosaJobContext context = new MediaMosaJobContext();
+                context.add(listener);
+                context.setResourceManager(this);
+                context.setJobId(String.valueOf(job.getJobId()));
+                context.setAssetId(assetId);
 
-            MediaMosaJobScheduler.getInstance().offer(context);
-            log.debug("trying to request still creation");
+                MediaMosaJobScheduler.getInstance().offer(context);
+                log.debug("trying to request still creation");
+            }
         } catch (ServiceException e) {
             log.error("", e);
         } catch (IOException e) {
