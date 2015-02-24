@@ -1,6 +1,7 @@
 package org.onehippo.forge.externalresource.gallery.render;
 
-import org.apache.wicket.ResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.frontend.plugins.standards.list.resolvers.IconRenderer;
 import org.hippoecm.repository.api.HippoNodeType;
 
@@ -34,8 +35,7 @@ public class VideoIconRenderer extends IconRenderer {
             } else {
                 iconPath = VIDEOTYPE_TO_ICON.get("default");
             }
-            return new ResourceReference(VideoIconRenderer.class,
-                    iconPath);
+            return new PackageResourceReference(VideoIconRenderer.class, iconPath);
         }
         return super.getResourceReference(node);
     }

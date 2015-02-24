@@ -1,8 +1,9 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize.actions;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Session;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
@@ -51,7 +52,7 @@ public class SynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlug
         add(updateAction = new WorkflowAction("update", new StringResourceModel("update-label", this, null).getString(), null) {
             @Override
             protected ResourceReference getIcon() {
-                return new ResourceReference(getClass(), "update-16.png");
+                return new PackageResourceReference(getClass(), "update-16.png");
             }
 
             @Override
@@ -77,7 +78,7 @@ public class SynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlug
             @Override
             protected ResourceReference getIcon
                     () {
-                return new ResourceReference(getClass(), "commit-16.png");
+                return new PackageResourceReference(getClass(), "commit-16.png");
             }
 
             @Override

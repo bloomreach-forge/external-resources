@@ -16,7 +16,7 @@
 
 package org.onehippo.forge.externalresource.api.service;
 
-import org.apache.wicket.IClusterable;
+import org.apache.wicket.util.io.IClusterable;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.Plugin;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
@@ -32,13 +32,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ExternalResourceService extends Plugin implements IClusterable{
+public class ExternalResourceService extends Plugin implements IClusterable {
 
     private static final long serialVersionUID = 1L;
 
     static final Logger log = LoggerFactory.getLogger(ExternalResourceService.class);
 
-    private Map<String, ResourceManager> processMap = new HashMap<String, ResourceManager>();
+    private transient Map<String, ResourceManager> processMap = new HashMap<String, ResourceManager>();
 
     @SuppressWarnings({"ConstantConditions", "RedundantArrayCreation", "unchecked"})
     public ExternalResourceService(IPluginConfig config) {

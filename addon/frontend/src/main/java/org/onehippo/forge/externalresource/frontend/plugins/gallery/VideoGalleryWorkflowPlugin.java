@@ -15,17 +15,7 @@
  */
 package org.onehippo.forge.externalresource.frontend.plugins.gallery;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.rmi.RemoteException;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.apache.wicket.Component;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -36,6 +26,8 @@ import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
 import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
@@ -67,6 +59,14 @@ import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
 import org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.imports.MediaMosaImportDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<GalleryWorkflow> {
     private static final long serialVersionUID = 1L;
@@ -237,7 +237,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
 
                     @Override
                     protected ResourceReference getIcon() {
-                        return new ResourceReference(getClass(), "film-add-icon.png");
+                        return new PackageResourceReference(getClass(), "film-add-icon.png");
                     }
 
                     @Override
@@ -257,7 +257,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
 
                     @Override
                     protected ResourceReference getIcon() {
-                        return new ResourceReference(getClass(), "import-16.png");
+                        return new PackageResourceReference(getClass(), "import-16.png");
                     }
 
                     @Override

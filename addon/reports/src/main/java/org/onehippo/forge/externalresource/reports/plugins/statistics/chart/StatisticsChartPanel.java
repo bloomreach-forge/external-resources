@@ -2,9 +2,10 @@ package org.onehippo.forge.externalresource.reports.plugins.statistics.chart;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.json.JSONException;
@@ -47,8 +48,6 @@ public class StatisticsChartPanel extends ReportPanel {
     public StatisticsChartPanel(IPluginContext context, IPluginConfig config) {
         super(context, config);
 
-        add(JavascriptPackageResource.getHeaderContribution(AbstractChartStore.class, "Hippo.Reports.Chart-min.js"));
-        add(JavascriptPackageResource.getHeaderContribution(StatisticsChartPanel.class, "Hippo.Reports.StatisticsChartPanel.js"));
         String storeClassName = config.getString("store.class");
         try {
             Class<ExtJsonStore<Cluster>> storeClass = (Class<ExtJsonStore<Cluster>>) Class.forName(storeClassName);
@@ -59,7 +58,16 @@ public class StatisticsChartPanel extends ReportPanel {
             log.error("Unable to create store class " + storeClassName, e);
         }
         RequestCycle rc = RequestCycle.get();
-        chartsFlashPath = rc.urlFor(new ResourceReference(ExtBundle.class, "resources/charts.swf")).toString();
+
+        PackageResourceReference chartsFlash = new PackageResourceReference(ExtBundle.class, "resources/charts.swf");
+        chartsFlashPath = rc.urlFor(chartsFlash,null).toString();
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(JavaScriptHeaderItem.forReference(new PackageResourceReference(AbstractChartStore.class, "Hippo.Reports.Chart-min.js")));
+        response.render(JavaScriptHeaderItem.forReference(new PackageResourceReference(StatisticsChartPanel.class, "Hippo.Reports.StatisticsChartPanel.js")));
     }
 
     @Override

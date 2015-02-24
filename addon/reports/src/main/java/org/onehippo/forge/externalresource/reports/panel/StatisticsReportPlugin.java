@@ -1,7 +1,8 @@
 package org.onehippo.forge.externalresource.reports.panel;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.standards.ClassResourceModel;
@@ -20,7 +21,7 @@ public class StatisticsReportPlugin extends PortalPanelPlugin {
     }
 
     public ResourceReference getImage() {
-        return new ResourceReference(StatisticsReportPlugin.class, "statistics-report-48.png");
+        return new PackageResourceReference(StatisticsReportPlugin.class, "statistics-report-48.png");
     }
 
     public IModel<String> getTitle() {

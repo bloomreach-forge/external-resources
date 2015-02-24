@@ -1,20 +1,12 @@
 package org.onehippo.forge.externalresource.reports.plugins.statistics.list;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.CSSPackageResource;
-import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
@@ -32,6 +24,14 @@ import org.wicketstuff.js.ext.data.ExtJsonStore;
 import org.wicketstuff.js.ext.util.ExtClass;
 import org.wicketstuff.js.ext.util.ExtEventListener;
 import org.wicketstuff.js.ext.util.JSONIdentifier;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @version $Id$
@@ -61,17 +61,20 @@ public class StatisticsListPanel extends ReportPanel {
         store = new StatisticsListStore(columns, statisticsProvider, pageSize);
         add(store);
 
-        add(CSSPackageResource.getHeaderContribution(this.getClass(), "Hippo.Reports.StatisticsList.css"));
-        add(JavascriptPackageResource.getHeaderContribution(this.getClass(), "Hippo.Reports.StatisticsList.js"));
-
         addEventListener("rowSelected", new ExtEventListener() {
             @Override
             public void onEvent(final AjaxRequestTarget ajaxRequestTarget) {
-                rowSelected(RequestCycle.get().getRequest().getParameter("rowData"));
+                rowSelected(RequestCycle.get().getRequest().getRequestParameters().getParameterValue("rowData").toString());
             }
         });
     }
 
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(CssHeaderItem.forReference(new CssResourceReference(getClass(), "Hippo.Reports.StatisticsList.css")));
+        response.render(CssHeaderItem.forReference(new JavaScriptResourceReference(getClass(), "Hippo.Reports.StatisticsList.js")));
+    }
 
     //TODO Change the following, it is Mediamosa specific while this is a generic reporting panel
     protected void rowSelected(String rowData) {

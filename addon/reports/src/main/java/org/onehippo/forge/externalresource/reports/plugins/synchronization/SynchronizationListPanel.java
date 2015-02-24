@@ -1,12 +1,17 @@
 package org.onehippo.forge.externalresource.reports.plugins.synchronization;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.CSSPackageResource;
-import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
@@ -37,6 +42,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.rmi.RemoteException;
+import java.util.Map;
 
 /**
  * @version $Id$
@@ -57,6 +63,8 @@ public class SynchronizationListPanel extends ReportPanel {
     private final ExtJsonStore<Object> store;
     private final ExternalResourceService externalService;
 
+    private static final CssResourceReference MYCOMPONENT_CSS = new CssResourceReference(SynchronizationListPanel.class, "Hippo.Reports.SynchronizationListPanel.css");
+    private static final JavaScriptResourceReference MYCOMPONENT_JS = new JavaScriptResourceReference(SynchronizationListPanel.class, "Hippo.Reports.SynchronizationListPanel.js");
 
     public SynchronizationListPanel(final IPluginContext context, final IPluginConfig config, final String query) {
         super(context, config);
@@ -69,43 +77,50 @@ public class SynchronizationListPanel extends ReportPanel {
 
         add(store);
 
-        add(CSSPackageResource.getHeaderContribution(SynchronizationListPanel.class, "Hippo.Reports.SynchronizationListPanel.css"));
-        add(JavascriptPackageResource.getHeaderContribution(SynchronizationListPanel.class, "Hippo.Reports.SynchronizationListPanel.js"));
 
         addEventListener("documentSelected", new ExtEventListener() {
 
-            public void onEvent(final AjaxRequestTarget ajaxRequestTarget) {
+            public void onEvent(final AjaxRequestTarget ajaxRequestTarget, Map<String, JSONArray> parameters) {
                 Request request = RequestCycle.get().getRequest();
-                String path = request.getParameter("path");
+                String path = null;
+                try {
+                    path = parameters.get("path").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 browseToDocument(path);
             }
         });
 
         addEventListener("performSyncAction", new ExtEventListener() {
-            public void onEvent(final AjaxRequestTarget ajaxRequestTarget) {
-                final Request request = RequestCycle.get().getRequest();
-                final String path = request.getParameter("path");
-                final String mediumName = request.getParameter("medium");
-                Node node = getNode(path);
+            public void onEvent(final AjaxRequestTarget ajaxRequestTarget, Map<String, JSONArray> parameters) {
                 try {
-                    SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) ((HippoWorkspace) node.getSession().getWorkspace()).getWorkflowManager().getWorkflow("synchronization", node);
-                    ResourceManager manager = externalService.getResourceProcessor(node.getPrimaryNodeType().getName());
-                    Synchronizable synchronizable = externalService.getSynchronizableProcessor(node.getPrimaryNodeType().getName());
-                    if (mediumName.equals("synchronize")) {
-                        workflow.update(synchronizable);
-                    } else if (mediumName.equals("check")) {
-                        workflow.check(synchronizable);
-                    } else if (mediumName.equals("delete")) {
-                        workflow.delete(manager);
+                    final Request request = RequestCycle.get().getRequest();
+                    final String path = parameters.get("path").getString(0);
+                    final String mediumName = parameters.get("medium").getString(0);
+                    Node node = getNode(path);
+                    try {
+                        SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) ((HippoWorkspace) node.getSession().getWorkspace()).getWorkflowManager().getWorkflow("synchronization", node);
+                        ResourceManager manager = externalService.getResourceProcessor(node.getPrimaryNodeType().getName());
+                        Synchronizable synchronizable = externalService.getSynchronizableProcessor(node.getPrimaryNodeType().getName());
+                        if (mediumName.equals("synchronize")) {
+                            workflow.update(synchronizable);
+                        } else if (mediumName.equals("check")) {
+                            workflow.check(synchronizable);
+                        } else if (mediumName.equals("delete")) {
+                            workflow.delete(manager);
+                        }
+                    } catch (RepositoryException e) {
+                        log.error("", e);
+                    } catch (RemoteException e) {
+                        log.error("", e);
+                    } catch (WorkflowException e) {
+                        log.error("", e);
                     }
-                } catch (RepositoryException e) {
-                    log.error("", e);
-                } catch (RemoteException e) {
-                    log.error("", e);
-                } catch (WorkflowException e) {
-                    log.error("", e);
+                    ajaxRequestTarget.appendJavaScript("if (typeof Hippo.Reports.RefreshObservableInstance !== 'undefined') { Hippo.Reports.RefreshObservableInstance.fireEvent('refresh'); }");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                ajaxRequestTarget.appendJavascript("if (typeof Hippo.Reports.RefreshObservableInstance !== 'undefined') { Hippo.Reports.RefreshObservableInstance.fireEvent('refresh'); }");
             }
         });
 
@@ -129,6 +144,14 @@ public class SynchronizationListPanel extends ReportPanel {
                 manager.scheduleNowOnce(SynchronizationExecutorJob.class, dataMap);
             }
         });*/
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(CssHeaderItem.forReference(MYCOMPONENT_CSS));
+        response.render(JavaScriptHeaderItem.forReference(MYCOMPONENT_JS));
+
     }
 
     private Node getNode(String path) {
@@ -195,17 +218,17 @@ public class SynchronizationListPanel extends ReportPanel {
 
             JSONObject updateAction = new JSONObject();
             updateAction.put("name", "synchronize");
-            updateAction.put("icon", rc.urlFor(new ResourceReference(SynchronizationListPanel.class, "update-16.png")));
+            updateAction.put("icon", rc.urlFor((IRequestHandler) new PackageResourceReference(SynchronizationListPanel.class, "update-16.png")));
             syncActions.put(updateAction);
 
             JSONObject deleteAction = new JSONObject();
             deleteAction.put("name", "delete");
-            deleteAction.put("icon", rc.urlFor(new ResourceReference(SynchronizationListPanel.class, "delete-16.png")));
+            deleteAction.put("icon", rc.urlFor((IRequestHandler) new PackageResourceReference(SynchronizationListPanel.class, "delete-16.png")));
             syncActions.put(deleteAction);
 
             JSONObject checkAction = new JSONObject();
             checkAction.put("name", "check");
-            checkAction.put("icon", rc.urlFor(new ResourceReference(SynchronizationListPanel.class, "refresh-icon.png")));
+            checkAction.put("icon", rc.urlFor((IRequestHandler) new PackageResourceReference(SynchronizationListPanel.class, "refresh-icon.png")));
             syncActions.put(checkAction);
 
             properties.put("syncActions", syncActions);

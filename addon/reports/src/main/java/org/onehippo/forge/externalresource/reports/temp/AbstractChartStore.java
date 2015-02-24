@@ -1,11 +1,11 @@
 package org.onehippo.forge.externalresource.reports.temp;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.util.lang.PropertyResolver;
+import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wicketstuff.js.ext.data.ExtField;
+import org.wicketstuff.js.ext.data.ExtDataField;
 import org.wicketstuff.js.ext.data.ExtJsonStore;
 import org.wicketstuff.js.ext.util.JSONIdentifier;
 
@@ -19,7 +19,7 @@ public abstract class AbstractChartStore extends ExtJsonStore<Cluster> {
     protected Component component;
 
     public AbstractChartStore(Component component) {
-        super(Arrays.asList(new ExtField("name"), new ExtField("total")));
+        super(Arrays.asList(new ExtDataField("name"), new ExtDataField("total")));
         this.component = component;
     }
 
@@ -34,7 +34,7 @@ public abstract class AbstractChartStore extends ExtJsonStore<Cluster> {
         JSONArray jsonData = new JSONArray();
         for (Cluster record : clusters) {
                 JSONObject jsonLine = new JSONObject();
-                for (ExtField field : getFields()) {
+                for (ExtDataField field : getFields()) {
                     Object value = PropertyResolver.getValue(field.getName(), record);
                     jsonLine.put(field.getName(), value);
                 }

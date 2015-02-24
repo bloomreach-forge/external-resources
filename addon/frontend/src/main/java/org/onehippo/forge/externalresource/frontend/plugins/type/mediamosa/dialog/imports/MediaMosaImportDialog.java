@@ -4,30 +4,40 @@ import nl.uva.mediamosa.MediaMosaService;
 import nl.uva.mediamosa.model.AssetType;
 import nl.uva.mediamosa.util.ServiceException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.model.AbstractCheckBoxModel;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
-import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.*;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.value.IValueMap;
 import org.apache.wicket.util.value.ValueMap;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.session.UserSession;
-import org.hippoecm.repository.api.*;
+import org.hippoecm.repository.api.Document;
+import org.hippoecm.repository.api.HippoNode;
+import org.hippoecm.repository.api.HippoWorkspace;
+import org.hippoecm.repository.api.NodeNameCodec;
+import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
 import org.onehippo.forge.externalresource.api.Synchronizable;
@@ -49,7 +59,11 @@ import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @version $Id$
@@ -59,8 +73,8 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
     private static Logger log = LoggerFactory.getLogger(MediaMosaImportDialog.class);
 
     private MediaMosaService service;
-    private int current;
-    private int count;
+    private long current;
+    private long count;
     private static final int pageSize = 5;
     private String search = "";
     private List<AssetType> assetsToBeImported;
@@ -91,7 +105,7 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
 
             @Override
             protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                ajaxRequestTarget.addComponent(MediaMosaImportDialog.this);
+                ajaxRequestTarget.add(MediaMosaImportDialog.this);
             }
         };
         add(button);
@@ -101,7 +115,7 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
             @Override
             public Object getObject() {
 
-                int i = ((count - current) < pageSize) ? (count) : current + (pageSize - 1);
+                long i = ((count - current) < pageSize) ? (count) : current + (pageSize - 1);
 
                 return new StringResourceModel("result", MediaMosaImportDialog.this, null, new Object[]{
                         current,
@@ -118,12 +132,12 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
             private Map<String, Object> searchMap = new HashMap<String, Object>();
 
             //todo retrieve from cache
-            public Iterator<? extends AssetType> iterator(int first, int count) {
+            public Iterator<? extends AssetType> iterator(long  first, long count) {
                 MediaMosaImportDialog.this.current = (first + 1);
                 List<AssetType> list = new ArrayList<AssetType>();
                 try {
                     populateSearchMap();
-                    list = service.getAssets(count, first, searchMap);
+                    list = service.getAssets((int)count, (int)first, searchMap);
                 } catch (ServiceException e) {
                     log.error("Service exception on retrieving assets for the MediaMosa Import dialog", e);
                     error(e.getLocalizedMessage());
@@ -148,10 +162,10 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
 
             //todo cache this:
             //todo idea fire thread for caching 1-100 10x10 results for keyword
-            public int size() {
+            public long size() {
                 try {
                     populateSearchMap();
-                    MediaMosaImportDialog.this.count = (int) service.getAssetCount(200, searchMap);
+                    MediaMosaImportDialog.this.count =  service.getAssetCount(200, searchMap);
                     return MediaMosaImportDialog.this.count;
                 } catch (IOException e) {
                     log.error("Service exception on retrieving total asset size for the MediaMosa Import dialog", e);
@@ -360,13 +374,13 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
     }
 
     protected final static IValueMap CUSTOM = new ValueMap("width=835,height=650").makeImmutable();
-    private static final ResourceReference CSS = new CompressedResourceReference(MediaMosaImportDialog.class, "MediaMosaImportDialog.css");
-    private static final ResourceReference NO_THUMB = new ResourceReference(MediaMosaImportDialog.class, "no-thumb.jpg");
+    private static final ResourceReference CSS = new CssResourceReference(MediaMosaImportDialog.class, "MediaMosaImportDialog.css");
+    private static final ResourceReference NO_THUMB = new PackageResourceReference(MediaMosaImportDialog.class, "no-thumb.jpg");
 
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        response.renderCSSReference(CSS);
+        response.render(CssHeaderItem.forReference(CSS));
     }
 
     @Override

@@ -1,13 +1,13 @@
 package org.onehippo.forge.externalresource.reports.plugins.statistics.list;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wicketstuff.js.ext.data.ExtField;
+import org.wicketstuff.js.ext.data.ExtDataField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @version $Id$
@@ -39,8 +39,8 @@ public class StatisticsListColumns {
         return false;
     }
 
-    public List<ExtField> getAllExtFields() {
-        List<ExtField> result = new ArrayList<ExtField>(columns.size());
+    public List<ExtDataField> getAllExtFields() {
+        List<ExtDataField> result = new ArrayList<ExtDataField>(columns.size());
 
         for (IStatisticsListColumn column: this.columns) {
             result.add(column.getExtField());

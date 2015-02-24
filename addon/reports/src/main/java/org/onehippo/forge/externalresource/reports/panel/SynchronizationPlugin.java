@@ -1,8 +1,9 @@
 package org.onehippo.forge.externalresource.reports.panel;
 
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.onehippo.cms7.reports.ReportsPerspective;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.model.IModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
@@ -41,7 +42,7 @@ public class SynchronizationPlugin extends PortalPanelPlugin {
     }
 
     public ResourceReference getImage() {
-        return new ResourceReference(SynchronizationPlugin.class, "synchronization-48.png");
+        return new PackageResourceReference(SynchronizationPlugin.class, "synchronization-48.png");
     }
 
     public IModel<String> getTitle() {

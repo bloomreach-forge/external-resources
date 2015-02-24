@@ -6,16 +6,16 @@ import nl.uva.mediamosa.util.ServiceException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -23,10 +23,11 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.*;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.IValueMap;
 import org.apache.wicket.util.value.ValueMap;
@@ -108,10 +109,10 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             @Override
             protected void onTimer(AjaxRequestTarget target) {
                 if (shouldUpdate(viewPanel)) {
-                    target.addComponent(viewPanel);
+                    target.add(viewPanel);
                     put(viewPanel, false);
                 }
-                target.addComponent(progressPanel);
+                target.add(progressPanel);
             }
         };
         add(timer);
@@ -390,12 +391,12 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                             created = false;
                             selected = stillDetailType;
                             if (stillLink != null) {
-                                stillLink.add(new SimpleAttributeModifier("class", "still"));
-                                target.addComponent(stillLink);
+                                stillLink.add(new AttributeModifier("class", "still"));
+                                target.add(stillLink);
                             }
-                            this.add(new SimpleAttributeModifier("class", "new-still"));
+                            this.add(new AttributeModifier("class", "new-still"));
                             stillLink = this;
-                            target.addComponent(this);
+                            target.add(this);
                         }
                     };
                     imageLink.setOutputMarkupId(true);
@@ -428,7 +429,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                                 map.put("still_id", stillDetailType.getStillId());
                                 try {
                                     log.info(service.deleteStill(stillDetailType.getAssetId(), stillDetailType.getMediafileId(), resourceManager.getUsername(), map).getHeader().getRequestResultDescription());
-                                    target.addComponent(viewPanel);
+                                    target.add(viewPanel);
                                 } catch (IOException e) {
                                     log.error("", e);
                                 } catch (ServiceException e) {
@@ -454,7 +455,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     }
 
     protected final static IValueMap CUSTOM = new ValueMap("width=835,height=650").makeImmutable();
-    private static final ResourceReference CSS = new CompressedResourceReference(StillManagerDialog.class, "StillManagerDialog.css");
+    private static final ResourceReference CSS = new CssResourceReference(StillManagerDialog.class, "StillManagerDialog.css");
 
     @Override
     public IValueMap getProperties() {
@@ -464,7 +465,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        response.renderCSSReference(CSS);
+        response.render(CssHeaderItem.forReference( CSS));
     }
 
     private abstract class StillTimerManager extends AbstractAjaxTimerBehavior {

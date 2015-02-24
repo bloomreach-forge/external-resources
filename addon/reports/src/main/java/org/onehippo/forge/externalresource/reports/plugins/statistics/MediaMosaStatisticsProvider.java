@@ -1,16 +1,9 @@
 package org.onehippo.forge.externalresource.reports.plugins.statistics;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import nl.uva.mediamosa.MediaMosaService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
-import org.apache.wicket.util.lang.PropertyResolver;
+import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.hippoecm.frontend.plugins.standards.ClassResourceModel;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -23,9 +16,15 @@ import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
 import org.onehippo.forge.externalresource.reports.plugins.statistics.list.IStatisticsListColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wicketstuff.js.ext.data.ExtField;
+import org.wicketstuff.js.ext.data.ExtDataField;
 
-import nl.uva.mediamosa.MediaMosaService;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @version $Id$
@@ -146,8 +145,9 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
             this.name = name;
         }
 
-        public ExtField getExtField() {
-            return new ExtField(name);
+        //FIXME add model
+        public ExtDataField getExtField() {
+            return new ExtDataField(name, null);
         }
 
         public JSONObject getExtColumnConfig() throws JSONException {

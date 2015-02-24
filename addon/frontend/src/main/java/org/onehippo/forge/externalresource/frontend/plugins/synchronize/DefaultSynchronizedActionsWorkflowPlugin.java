@@ -1,6 +1,5 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
@@ -8,6 +7,8 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.*;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.IValueMap;
@@ -107,7 +108,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
         add(editAction = new CompatibilityWorkflowPlugin.WorkflowAction("edit", new StringResourceModel("edit", this, null).getString(), null) {
             @Override
             protected ResourceReference getIcon() {
-                return new ResourceReference(getClass(), "edit-16.png");
+                return new PackageResourceReference(getClass(), "edit-16.png");
             }
 
             @Override
@@ -136,7 +137,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
 
             @Override
             protected ResourceReference getIcon() {
-                return new ResourceReference(getClass(), "rename-16.png");
+                return new PackageResourceReference(getClass(), "rename-16.png");
             }
 
             @Override
@@ -181,7 +182,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
 
             @Override
             protected ResourceReference getIcon() {
-                return new ResourceReference(getClass(), "copy-16.png");
+                return new PackageResourceReference(getClass(), "copy-16.png");
             }
 
             @Override
@@ -237,7 +238,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
 
             @Override
             protected ResourceReference getIcon() {
-                return new ResourceReference(getClass(), "move-16.png");
+                return new PackageResourceReference(getClass(), "move-16.png");
             }
 
             @Override
@@ -265,7 +266,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                 new StringResourceModel("delete-label", this, null).getString(), null) {
             @Override
             protected ResourceReference getIcon() {
-                return new ResourceReference(getClass(), "delete-16.png");
+                return new PackageResourceReference(getClass(), "delete-16.png");
             }
 
             @Override
@@ -291,7 +292,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                 .getString(), null) {
             @Override
             protected ResourceReference getIcon() {
-                return new ResourceReference(getClass(), "where-used-16.png");
+                return new PackageResourceReference(getClass(), "where-used-16.png");
             }
 
             @Override
@@ -441,15 +442,16 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             nameComponent.setRequired(true);
             nameComponent.setLabel(new StringResourceModel("name-label", DefaultSynchronizedActionsWorkflowPlugin.this, null));
             nameComponent.add(new OnChangeAjaxBehavior() {
-                @Override
-                protected void onUpdate(AjaxRequestTarget target) {
-                    if (!uriModified) {
-                        uriModel.setObject(getNodeNameCodec().encode(nameModel.getObject()));
-                        target.addComponent(uriComponent);
-                    }
-                }
-            }.setThrottleDelay(Duration.milliseconds(500)));
-            nameComponent.setOutputMarkupId(true);
+                                  @Override
+                                  protected void onUpdate(AjaxRequestTarget target) {
+                                      if (!uriModified) {
+                                          uriModel.setObject(getNodeNameCodec().encode(nameModel.getObject()));
+                                          target.add(uriComponent);
+                                      }
+                                  }
+                              });
+                    //.setThrottleDelay(Duration.milliseconds(500)));
+                    nameComponent.setOutputMarkupId(true);
             setFocus(nameComponent);
             add(nameComponent);
 
@@ -478,7 +480,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                     } else {
                         target.focusComponent(uriComponent);
                     }
-                    target.addComponent(RenameDocumentDialog.this);
+                    target.add(RenameDocumentDialog.this);
                 }
             };
             uriAction.add(new Label("uriActionLabel", new AbstractReadOnlyModel<String>() {

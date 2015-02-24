@@ -1,6 +1,5 @@
 package org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.still.field.plugin;
 
-import org.apache.wicket.Response;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -10,7 +9,9 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.request.resource.ContentDisposition;
+import org.apache.wicket.request.resource.ResourceStreamResource;
 import org.hippoecm.frontend.dialog.AbstractDialog;
 import org.hippoecm.frontend.dialog.DialogAction;
 import org.hippoecm.frontend.dialog.IDialogFactory;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.xml.ws.Response;
 import java.io.InputStream;
 
 /**
@@ -134,7 +136,7 @@ public class ImageDisplayPlugin extends RenderPlugin<Node> {
                             };
 
                             link.add(img);
-                            link.add(new Label("image-caption", new StringResourceModel("click", this, null))) ;
+                            link.add(new Label("image-caption", new StringResourceModel("click", this, null)));
                             fragment.add(link);
                             break;
                         default:
@@ -144,19 +146,12 @@ public class ImageDisplayPlugin extends RenderPlugin<Node> {
                     }
                 } else {
                     fragment = new Fragment(id, "embed", this);
-                    fragment.add(new Label("filesize", new Model<String>(formatter.format(resource.length()))));
+                    fragment.add(new Label("filesize", new Model<String>(formatter.format(resource.length().bytes()))));
                     fragment.add(new Label("mimetype", new Model<String>(resource.getContentType())));
-                    fragment.add(new ResourceLink<Void>("link", new JcrResource(resource) {
-                        private static final long serialVersionUID = 1L;
-
-                        @Override
-                        protected void configureResponse(Response response) {
-                            if (response instanceof WebResponse) {
-                                ((WebResponse) response).setHeader("Content-Disposition", "attachment; filename="
-                                        + filename);
-                            }
-                        }
-                    }) {
+                    fragment.add(new ResourceLink<Void>("link",
+                            new JcrResource(resource)
+                                    .setContentDisposition(ContentDisposition.ATTACHMENT)
+                                    .setFileName(filename)) {
                         private static final long serialVersionUID = 1L;
 
                         @Override

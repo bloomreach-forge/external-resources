@@ -3,8 +3,9 @@ package org.onehippo.forge.externalresource.reports.plugins.statistics.list;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
+import org.apache.wicket.request.IRequestParameters;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.json.*;
 import org.onehippo.forge.externalresource.reports.plugins.statistics.StatisticsProvider;
 import org.slf4j.Logger;
@@ -69,8 +70,9 @@ public class StatisticsListStore extends ExtJsonStore<Object> {
         final RequestCycle requestCycle = RequestCycle.get();
         ServletWebRequest swr = ((ServletWebRequest) requestCycle.getRequest());
 
-        int startIndex = parseIntParameter(swr, "start", 0);
-        int amount = parseIntParameter(swr, "limit", this.pageSize);
+        IRequestParameters requestParameters = swr.getRequestParameters();
+        int startIndex = requestParameters.getParameterValue("start").toInt(0);
+        int amount = requestParameters.getParameterValue("limit").toInt(this.pageSize);
         int itemsCount = 0;
 
         if (localCachedResultSet == null) {
@@ -101,19 +103,6 @@ public class StatisticsListStore extends ExtJsonStore<Object> {
             log.info("Skipped property {}, cause: {}", new Object[]{column.getExtField().getName(), "null"});
         }
         return StringUtils.EMPTY;
-    }
-
-    private int parseIntParameter(ServletWebRequest request, String name, int defaultValue) {
-        String param = request.getParameter(name);
-        if (param != null) {
-            try {
-                return Integer.parseInt(param);
-            } catch (NumberFormatException e) {
-                log.warn("Value of parameter '" + name + "' is not an integer: '" + param
-                        + "', using default value '" + defaultValue + "'");
-            }
-        }
-        return defaultValue;
     }
 
 }

@@ -16,10 +16,10 @@
 package org.onehippo.forge.externalresource.gallery;
 
 import org.apache.jackrabbit.JcrConstants;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
@@ -71,7 +71,7 @@ public class VideoContainer extends Panel {
             img = new JcrImage("image", stream, width, height);
         } else {
             //todo
-            img = new Image("image", new ResourceReference(VideoContainerRenderer.class, "res/video.png")) {
+            img = new Image("image", new PackageResourceReference(VideoContainerRenderer.class, "res/video.png")) {
                 @Override
                 protected void onComponentTag(ComponentTag tag) {
                     super.onComponentTag(tag);

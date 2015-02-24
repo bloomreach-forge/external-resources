@@ -105,11 +105,11 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
                         private static final long serialVersionUID = 1L;
 
                         @Override
-                        protected void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag) {
+                        public void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag) {
                             if (embedded != null) {
                                 replaceComponentTagBody(markupStream, openTag, embedded);
                             } else {
-                                renderComponentTagBody(markupStream, openTag);
+                                super.onComponentTagBody(markupStream, openTag);
                             }
                         }
                     };

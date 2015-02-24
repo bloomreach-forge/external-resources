@@ -1,9 +1,9 @@
 package org.onehippo.forge.externalresource.reports.plugins.synchronization.column;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.IClusterable;
 import org.apache.wicket.Session;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.util.io.IClusterable;
 import org.hippoecm.frontend.i18n.types.TypeTranslator;
 import org.hippoecm.frontend.model.nodetypes.JcrNodeTypeModel;
 import org.hippoecm.frontend.plugins.standards.ClassResourceModel;
@@ -18,12 +18,16 @@ import org.json.JSONObject;
 import org.onehippo.forge.externalresource.reports.temp.IDocumentListColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wicketstuff.js.ext.data.ExtField;
+import org.wicketstuff.js.ext.data.ExtDataField;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 public class SynchronizationListColumns implements IClusterable {
@@ -101,8 +105,8 @@ public class SynchronizationListColumns implements IClusterable {
         }
     }
 
-    public List<ExtField> getAllExtFields() {
-        List<ExtField> result = new ArrayList<ExtField>(columnNames.size());
+    public List<ExtDataField> getAllExtFields() {
+        List<ExtDataField> result = new ArrayList<>(columnNames.size());
 
         for (IDocumentListColumn column : getAllColumns()) {
             result.add(column.getExtField());
@@ -161,8 +165,8 @@ public class SynchronizationListColumns implements IClusterable {
             return config;
         }
 
-        public ExtField getExtField() {
-            return new ExtField(name);
+        public ExtDataField getExtField() {
+            return new ExtDataField(name);
         }
 
         public String getValue(final Node node) throws RepositoryException {
@@ -212,10 +216,9 @@ public class SynchronizationListColumns implements IClusterable {
             if (prop == null) {
                 return StringUtils.EMPTY;
             }
-            return translator.getValueName(property, new Model(prop.getString())).getObject();
+            Model<String> value = new Model(prop.getString());
+            return translator.getValueName(property, value).getObject();
         }
-
-
     }
 
     private static class TranslatedStringPropertyColumn extends StringPropertyColumn {
@@ -235,11 +238,10 @@ public class SynchronizationListColumns implements IClusterable {
                 return StringUtils.EMPTY;
             }
 
-            return translator.getValueName(property, new Model(prop.getString())).getObject();
+            Model<String> value = new Model(prop.getString());
+            return translator.getValueName(property, value).getObject();
             //return prop.getString();
         }
-
-
     }
 
     private static class DatePropertyColumn extends StringPropertyColumn {
@@ -273,9 +275,9 @@ public class SynchronizationListColumns implements IClusterable {
     private static class NameColumn implements IDocumentListColumn {
 
         private static final String DATA_INDEX = "name";
-        private static final ExtField EXT_FIELD = new ExtField(DATA_INDEX);
+        private static final ExtDataField EXT_FIELD = new ExtDataField(DATA_INDEX);
 
-        public ExtField getExtField() {
+        public ExtDataField getExtField() {
             return EXT_FIELD;
         }
 
@@ -301,9 +303,9 @@ public class SynchronizationListColumns implements IClusterable {
     private static class PathColumn implements IDocumentListColumn {
 
         private static final String DATA_INDEX = "path";
-        private static final ExtField EXT_FIELD = new ExtField(DATA_INDEX);
+        private static final ExtDataField EXT_FIELD = new ExtDataField(DATA_INDEX);
 
-        public ExtField getExtField() {
+        public ExtDataField getExtField() {
             return EXT_FIELD;
         }
 
@@ -320,9 +322,9 @@ public class SynchronizationListColumns implements IClusterable {
 
     private static class SyncActionsColumn implements IDocumentListColumn {
 
-        private static final ExtField EXT_FIELD = new ExtField("syncActions");
+        private static final ExtDataField EXT_FIELD = new ExtDataField("syncActions");
 
-        public ExtField getExtField() {
+        public ExtDataField getExtField() {
             return EXT_FIELD;
         }
 

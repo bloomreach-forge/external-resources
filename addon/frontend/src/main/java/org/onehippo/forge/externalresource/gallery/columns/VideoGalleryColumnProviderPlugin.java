@@ -15,9 +15,12 @@
  */
 package org.onehippo.forge.externalresource.gallery.columns;
 
-import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.CssPackageResource;
+import org.apache.wicket.request.resource.CssResourceReference;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.gallery.columns.compare.CalendarComparator;
@@ -61,7 +64,12 @@ public class VideoGalleryColumnProviderPlugin extends AbstractListColumnProvider
 
     @Override
     public IHeaderContributor getHeaderContributor() {
-        return CSSPackageResource.getHeaderContribution(VideoGalleryColumnProviderPlugin.class, "VideoGalleryStyle.css");
+        return new IHeaderContributor() {
+            @Override
+            public void renderHead(IHeaderResponse response) {
+                response.render(CssHeaderItem.forReference(new CssResourceReference(VideoGalleryColumnProviderPlugin.class,"VideoGalleryStyle.css")));
+            }
+        };
     }
 
     public List<ListColumn<Node>> getColumns() {

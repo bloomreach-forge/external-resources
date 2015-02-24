@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-project</artifactId>
-    <version>22</version>
+    <version>26</version>
   </parent>
 
   <name>Hippo External Resource Project</name>
@@ -23,10 +23,28 @@
 
 
   <properties>
-    <!-- 7.8.3 versioning -->
-    <hippo.cms.version>2.24.03</hippo.cms.version>
-    <hippo.hst.version>2.26.03</hippo.hst.version>
-    <hippo.repository.version>2.24.04</hippo.repository.version>
+    <!-- 7.9.5 versioning -->
+    <hippo.cms.version>2.26.10</hippo.cms.version>
+    <hippo.hst.version>2.28.07</hippo.hst.version>
+    <hippo.repository.version>2.26.09</hippo.repository.version>
+
+<!--
+    <hippo.addon-hst-configuration-editor.version>1.13.03</hippo.addon-hst-configuration-editor.version>
+    <hippo.addon-channel-manager.version>2.26.07</hippo.addon-channel-manager.version>
+    <hippo.addon-search-service.version>1.03.00</hippo.addon-search-service.version>
+    <hippo.commons.version>1.04.02</hippo.commons.version>
+    <hippo.cms.version>2.26.10</hippo.cms.version>
+    <hippo.frontend.plugins.version>1.01.01</hippo.frontend.plugins.version>
+    <hippo.frontend.theme.version>1.01.05</hippo.frontend.theme.version>
+    <hippo.hst.version>2.28.07</hippo.hst.version>
+    <hippo.packages.version>2.26.00</hippo.packages.version>
+    <hippo.release.version>7.9.5</hippo.release.version>
+    <hippo.repository.version>2.26.09</hippo.repository.version>
+    <hippo.services.version>1.04.02</hippo.services.version>
+    <hippo.services.eventbus.version>1.04.02</hippo.services.eventbus.version>
+    <hippo.services.contenttype.version>1.04.01</hippo.services.contenttype.version>
+    <hippo.utilities.version>1.03.01</hippo.utilities.version>
+-->
 
     <!-- third party -->
     <ehcache.version>2.2.0</ehcache.version>

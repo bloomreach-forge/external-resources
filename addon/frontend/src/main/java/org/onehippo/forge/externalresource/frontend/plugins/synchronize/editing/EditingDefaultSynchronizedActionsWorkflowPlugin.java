@@ -1,7 +1,7 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize.editing;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.model.JcrNodeModel;
@@ -68,7 +68,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends Compatibili
         }, context.getReference(editor).getServiceId());
 
         add(new WorkflowAction("save", new StringResourceModel("save", this, null, "Save").getString(),
-                new ResourceReference(EditingDefaultSynchronizedActionsWorkflowPlugin.class, "document-save-16.png")) {
+                new PackageResourceReference(EditingDefaultSynchronizedActionsWorkflowPlugin.class, "document-save-16.png")) {
             @Override
             protected String execute(Workflow wf) throws Exception {
                 validate();
@@ -87,7 +87,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends Compatibili
         });
 
         add(new WorkflowAction("done", new StringResourceModel("done", this, null, "Done").getString(),
-                new ResourceReference(getClass(), "document-saveclose-16.png")) {
+                new PackageResourceReference(getClass(), "document-saveclose-16.png")) {
 
             @Override
             protected String execute(Workflow wf) throws Exception {

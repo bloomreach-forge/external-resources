@@ -1,6 +1,7 @@
 package org.onehippo.forge.externalresource.gallery.render;
 
-import org.apache.wicket.ResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.frontend.plugins.standards.list.resolvers.IconRenderer;
 import org.hippoecm.repository.api.HippoNodeType;
 
@@ -14,8 +15,7 @@ public class VideoContainerRenderer extends IconRenderer {
     @Override
     protected ResourceReference getResourceReference(Node node) throws RepositoryException {
         if (node.isNodeType(HippoNodeType.NT_HANDLE)) {
-            return new ResourceReference(VideoContainerRenderer.class,
-                                    "res/video.png");
+            return new PackageResourceReference(VideoContainerRenderer.class, "res/video.png");
         }
         return super.getResourceReference(node);
     }

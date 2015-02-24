@@ -15,9 +15,11 @@
  */
 package org.onehippo.forge.externalresource.gallery;
 
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.onehippo.forge.externalresource.gallery.columns.FallbackVideoGalleryListColumnProvider;
 import org.apache.wicket.Component;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -154,12 +156,12 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
     public void renderHead(HtmlHeaderContainer container) {
         super.renderHead(container);
 
-        ResourceReference cssResourceReference = new ResourceReference(VideoGalleryPlugin.class, VIDEO_BANK_CSS);
-        container.getHeaderResponse().renderCSSReference(cssResourceReference);
+        ResourceReference cssResourceReference = new PackageResourceReference(VideoGalleryPlugin.class, VIDEO_BANK_CSS);
+        container.getHeaderResponse().render(CssHeaderItem.forReference( cssResourceReference));
     }
 
     @Override
-    protected ISortableDataProvider<Node> newDataProvider() {
+    protected ISortableDataProvider<Node, String> newDataProvider() {
         return new DocumentsProvider(getModel(), new DocumentListFilter(getPluginConfig()),
                 getTableDefinition().getComparators());
     }
@@ -309,9 +311,9 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
             setSelectedModel(listItem.getModel());
 
             if (previousSelected != null) {
-                target.addComponent(previousSelected);
+                target.add(previousSelected);
             }
-            target.addComponent(listItem);
+            target.add(listItem);
             target.focusComponent(listItem);
 
             previousSelected = listItem;

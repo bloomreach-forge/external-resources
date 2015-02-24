@@ -4,7 +4,7 @@ package org.onehippo.forge.externalresource.reports.plugins.statistics;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.IClusterable;
+import org.apache.wicket.util.io.IClusterable;
 import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
 import org.onehippo.forge.externalresource.reports.plugins.statistics.list.IStatisticsListColumn;
 

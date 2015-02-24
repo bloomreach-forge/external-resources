@@ -20,6 +20,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobContext;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobListener;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobScheduler;
@@ -28,10 +29,10 @@ import org.onehippo.forge.externalresource.api.scheduler.synchronization.Synchro
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.onehippo.forge.externalresource.api.utils.Utils;
-import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.SchedulerException;
+import org.onehippo.repository.scheduling.RepositoryJobCronTrigger;
+import org.onehippo.repository.scheduling.RepositoryJobInfo;
+import org.onehippo.repository.scheduling.RepositoryJobSimpleTrigger;
+import org.onehippo.repository.scheduling.RepositoryScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +40,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,9 @@ import java.util.Map;
  * @version $Id:
  */
 public class HippoMediaMosaResourceManager extends ResourceManager implements Embeddable, Synchronizable {
+    private static final String SYNCHRONIZATION_CRONEXPRESSION = "synchronization.cronexpression";
+    private static final String SYNCHRONIZATION_ENABLED = "synchronization.enabled";
+    private static final String SYNCHRONIZABLE = "synchronizable";
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(HippoMediaMosaResourceManager.class);
 
@@ -61,8 +65,6 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private Long width;
     private boolean createThumbnail;
     private final MediaMosaService mediaMosaService;
-
-    public static final String RESOURCE_QUERY_STRING = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
 
     private static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
     private static final String MASS_SYNC_JOB_TRIGGER = MASS_SYNC_JOB + "Trigger";
@@ -78,6 +80,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         map.put("hippomediamosa:title", "title");
         map.put("hippomediamosa:description", "description");
     }
+
+    public static final String SYNCHRONIZABLE_SERVICE = "synchronizable." + HippoMediaMosaResourceManager.class.getSimpleName();
 
     public HippoMediaMosaResourceManager(IPluginConfig config, ResourceInvocationType type) {
         super(config, type);
@@ -106,6 +110,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             this.playbackVideoCodec = config.getString("playbackVideoCodec");
         }
 
+
         this.mediaMosaService = new MediaMosaService(getUrl());
         try {
             this.mediaMosaService.setCredentials(getUsername(), getPassword());
@@ -113,7 +118,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             log.error("Service exception on setting media mosa credentials", e);
         }
 
-        Map<String, Object> propertyMap = new HashMap<String, Object>();
+        Map<String, Object> propertyMap = new HashMap<>();
         propertyMap.put("url", url);
         propertyMap.put("username", username);
         propertyMap.put("password", password);
@@ -125,6 +130,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         propertyMap.put("cache.timeToIdleSeconds", config.get("cache.timeToIdleSeconds"));
         embeddedHelper = new MediaMosaEmbeddedHelper();
         embeddedHelper.initialize(propertyMap);
+
+//        HippoServiceRegistry.registerService(this, Synchronizable.class, SYNCHRONIZABLE_SERVICE);
     }
 
     @Override
@@ -133,33 +140,23 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     @Override
     public void initCmsPlugin() {
-        super.initCmsPlugin();
         try {
-            if (getPluginConfig().getAsBoolean("synchronization.enabled", false)) {
-                if (getPluginConfig().containsKey("synchronization.cronexpression")) {
-                    final String cronExpression = getPluginConfig().getString("synchronization.cronexpression");
-
-                    JobDataMap dataMap = new JobDataMap();
-                    dataMap.put("resourcemanager", this);
-                    dataMap.put("synchronizable", this);
-                    JobDetail jobDetail = new JobDetail(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
-                    CronTrigger trigger = new CronTrigger(MASS_SYNC_JOB_TRIGGER, MASS_SYNC_JOB_TRIGGER_GROUP, MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, cronExpression);
-                    jobDetail.setJobDataMap(dataMap);
-                    if (triggerExists(trigger)) {
-                        if (triggerChanged(trigger)) {
-                            resourceScheduler.rescheduleJob(MASS_SYNC_JOB_TRIGGER, MASS_SYNC_JOB_TRIGGER_GROUP, trigger);
-                        }
-                    } else {
-                        resourceScheduler.scheduleJob(jobDetail, trigger);
-                    }
-                }
-            } else {
-                resourceScheduler.unscheduleJob(MASS_SYNC_JOB_TRIGGER, MASS_SYNC_JOB_TRIGGER_GROUP);
+            RepositoryScheduler repositoryScheduler = getRepositoryScheduler();
+            if (repositoryScheduler.checkExists(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP)) {
+                repositoryScheduler.deleteJob(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP);
             }
-        } catch (ParseException e) {
-            log.error("ParseException for new CronTrigger", e);
-        } catch (SchedulerException e) {
-            log.error("SchedulerException (re)scheduling job", e);
+            if (getPluginConfig().getAsBoolean(SYNCHRONIZATION_ENABLED, false)) {
+                if (getPluginConfig().containsKey(SYNCHRONIZATION_CRONEXPRESSION)) {
+                    String cronExpression = getPluginConfig().getString(SYNCHRONIZATION_CRONEXPRESSION);
+
+                    RepositoryJobInfo jobInfo = new RepositoryJobInfo(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
+                    jobInfo.setAttribute(SYNCHRONIZABLE, SYNCHRONIZABLE_SERVICE);
+                    RepositoryJobCronTrigger trigger = new RepositoryJobCronTrigger(MASS_SYNC_JOB_TRIGGER, cronExpression);
+                    repositoryScheduler.scheduleJob(jobInfo, trigger);
+                }
+            }
+        } catch (RepositoryException e) {
+            log.error("RepositoryException (re)scheduling job", e);
         }
     }
 
@@ -170,6 +167,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     /**
      * Return the width as an integer. Internally a Long value is used.
+     *
      * @return the width
      */
     public int getWidth() {
@@ -225,7 +223,9 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
             LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), getWidth());
 
-            Utils.addEmbeddedNode(node, embedLink.getOutput());
+            if (embedLink != null) {
+                Utils.addEmbeddedNode(node, embedLink.getOutput());
+            }
 
             String videoCodec = mediafileDetails.getMetadata().getVideoCodec();
             if (StringUtils.isNotBlank(videoCodec)) {
@@ -240,10 +240,14 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                     }
 
                     public void onFinished(String assetId) {
-                        JobDataMap dataMap = new JobDataMap();
-                        dataMap.put("assetId", assetId);
-                        dataMap.put("resourceManager", HippoMediaMosaResourceManager.this);
-                        scheduleNowOnce(MediaMosaThumbnailJob.class, dataMap);
+                        RepositoryJobInfo jobInfo = new RepositoryJobInfo("thumbnail." + assetId, MediaMosaThumbnailJob.class);
+                        jobInfo.setAttribute(MediaMosaThumbnailJob.ASSET_ID_ATTRIBUTE, assetId);
+                        RepositoryJobSimpleTrigger now = new RepositoryJobSimpleTrigger("now", new Date());
+                        try {
+                            getRepositoryScheduler().scheduleJob(jobInfo, now);
+                        } catch (RepositoryException e) {
+                            log.error(e.getMessage(),e);
+                        }
                     }
 
                     public void whileWaiting(String assetId) {

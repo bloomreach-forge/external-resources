@@ -6,10 +6,10 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hippoecm.repository.quartz.JCRSchedulingContext;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
-import org.onehippo.forge.externalresource.api.scheduler.ExternalResourceScheduler;
-import org.quartz.*;
+import org.onehippo.repository.scheduling.RepositoryJob;
+import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,63 +25,55 @@ import java.io.InputStream;
 /**
  * @version $Id$
  */
-public class MediaMosaThumbnailJob implements Job {
+public class MediaMosaThumbnailJob implements RepositoryJob {
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    private static Logger log = LoggerFactory.getLogger(MediaMosaThumbnailJob.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MediaMosaThumbnailJob.class);
+    private static final String RESOURCE_QUERY_STRING = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
+    public static final String ASSET_ID_ATTRIBUTE = "assetId";
 
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    @Override
+    public void execute(RepositoryJobExecutionContext context) throws RepositoryException {
         try {
-            JobDetail jobDetail = context.getJobDetail();
-            JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            ExternalResourceScheduler scheduler = (ExternalResourceScheduler) context.getScheduler();
-            Session session = ((JCRSchedulingContext) scheduler.getCtx()).getSession();
-            synchronized (session) {
-                session.refresh(false);
 
-                String assetId = (String) jobDataMap.get("assetId");
-                HippoMediaMosaResourceManager resourceManager = (HippoMediaMosaResourceManager) jobDataMap.get("resourceManager");
+            String assetId = context.getAttribute(ASSET_ID_ATTRIBUTE);
+            HippoMediaMosaResourceManager resourceManager = HippoServiceRegistry.getService(HippoMediaMosaResourceManager.class);
 
-                QueryManager queryManager = session.getWorkspace().getQueryManager();
-                Query query = queryManager.createQuery(String.format(HippoMediaMosaResourceManager.RESOURCE_QUERY_STRING, assetId), "xpath");
-                NodeIterator it = query.execute().getNodes();
-                while (it.hasNext()) {
-                    Node mediamosaAsset = it.nextNode();
-                    AssetDetailsType detail = resourceManager.getMediaMosaService().getAssetDetails(assetId);
-                    if (StringUtils.isNotBlank(detail.getVpxStillUrl())) {
-                        String imageUrl = detail.getVpxStillUrl();
-                        //Utils.resolveThumbnailToVideoNode(imageUrl, mediamosaAsset);
-                        org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
-                        HttpMethod getMethod = new GetMethod(imageUrl);
-                        InputStream is = null;
-                        try {
-                            client.executeMethod(getMethod);
-                            is = getMethod.getResponseBodyAsStream();
-                            String mimeType = getMethod.getResponseHeader("content-type").getValue();
-                            if (mimeType.startsWith("image")) {
-                                if (mediamosaAsset.hasNode("hippoexternal:thumbnail")) {
-                                    Node thumbnail = mediamosaAsset.getNode("hippoexternal:thumbnail");
-                                    thumbnail.setProperty("jcr:data", session.getValueFactory().createBinary(is));
-                                    thumbnail.setProperty("jcr:mimeType", mimeType);
-                                    thumbnail.setProperty("jcr:lastModified", java.util.Calendar.getInstance());
-                                   // mediamosaAsset.setProperty("hippoexternal:state", SynchronizationState.SYNCHRONIZED.getState());
-                                    session.save();
-                                }
+            Session session = context.createSystemSession();
+            QueryManager queryManager = session.getWorkspace().getQueryManager();
+            Query query = queryManager.createQuery(String.format(RESOURCE_QUERY_STRING, assetId), Query.XPATH);
+            NodeIterator it = query.execute().getNodes();
+            while (it.hasNext()) {
+                Node mediamosaAsset = it.nextNode();
+                AssetDetailsType detail = resourceManager.getMediaMosaService().getAssetDetails(assetId);
+                if (StringUtils.isNotBlank(detail.getVpxStillUrl())) {
+                    String imageUrl = detail.getVpxStillUrl();
+                    //Utils.resolveThumbnailToVideoNode(imageUrl, mediamosaAsset);
+                    org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
+                    HttpMethod getMethod = new GetMethod(imageUrl);
+                    InputStream is = null;
+                    try {
+                        client.executeMethod(getMethod);
+                        is = getMethod.getResponseBodyAsStream();
+                        String mimeType = getMethod.getResponseHeader("content-type").getValue();
+                        if (mimeType.startsWith("image")) {
+                            if (mediamosaAsset.hasNode("hippoexternal:thumbnail")) {
+                                Node thumbnail = mediamosaAsset.getNode("hippoexternal:thumbnail");
+                                thumbnail.setProperty("jcr:data", session.getValueFactory().createBinary(is));
+                                thumbnail.setProperty("jcr:mimeType", mimeType);
+                                thumbnail.setProperty("jcr:lastModified", java.util.Calendar.getInstance());
+                                // mediamosaAsset.setProperty("hippoexternal:state", SynchronizationState.SYNCHRONIZED.getState());
+                                session.save();
                             }
-                        } catch (IOException e) {
-                            log.error("", e);
-                        } finally {
-                            IOUtils.closeQuietly(is);
                         }
+                    } catch (IOException e) {
+                        LOG.error("", e);
+                    } finally {
+                        IOUtils.closeQuietly(is);
                     }
                 }
             }
-        } catch (RepositoryException ex) {
-            throw new JobExecutionException(ex.getClass().getName() + ": " + ex.getMessage());
-        } catch (ServiceException e) {
-            log.error("", e);
-        } catch (IOException e) {
-            log.error("", e);
+        } catch (ServiceException | IOException e) {
+            LOG.error("", e);
         }
     }
 }

@@ -1,8 +1,9 @@
 package org.onehippo.forge.externalresource.reports.plugins.synchronization.store;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
+import org.apache.wicket.request.IRequestParameters;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.hippoecm.frontend.session.UserSession;
 import org.hippoecm.repository.api.HippoNode;
 import org.hippoecm.repository.api.HippoNodeIterator;
@@ -86,8 +87,9 @@ public class SynchronizationStore  extends ExtJsonStore<Object> {
 
         final RequestCycle requestCycle = RequestCycle.get();
         ServletWebRequest swr = ((ServletWebRequest) requestCycle.getRequest());
-        int startIndex = parseIntParameter(swr, "start", 0);
-        int amount = parseIntParameter(swr, "limit", this.pageSize);
+        IRequestParameters requestParameters = swr.getRequestParameters();
+        int startIndex = requestParameters.getParameterValue("start").toInt(0);
+        int amount = requestParameters.getParameterValue("limit").toInt(this.pageSize);
         int documentCount = 0;
 
         try {
@@ -139,19 +141,6 @@ public class SynchronizationStore  extends ExtJsonStore<Object> {
 
         }
         return StringUtils.EMPTY;
-    }
-
-    private int parseIntParameter(ServletWebRequest request, String name, int defaultValue) {
-        String param = request.getParameter(name);
-        if (param != null) {
-            try {
-                return Integer.parseInt(param);
-            } catch (NumberFormatException e) {
-                log.warn("Value of parameter '" + name + "' is not an integer: '" + param
-                        + "', using default value '" + defaultValue + "'");
-            }
-        }
-        return defaultValue;
     }
 
 }
