@@ -43,15 +43,7 @@ import org.hippoecm.frontend.service.ISettingsService;
 import org.hippoecm.frontend.session.UserSession;
 import org.hippoecm.frontend.translation.ILocaleProvider;
 import org.hippoecm.frontend.widgets.AbstractView;
-import org.hippoecm.repository.api.Document;
-import org.hippoecm.repository.api.HippoNode;
-import org.hippoecm.repository.api.HippoNodeType;
-import org.hippoecm.repository.api.MappingException;
-import org.hippoecm.repository.api.StringCodec;
-import org.hippoecm.repository.api.StringCodecFactory;
-import org.hippoecm.repository.api.WorkflowDescriptor;
-import org.hippoecm.repository.api.WorkflowException;
-import org.hippoecm.repository.api.WorkflowManager;
+import org.hippoecm.repository.api.*;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.onehippo.forge.externalresource.api.ResourceManager;
@@ -136,29 +128,20 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             try {
                 WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this
                         .getDefaultModel();
-                GalleryWorkflow workflow = (GalleryWorkflow) manager
-                        .getWorkflow((WorkflowDescriptor) workflowDescriptorModel.getObject());
+                GalleryWorkflow workflow = (GalleryWorkflow) manager.getWorkflow(workflowDescriptorModel.getObject());
                 String nodeName = getNodeNameCodec().encode(filename);
                 String localName = getLocalizeCodec().encode(filename);
                 //here is where it goes wrong
                 Document document = workflow.createGalleryItem(nodeName, type);
                 ((UserSession) Session.get()).getJcrSession().refresh(true);
 
-                JcrNodeModel nodeModel = new JcrNodeModel(new JcrItemModel(document.getIdentity()));
-
-                node = (HippoNode) nodeModel.getNode();
+                node = (HippoNode) new JcrNodeModel(new JcrItemModel(document.getIdentity(), false)).getNode();
 
                 DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
                 if (!node.getLocalizedName().equals(localName)) {
                     defaultWorkflow.localizeName(localName);
                 }
-            } catch (WorkflowException ex) {
-                VideoGalleryWorkflowPlugin.log.error(ex.getMessage());
-                error(ex);
-            } catch (MappingException ex) {
-                VideoGalleryWorkflowPlugin.log.error(ex.getMessage());
-                error(ex);
-            } catch (RepositoryException ex) {
+            } catch (WorkflowException | RepositoryException ex) {
                 VideoGalleryWorkflowPlugin.log.error(ex.getMessage());
                 error(ex);
             }
@@ -173,7 +156,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
                     processor.afterSave(node);
                 } catch (Exception ex) {
                     if (VideoGalleryWorkflowPlugin.log.isDebugEnabled()) {
-                        VideoGalleryWorkflowPlugin.log.info(ex.getMessage(),ex);
+                        VideoGalleryWorkflowPlugin.log.info(ex.getMessage(), ex);
                     } else {
                         VideoGalleryWorkflowPlugin.log.info(ex.getMessage());
                     }
@@ -181,11 +164,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
                     try {
                         DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
                         defaultWorkflow.delete();
-                    } catch (WorkflowException e) {
-                        VideoGalleryWorkflowPlugin.log.error(e.getMessage());
-                    } catch (MappingException e) {
-                        VideoGalleryWorkflowPlugin.log.error(e.getMessage());
-                    } catch (RepositoryException e) {
+                    } catch (WorkflowException | RepositoryException e) {
                         VideoGalleryWorkflowPlugin.log.error(e.getMessage());
                     }
                     try {
@@ -215,7 +194,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
         newItems.clear();
     }
 
-     protected ExternalResourceService getExternalResourceService() {
+    protected ExternalResourceService getExternalResourceService() {
         IPluginContext context = getPluginContext();
         ExternalResourceService service = context.getService(getPluginConfig().getString("external.processor.id",
                 "external.processor.service"), ExternalResourceService.class);
@@ -226,46 +205,37 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
     }
 
     protected IDataProvider<StdWorkflow> createListDataProvider() {
-        List<StdWorkflow> list = new LinkedList<StdWorkflow>();
-        list.add(0,
-                new WorkflowAction("add", new StringResourceModel(getPluginConfig().getString("option.label", "add"),
-                        this,
-                        null,
-                        "Add")
-                ) {
-                    private static final long serialVersionUID = 1L;
+        List<StdWorkflow> list = new LinkedList<>();
+        list.add(0, new WorkflowAction("add", new StringResourceModel(getPluginConfig().getString("option.label", "add"),
+                this, null, "Add")) {
+            private static final long serialVersionUID = 1L;
 
-                    @Override
-                    protected ResourceReference getIcon() {
-                        return new PackageResourceReference(getClass(), "film-add-icon.png");
-                    }
+            @Override
+            protected ResourceReference getIcon() {
+                return new PackageResourceReference(getClass(), "film-add-icon.png");
+            }
 
-                    @Override
-                    protected Dialog createRequestDialog() {
-                        return createUploadDialog();
-                    }
-                });
+            @Override
+            protected Dialog createRequestDialog() {
+                return createUploadDialog();
+            }
+        });
         //delegate to the WorkflowitemManager
-        list.add(1,
-                new WorkflowAction("import",
-                        new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"),
-                                this,
-                                null,
-                                "Add")
-                ) {
-                    private static final long serialVersionUID = 1L;
+        list.add(1, new WorkflowAction("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"),
+                this, null, "Add")) {
+            private static final long serialVersionUID = 1L;
 
-                    @Override
-                    protected ResourceReference getIcon() {
-                        return new PackageResourceReference(getClass(), "import-16.png");
-                    }
+            @Override
+            protected ResourceReference getIcon() {
+                return new PackageResourceReference(getClass(), "import-16.png");
+            }
 
-                    @Override
-                    protected Dialog createRequestDialog() {
-                        return createImportDialog();
-                    }
-                });
-        return new ListDataProvider<StdWorkflow>(list);
+            @Override
+            protected Dialog createRequestDialog() {
+                return createImportDialog();
+            }
+        });
+        return new ListDataProvider<>(list);
     }
 
     private Dialog createImportDialog() {
@@ -289,23 +259,18 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this
                     .getDefaultModel();
             GalleryWorkflow workflow = (GalleryWorkflow) manager
-                    .getWorkflow((WorkflowDescriptor) workflowDescriptorModel.getObject());
+                    .getWorkflow(workflowDescriptorModel.getObject());
             if (workflow == null) {
                 VideoGalleryWorkflowPlugin.log.error("No gallery workflow accessible");
             } else {
                 galleryTypes = workflow.getGalleryTypes();
             }
-        } catch (MappingException ex) {
-            VideoGalleryWorkflowPlugin.log.error(ex.getMessage(), ex);
-        } catch (RepositoryException ex) {
-            VideoGalleryWorkflowPlugin.log.error(ex.getMessage(), ex);
-        } catch (RemoteException ex) {
+        } catch (RemoteException | RepositoryException ex) {
             VideoGalleryWorkflowPlugin.log.error(ex.getMessage(), ex);
         }
 
-        Component typeComponent = null;
+        Component typeComponent;
         if (galleryTypes != null && galleryTypes.size() > 1) {
-            DropDownChoice folderChoice;
             type = galleryTypes.get(0);
             typeComponent = new DropDownChoice("type", new PropertyModel(this, "type"), galleryTypes,
                     new TypeChoiceRenderer(this)).setNullValid(false).setRequired(true);
