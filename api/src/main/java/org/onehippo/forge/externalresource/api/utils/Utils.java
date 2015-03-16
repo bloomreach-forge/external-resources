@@ -23,7 +23,7 @@ public class Utils {
 
     public static void addEmbeddedNode(Node node, String embedded) {
         try {
-            Node embeddedNode = null;
+            Node embeddedNode;
             if (node.hasNode(HIPPOEXTERNAL_EMBEDDED)) {
                 embeddedNode = node.getNode(HIPPOEXTERNAL_EMBEDDED);
             } else {

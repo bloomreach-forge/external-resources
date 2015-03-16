@@ -36,7 +36,7 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
     private static final long CACHE_DEFAULT_TIME_TO_LIVE = 30L;
     private static final long CACHE_DEFAULT_TIME_TO_IDLE = 30L;
     
-    private static final Long DEFAULT_WIDTH = new Long(320L);
+    private static final Long DEFAULT_WIDTH = 320L;
 
     public void initialize(Map<String, Object> properties) {
         this.map = properties;
@@ -45,7 +45,7 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
             try {
                 mediaMosaService.setCredentials((String) map.get("username"), (String) map.get("password"));
             } catch (ServiceException e) {
-
+                log.error("Error initializing service", e);
             }
         }
         createAssetCache();
@@ -106,14 +106,8 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
                     embedded = cache;
                 }
             }
-        } catch (RepositoryException e) {
-            log.error("", e);
-            embedded = e.getLocalizedMessage();
-        } catch (ServiceException e) {
-            log.error("", e);
-            embedded = e.getLocalizedMessage();
-        } catch (IOException e) {
-            log.error("", e);
+        } catch (RepositoryException | ServiceException | IOException e) {
+            log.error("Error while fetching embedded node", e);
             embedded = e.getLocalizedMessage();
         }
         return embedded;

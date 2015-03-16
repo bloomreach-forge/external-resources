@@ -6,5 +6,4 @@ package org.onehippo.forge.externalresource.api.utils;
 public enum ResourceInvocationType {
     CMS,
     SITE
-    ;
 }

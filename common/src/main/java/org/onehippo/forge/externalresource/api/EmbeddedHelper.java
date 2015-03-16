@@ -20,7 +20,7 @@ public abstract class EmbeddedHelper implements Embeddable {
     public abstract void initialize(Map<String, Object> properties);
 
     public void initialize(Node node) {
-        Map<String, Object> propertyMap = new HashMap<String, Object>();
+        Map<String, Object> propertyMap = new HashMap<>();
         try {
             PropertyIterator properties = node.getProperties();
             while (properties.hasNext()) {
@@ -40,7 +40,7 @@ public abstract class EmbeddedHelper implements Embeddable {
         if (!property.isMultiple()) {
             return getValue(property.getValue());
         } else {
-            List<Object> result = new ArrayList<Object>();
+            List<Object> result = new ArrayList<>();
             for (Value propertyValue : property.getValues()) {
                 Object value = getValue(propertyValue);
                 if (value != null) {

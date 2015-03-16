@@ -37,15 +37,14 @@ public class ExternalResourceHstEngine {
     }
 
     public Embeddable getEmbeddable(HippoBean linkedBean, EmbeddedHelper helper) {
-        Embeddable embeddable = initEmbedConfiguration(linkedBean, helper);
-        return embeddable;
+        return initEmbedConfiguration(linkedBean, helper);
     }
 
     private Embeddable initEmbedConfiguration(HippoBean bean, EmbeddedHelper helper) {
         try {
             String type = bean.getClass().getAnnotation(Node.class).jcrType();
             Session session = getSession(bean);
-            javax.jcr.Node configuration = session.getNode(location + "/" + type);
+            javax.jcr.Node configuration = session.getNode(location + '/' + type);
             helper.initialize(configuration);
         } catch (RepositoryException e) {
             log.error("can't find the {} node, please be sure that the type exist or the siteuser has access to {}", location);
@@ -81,6 +80,7 @@ public class ExternalResourceHstEngine {
 //    }
 
 
+    @SuppressWarnings("unchecked")
     public <T extends HippoBean> T getLinkedBean(HippoBean inBean, String relPath, Class<T> beanMappingClass) {
         HippoMirrorBean mirror = inBean.getBean(relPath, HippoMirrorBean.class);
         if (mirror == null) {

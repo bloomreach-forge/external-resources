@@ -135,7 +135,7 @@ public class HippoRedFiveResourceManager extends ResourceManager {
         if (rule == null) {
             throw new IllegalArgumentException("A rule should be implemented");
         }
-        if (mimeType == null || "".equals(mimeType.trim())) {
+        if (mimeType == null || mimeType.trim().isEmpty()) {
             throw new IllegalArgumentException("A mime type should be provided");
         }
         if (imageData == null) {
@@ -208,14 +208,10 @@ public class HippoRedFiveResourceManager extends ResourceManager {
             // Create a builder factory
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(validating);
-
             // Create the builder and parse the file
-            Document doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(string)));
-            return doc;
-        } catch (SAXException e) {
-            // A parsing error occurred; the xml input is not valid
-        } catch (ParserConfigurationException e) {
-        } catch (IOException e) {
+            return factory.newDocumentBuilder().parse(new InputSource(new StringReader(string)));
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            log.error("Error parsing " + string, e);
         }
         return null;
     }
