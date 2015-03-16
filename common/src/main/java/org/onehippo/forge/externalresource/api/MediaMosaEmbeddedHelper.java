@@ -1,15 +1,5 @@
 package org.onehippo.forge.externalresource.api;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -19,6 +9,14 @@ import nl.uva.mediamosa.model.AssetDetailsType;
 import nl.uva.mediamosa.model.LinkType;
 import nl.uva.mediamosa.model.MediafileDetailsType;
 import nl.uva.mediamosa.util.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
 
@@ -35,7 +33,7 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
     private static final long CACHE_DEFAULT_SIZE = 500L;
     private static final long CACHE_DEFAULT_TIME_TO_LIVE = 30L;
     private static final long CACHE_DEFAULT_TIME_TO_IDLE = 30L;
-    
+
     private static final Long DEFAULT_WIDTH = 320L;
 
     public void initialize(Map<String, Object> properties) {
@@ -93,14 +91,22 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
                 String cache = cacheRetrieve(assetId);
                 if (cache == null) {
                     AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
-                    MediafileDetailsType mediafileDetails = assetDetails.getMediafiles().getMediafile().get(0);
-                    LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(),
-                            (String) getProperty("username"),
-                            Integer.valueOf(((Long) getProperty("width", DEFAULT_WIDTH)).intValue())
-                    );
-                    if (embedLink != null) {
-                        embedded = embedLink.getOutput();
-                        cacheStore(assetId, embedded);
+                    if (assetDetails != null) {
+                        MediafileDetailsType mediafileDetails = assetDetails.getMediafiles().getMediafile().get(0);
+
+                        LinkType embedLink = null;
+                        if (mediafileDetails != null) {
+                            embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(),
+                                    (String) getProperty("username"),
+                                    Integer.valueOf(((Long) getProperty("width", DEFAULT_WIDTH)).intValue())
+                            );
+                        }
+                        if (embedLink != null) {
+                            embedded = embedLink.getOutput();
+                            cacheStore(assetId, embedded);
+                        }
+                    } else {
+                        log.warn("Unable to retrieve MediaMosa asset with id '{}': null", assetId);
                     }
                 } else {
                     embedded = cache;

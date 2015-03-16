@@ -21,17 +21,17 @@ import java.rmi.RemoteException;
  * @version $Id$
  */
 public class SynchronizationJob implements RepositoryJob {
-    private static final Logger LOG = LoggerFactory.getLogger(SynchronizationJob.class);
+    private static final Logger log = LoggerFactory.getLogger(SynchronizationJob.class);
 
     @Override
     public void execute(RepositoryJobExecutionContext context) throws RepositoryException {
-
+        Session session = null;
         try {
             String uuid = context.getAttribute("identifier");
-            Session session = context.createSystemSession();
+            session = context.createSystemSession();
             Node node = ((HippoNode) session.getNodeByIdentifier(uuid)).getCanonicalNode();
             Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, context.getAttribute("synchronizable"));
-            LOG.debug(uuid);
+            log.debug(uuid);
             SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) ((HippoWorkspace) session.getWorkspace()).getWorkflowManager().getWorkflow("synchronization", node);
             SynchronizationState state = workflow.check(synchronizable);
 
@@ -45,9 +45,16 @@ public class SynchronizationJob implements RepositoryJob {
                 default:
                     break;
             }
-        } catch (RepositoryException e) {
-        } catch (RemoteException e) {
-        } catch (WorkflowException e) {
+        } catch (RepositoryException | RemoteException | WorkflowException e) {
+            if (log.isDebugEnabled()) {
+                log.error("External resources synchronization job failed", e);
+            } else {
+                log.error("External resources synchronization job failed");
+            }
+        } finally {
+            if (session != null && session.isLive()) {
+                session.logout();
+            }
         }
     }
 }
