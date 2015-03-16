@@ -1,8 +1,19 @@
 package org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.still;
 
-import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.*;
-import nl.uva.mediamosa.util.ServiceException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -25,7 +36,11 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
-import org.apache.wicket.model.*;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.time.Duration;
@@ -43,12 +58,14 @@ import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.Abstract
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
+import nl.uva.mediamosa.MediaMosaService;
+import nl.uva.mediamosa.model.JobDetailsType;
+import nl.uva.mediamosa.model.JobType;
+import nl.uva.mediamosa.model.Response;
+import nl.uva.mediamosa.model.StillDetailType;
+import nl.uva.mediamosa.model.StillType;
+import nl.uva.mediamosa.model.UploadTicketType;
+import nl.uva.mediamosa.util.ServiceException;
 
 /**
  * @version $Id$
@@ -87,12 +104,17 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
         this.service = resourceManager.getMediaMosaService();
 
         Node node = (Node) getModelObject();
+
         try {
             node = node.getParent();
-            this.assetId = node.getProperty("hippomediamosa:assetid").getString();
-            this.mediaId = node.getProperty("hippomediamosa:mediaid").getString();
+            if (node.hasProperty("hippomediamosa:assetid")) {
+                this.assetId = node.getProperty("hippomediamosa:assetid").getString();
+            }
+            if (node.hasProperty("hippomediamosa:mediaid")) {
+                this.mediaId = node.getProperty("hippomediamosa:mediaid").getString();
+            }
         } catch (RepositoryException e) {
-            log.error("", e);
+            log.error("Error fetching asset id", e);
         }
 
         this.uploadPanel = new StillUploadPanel("still-upload");
@@ -121,14 +143,13 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     @Override
     protected void onCancel() {
         if (created && intitial != null) {
-            Map map = new HashMap();
+            Map<String, String> map = new HashMap<>();
             map.put("mediafile_id", mediaId);
             map.put("still_id", intitial.getStillId());
             try {
-                log.info(service.setDefaultStill(assetId, resourceManager.getUsername(), map).getHeader().getRequestResult());;
-            } catch (ServiceException e) {
-                log.error("", e);
-            } catch (IOException e) {
+                log.info(service.setDefaultStill(assetId, resourceManager.getUsername(), map).getHeader().getRequestResult());
+
+            } catch (ServiceException | IOException e) {
                 log.error("", e);
             }
         }
@@ -159,7 +180,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                         node.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(is));
                         node.setProperty("jcr:mimeType", mimeType);
                         node.setProperty("jcr:lastModified", Calendar.getInstance());
-                        Map map = new HashMap();
+                        Map<String,String> map = new HashMap<>();
                         map.put("mediafile_id", mediaId);
                         map.put("still_id", id);
                         log.info(service.setDefaultStill(assetId, resourceManager.getUsername(), map).getHeader().getRequestResult());
@@ -171,11 +192,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                     //todo error()
                 }
             }
-        } catch (ServiceException e) {
-            log.error("", e);
-        } catch (IOException e) {
-            log.error("", e);
-        } catch (RepositoryException e) {
+        } catch (ServiceException | RepositoryException | IOException e) {
             log.error("", e);
         } finally {
             org.apache.commons.io.IOUtils.closeQuietly(is);
@@ -239,22 +256,19 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
 
                     UploadTicketType ticket = service.createUploadTicket(mediaId, resourceManager.getUsername(), true);
                     String action = ticket.getAction();
-                    String uploadTicket = action.substring(action.indexOf("=") + 1);
+                    String uploadTicket = action.substring(action.indexOf('=') + 1);
 
                     URL actionUrl = new URL(action);
-                    String uploadHost = actionUrl.getProtocol() +"://"+ actionUrl.getAuthority();
+                    String uploadHost = actionUrl.getProtocol() + "://" + actionUrl.getAuthority();
 
-                    Map<String,String> map = new HashMap<String,String>();
+                    Map<String, String> map = new HashMap<String, String>();
                     map.put("upload_ticket", uploadTicket);
                     map.put("mediafile_id", mediaId);
 
                     Response response = service.uploadStill(uploadHost, assetId, map, stream, mimeType, filename);
                     //timer.put(viewPanel, response.getHeader().getRequestResult().equals("success"));
                     timer.put(viewPanel, true);
-                } catch (IOException e) {
-                    log.error("", e);
-                    error(e.getLocalizedMessage());
-                } catch (ServiceException e) {
+                } catch (IOException | ServiceException e) {
                     log.error("", e);
                     error(e.getLocalizedMessage());
                 } finally {
@@ -280,7 +294,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                     try {
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<>();
                         int seconds = Integer.valueOf(creationString);
                         map.put("still_type", "SECOND");
                         map.put("still_every_second", 1);
@@ -288,9 +302,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                         map.put("end_time", seconds + 1);
                         jobList.add(new Model(getService().createStill(assetId, mediaId, resourceManager.getUsername(), map)));
                         created = true;
-                    } catch (IOException e) {
-                        log.error("", e);
-                    } catch (ServiceException e) {
+                    } catch (IOException | ServiceException e) {
                         log.error("", e);
                     } catch (NumberFormatException e) {
                         log.error("", e);
@@ -311,7 +323,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             final RefreshingView<JobType> jobView = new RefreshingView<JobType>("job-item") {
                 @Override
                 protected Iterator<IModel<JobType>> getItemModels() {
-                    List<IModel<JobType>> copyList = new ArrayList<IModel<JobType>>();
+                    List<IModel<JobType>> copyList = new ArrayList<>();
                     copyList.addAll(jobList);
                     return copyList.iterator();
                 }
@@ -333,9 +345,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                                 error(jobDetail.getErrorDescription());
                                 break;
                         }
-                    } catch (IOException e) {
-                        log.error("", e);
-                    } catch (ServiceException e) {
+                    } catch (IOException | ServiceException e) {
                         log.error("", e);
                     }
                 }
@@ -354,23 +364,20 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             RefreshingView<StillDetailType> stillView = new RefreshingView<StillDetailType>("list-item") {
                 @Override
                 protected Iterator<IModel<StillDetailType>> getItemModels() {
-                    List<IModel<StillDetailType>> list = new ArrayList<IModel<StillDetailType>>();
+                    List<IModel<StillDetailType>> list = new ArrayList<>();
                     try {
                         StillType stillType = getService().getStills(assetId, resourceManager.getUsername(), null);
                         if (stillType != null) {
                             for (StillDetailType detail : stillType.getStills()) {
-                                list.add(new Model<StillDetailType>(detail));
+                                list.add(new Model<>(detail));
                             }
                         } else {
                             log.warn("No stills");
                             info(new StringResourceModel("no-stills-available", StillManagerDialog.this, null).getString());
                         }
-                    } catch (ServiceException e) {
-                        log.error("Exception occured while getting stills", e);
-                        error("Exception occured while getting stills");
-                    } catch (IOException e) {
-                        log.error("Exception occured while getting stills", e);
-                        error("Exception occured while getting stills");
+                    } catch (ServiceException | IOException e) {
+                        log.error("Exception occurred while getting stills", e);
+                        error("Exception occurred while getting stills");
                     }
                     return list.iterator();
                 }
@@ -425,14 +432,12 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                         AjaxLink deleteLink = new AjaxLink("delete-link") {
                             @Override
                             public void onClick(AjaxRequestTarget target) {
-                                Map map = new HashMap();
+                                Map<String, String> map = new HashMap<>();
                                 map.put("still_id", stillDetailType.getStillId());
                                 try {
                                     log.info(service.deleteStill(stillDetailType.getAssetId(), stillDetailType.getMediafileId(), resourceManager.getUsername(), map).getHeader().getRequestResultDescription());
                                     target.add(viewPanel);
-                                } catch (IOException e) {
-                                    log.error("", e);
-                                } catch (ServiceException e) {
+                                } catch (IOException | ServiceException e) {
                                     log.error("", e);
                                 }
                             }
@@ -465,11 +470,11 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        response.render(CssHeaderItem.forReference( CSS));
+        response.render(CssHeaderItem.forReference(CSS));
     }
 
     private abstract class StillTimerManager extends AbstractAjaxTimerBehavior {
-        private Map<Component, Boolean> map = new HashMap<Component, Boolean>();
+        private Map<Component, Boolean> map = new HashMap<>();
 
         public StillTimerManager(Duration updateInterval) {
             super(updateInterval);
@@ -491,8 +496,8 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     }
 
     /**
-     * @see #HIPPO_RESOURCE_MANAGER_ID
      * @return the resource manager id
+     * @see #HIPPO_RESOURCE_MANAGER_ID
      */
     protected String getResourceManagerId() {
         return HIPPO_RESOURCE_MANAGER_ID;
