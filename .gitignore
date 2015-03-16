@@ -25,6 +25,7 @@ common/.classpath
 common/.project
 common/.settings
 common/target
+hst/*.iml
 hst/.classpath
 hst/.project
 hst/.settings
