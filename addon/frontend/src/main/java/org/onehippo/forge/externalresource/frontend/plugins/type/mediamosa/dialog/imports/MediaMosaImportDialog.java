@@ -39,8 +39,11 @@ import org.hippoecm.repository.api.HippoWorkspace;
 import org.hippoecm.repository.api.NodeNameCodec;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
+import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
 import org.onehippo.forge.externalresource.api.Synchronizable;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.AbstractExternalResourceDialog;
 import org.slf4j.Logger;
@@ -78,25 +81,15 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
     private static final int pageSize = 5;
     private String search = "";
     private List<AssetType> assetsToBeImported;
-    
-    /**
-     * The resource manager id
-     */
-    protected static final String HIPPO_RESOURCE_MANAGER_ID = "hippomediamosa:resource";
 
     public MediaMosaImportDialog(IModel model, final IPluginContext context, IPluginConfig config) {
         super(model, context, config);
         setOutputMarkupId(true);
-        //this.service = service;
-        HippoMediaMosaResourceManager manager = (HippoMediaMosaResourceManager) getExternalResourceService().getResourceProcessor(getResourceManagerId());
-        if (manager == null) {
-            return;
-        }
-        this.service = manager.getMediaMosaService();
-        this.assetsToBeImported = new ArrayList<AssetType>();
+        this.service = HippoServiceRegistry.getService(MediamosaRemoteService.class).service();
+        this.assetsToBeImported = new ArrayList<>();
         setOkLabel(new StringResourceModel("import", this, null));
 
-        TextField<String> searchText = new TextField<String>("search", new PropertyModel<String>(this, "search"));
+        TextField<String> searchText = new TextField<>("search", new PropertyModel<String>(this, "search"));
         searchText.setOutputMarkupId(true);
         add(setFocus(searchText));
 
@@ -280,7 +273,7 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
     private boolean findAsset(AssetType assetTypeItem) {
         try {
             //todo cache this, or create different setup
-            Session session = ((UserSession) getSession()).getJcrSession();
+            Session session = getSession().getJcrSession();
             QueryManager manager = session.getWorkspace().getQueryManager();
             String quers = String.format("content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']", assetTypeItem.getAssetId());
             Query query = manager.createQuery(quers, Query.XPATH);
@@ -401,28 +394,19 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
                     Node node = folder.getSession().getNode(doc.getIdentity()); //getnode from doc
                     node.setProperty("hippomediamosa:assetid", type.getAssetId());
                     node.getSession().save();
-                    Synchronizable synchronizer = getExternalResourceService().getSynchronizableProcessor(getResourceManagerId());
+                    Synchronizable synchronizer = HippoServiceRegistry.getService(Synchronizable.class, getResourceManagerId() + HippoExtConst.SYNCHRONIZABLE);
                     SynchronizedActionsWorkflow synchronizedActionsWorkflow = (SynchronizedActionsWorkflow) workspace.getWorkflowManager().getWorkflow("synchronization", node);
                     synchronizedActionsWorkflow.update(synchronizer);
-                    log.info("just created: " + type.getAssetId());
+                    log.info("just created: {}", type.getAssetId());
                 }
             }
-        } catch (RepositoryException
-                e) {
-            log.error("", e);
-        } catch (RemoteException
-                e) {
-            log.error("", e);
-        } catch (WorkflowException e) {
+        } catch (RepositoryException | RemoteException | WorkflowException e) {
             log.error("", e);
         }
     }
     
-    /**
-     * @see #HIPPO_RESOURCE_MANAGER_ID
-     * @return the resource manager id
-     */
+
     protected String getResourceManagerId() {
-        return HIPPO_RESOURCE_MANAGER_ID;
+        return HippoExtConst.HIPPO_MEDIAMOSA_ID;
     }
 }

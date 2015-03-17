@@ -10,7 +10,7 @@ import org.hippoecm.repository.api.HippoNodeIterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
+
 import org.onehippo.forge.externalresource.reports.plugins.synchronization.column.SynchronizationListColumns;
 import org.onehippo.forge.externalresource.reports.temp.IDocumentListColumn;
 import org.slf4j.Logger;
@@ -43,11 +43,9 @@ public class SynchronizationStore  extends ExtJsonStore<Object> {
     private String query;
     private int pageSize;
     private HippoNodeIterator hippoNodeIterator;
-    private final ExternalResourceService externalService;
 
-    public SynchronizationStore(String query, SynchronizationListColumns columns, int pageSize, ExternalResourceService externalService) {
+    public SynchronizationStore(String query, SynchronizationListColumns columns, int pageSize) {
         super(columns.getAllExtFields());
-        this.externalService = externalService;
         this.columns = columns;
         this.query = query;
         this.pageSize = pageSize;

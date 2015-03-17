@@ -18,8 +18,9 @@ import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.types.IFieldDescriptor;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Embeddable;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,14 +52,7 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
     /**
      * Get the CMS service by id (as defined by external.processor.id) and class ExternalResourceService.
      */
-    protected ExternalResourceService getExternalResourceService() {
-        final String serviceId = getPluginConfig().getString("external.processor.id", "external.processor.service");
-        final ExternalResourceService service = getPluginContext().getService(serviceId, ExternalResourceService.class);
-        if (service == null) {
-            log.warn("No external resource service found by id {} (id configured by property external.processor.id)", service);
-        }
-        return service;
-    }
+
 
     protected IModel<String> getCaptionModel() {
         IFieldDescriptor field = getFieldHelper().getField();
@@ -90,10 +84,8 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
 
         if (primaryNodeType != null) {
 
-            ExternalResourceService service = getExternalResourceService();
 
-            if (service != null) {
-                Embeddable processor = service.getEmbeddableProcessor(primaryNodeType);
+                Embeddable processor = HippoServiceRegistry.getService(Embeddable.class, primaryNodeType + HippoExtConst.EMBEDDABLE);
 
                 if (processor == null) {
                     log.warn("No embeddable processor found in ExternalResourceService by primaryNodeType {}",  primaryNodeType);
@@ -120,7 +112,7 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
                     return fragment;
                 }
             }
-        }
+
 
         return new Fragment(id, "unknown", this);
     }

@@ -7,5 +7,5 @@ import javax.jcr.Node;
  */
 public interface Embeddable {
 
-    public String getEmbedded(Node node);
+     String getEmbedded(Node node);
 }

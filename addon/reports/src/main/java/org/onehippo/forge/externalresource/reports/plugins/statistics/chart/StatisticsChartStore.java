@@ -5,7 +5,7 @@ import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
+
 import org.onehippo.forge.externalresource.reports.plugins.statistics.StatisticsProvider;
 import org.onehippo.forge.externalresource.reports.temp.AbstractChartStore;
 import org.onehippo.forge.externalresource.reports.temp.Cluster;
@@ -45,11 +45,8 @@ public class StatisticsChartStore extends AbstractChartStore {
             provider = ((Constructor<StatisticsProvider>) Class.forName(statisticsProviderClass)
                     .getConstructor(new Class[]{Map.class}))
                     .newInstance(new Object[]{getStatisticsServiceParameters(config)});
-            provider.setResourceService(context.getService(config.getString("external.processor.id",
-                EXTERNAL_RESOURCE_SERVICE_ID), ExternalResourceService.class));
         } catch (Exception e) {
             log.error("Cannot instantiate '{}'", statisticsProviderClass, e);
-            return;
         }
     }
 

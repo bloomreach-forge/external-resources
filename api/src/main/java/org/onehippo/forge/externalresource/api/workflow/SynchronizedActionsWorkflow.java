@@ -1,31 +1,31 @@
 package org.onehippo.forge.externalresource.api.workflow;
 
+import java.rmi.RemoteException;
+
+import javax.jcr.RepositoryException;
+
 import org.hippoecm.repository.api.Document;
-import org.hippoecm.repository.api.MappingException;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.hippoecm.repository.standardworkflow.EditableWorkflow;
-import org.onehippo.forge.externalresource.api.ResourceManager;
+import org.onehippo.forge.externalresource.api.ResourceHandler;
 import org.onehippo.forge.externalresource.api.Synchronizable;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
-
-import javax.jcr.RepositoryException;
-import java.rmi.RemoteException;
 
 /**
  * @version $Id$
  */
 public interface SynchronizedActionsWorkflow extends DefaultWorkflow, EditableWorkflow {
 
-    public SynchronizationState check(Synchronizable synchronizable)
-            throws WorkflowException, MappingException, RepositoryException, RemoteException;
+    SynchronizationState check(Synchronizable synchronizable)
+            throws WorkflowException, RepositoryException, RemoteException;
 
-    public Document update(Synchronizable synchronizable)
-            throws WorkflowException, MappingException, RepositoryException, RemoteException;
+    Document update(Synchronizable synchronizable)
+            throws WorkflowException, RepositoryException, RemoteException;
 
-    public Document commit(Synchronizable synchronizable)
-            throws WorkflowException, MappingException, RepositoryException, RemoteException;
+    Document commit(Synchronizable synchronizable)
+            throws WorkflowException, RepositoryException, RemoteException;
 
-    public void delete(ResourceManager manager)
-            throws WorkflowException, MappingException, RepositoryException, RemoteException;
+    void delete(ResourceHandler manager)
+            throws WorkflowException, RepositoryException, RemoteException;
 }

@@ -52,8 +52,11 @@ import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidget;
 import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidgetSettings;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
+import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobState;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.AbstractExternalResourceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,16 +95,14 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     private AjaxLink stillLink;
 
     private boolean created;
-    private HippoMediaMosaResourceManager resourceManager;
-
-    protected static final String HIPPO_RESOURCE_MANAGER_ID = "hippomediamosa:resource";
+    private MediamosaRemoteService resourceManager;
 
 
     public StillManagerDialog(IModel iModel, IPluginContext context, IPluginConfig config) {
         super(iModel, context, config);
 
-        this.resourceManager = (HippoMediaMosaResourceManager) getExternalResourceService().getResourceProcessor(getResourceManagerId());
-        this.service = resourceManager.getMediaMosaService();
+        this.resourceManager = HippoServiceRegistry.getService(MediamosaRemoteService.class);
+        this.service = resourceManager.service();
 
         Node node = (Node) getModelObject();
 
@@ -495,12 +496,8 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
         }
     }
 
-    /**
-     * @return the resource manager id
-     * @see #HIPPO_RESOURCE_MANAGER_ID
-     */
     protected String getResourceManagerId() {
-        return HIPPO_RESOURCE_MANAGER_ID;
+        return HippoExtConst.HIPPO_MEDIAMOSA_ID;
     }
 
 }

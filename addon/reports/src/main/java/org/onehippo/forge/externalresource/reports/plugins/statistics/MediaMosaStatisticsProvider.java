@@ -1,6 +1,13 @@
 package org.onehippo.forge.externalresource.reports.plugins.statistics;
 
-import nl.uva.mediamosa.MediaMosaService;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.core.util.lang.PropertyResolver;
@@ -10,21 +17,17 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
+import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
 import org.onehippo.forge.externalresource.api.ResourceManager;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.reports.plugins.statistics.list.IStatisticsListColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.js.ext.data.ExtDataField;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import nl.uva.mediamosa.MediaMosaService;
 
 /**
  * @version $Id$
@@ -32,7 +35,6 @@ import java.util.Map;
 public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
 
     protected MediaMosaService service;
-    protected static final String HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID = "hippomediamosa:resource";
 
     protected Logger log = LoggerFactory.getLogger(this.getClass());
     protected Map<String, String> statisticsServiceParameters = new HashMap<String, String>();
@@ -47,27 +49,12 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
 
     public MediaMosaStatisticsProvider(Map<String, String> statisticsServiceParameters) {
         this.statisticsServiceParameters = statisticsServiceParameters;
+        final MediamosaRemoteService remoteService = HippoServiceRegistry.getService(MediamosaRemoteService.class);
+        if (remoteService != null) {
+            this.service = remoteService.service();
+        }
     }
 
-    @Override
-    public void setResourceService(final ExternalResourceService service) {
-        if(service == null){
-            throw new RuntimeException("Error in statistics provider configuration. Service is null");
-        }
-
-        ResourceManager manager = service.getResourceProcessor(getResourceManagerId());
-        if(manager == null && ! (manager instanceof HippoMediaMosaResourceManager)){
-            throw new RuntimeException("Error in statistics provider configuration. ResourceManager is not a HippoMediaMosaResourceManager");
-        }
-
-        MediaMosaService mediaMosaService = ((HippoMediaMosaResourceManager)manager).getMediaMosaService();
-        if( mediaMosaService == null){
-            log.error("MediaMosaService is null");
-            throw new RuntimeException("Error in statistics provider configuration. Service is not a MediaMosaService");
-        }
-
-        this.service = mediaMosaService;
-    }
 
     @Override
     public List<IStatisticsListColumn> getColumns(final String[] selectedColumns) {
@@ -86,8 +73,8 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
         }
 
         //We always must add any ExtResourceIdentifierColumn(s) so that we support operations on rowSelected
-        for(IStatisticsListColumn column : this.itemColumnMap.values()){
-            if(column instanceof MediaMosaStatisticsProvider<?>.ExtResourceIdentifierColumn){
+        for (IStatisticsListColumn column : this.itemColumnMap.values()) {
+            if (column instanceof MediaMosaStatisticsProvider<?>.ExtResourceIdentifierColumn) {
                 columns.add(column);
             }
         }
@@ -122,17 +109,14 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
         return new ClassResourceModel(key, this.getClass()).getObject();
     }
 
-    protected String getMMServiceParameter(String name, String defaultValue){
+    protected String getMMServiceParameter(String name, String defaultValue) {
         return statisticsServiceParameters.containsKey(name) ?
                 statisticsServiceParameters.get(name) : defaultValue;
     }
 
-    /**
-     * @see #HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID
-     * @return the value of HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID
-     */
+
     protected String getResourceManagerId() {
-        return HIPPO_MEDIAMOSA_RESOURCE_MANAGER_ID;
+        return HippoExtConst.HIPPO_MEDIAMOSA_ID;
     }
 
     // ==================================== Columns ====================================
@@ -238,7 +222,7 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
 
     protected class ExtResourceIdentifierColumn extends MMPropertyColumn {
 
-        public ExtResourceIdentifierColumn(String name){
+        public ExtResourceIdentifierColumn(String name) {
             super(name);
         }
 

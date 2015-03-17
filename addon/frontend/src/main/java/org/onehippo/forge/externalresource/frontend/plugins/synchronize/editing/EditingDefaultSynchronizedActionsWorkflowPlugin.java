@@ -1,5 +1,10 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize.editing;
 
+import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
@@ -14,15 +19,12 @@ import org.hippoecm.frontend.validation.IValidationResult;
 import org.hippoecm.frontend.validation.IValidationService;
 import org.hippoecm.frontend.validation.ValidationException;
 import org.hippoecm.repository.api.Workflow;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.util.List;
 
 /**
  * @version $Id$
@@ -36,16 +38,6 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends Compatibili
 
     private boolean isValid = true;
 
-    protected ExternalResourceService getExternalResourceService() {
-        IPluginContext context = getPluginContext();
-
-        ExternalResourceService service = context.getService(getPluginConfig().getString("external.processor.id",
-                "external.processor.service"), ExternalResourceService.class);
-        if (service != null) {
-            return service;
-        }
-        return null;
-    }
 
     public EditingDefaultSynchronizedActionsWorkflowPlugin(final IPluginContext context, IPluginConfig config) {
         super(context, config);
@@ -78,7 +70,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends Compatibili
                 Node document = ((WorkflowDescriptorModel) getDefaultModel()).getNode();
                 document.getSession().save();
 
-                Synchronizable synchronizable = getExternalResourceService().getSynchronizableProcessor(document.getPrimaryNodeType().getName());
+                Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, document.getPrimaryNodeType().getName() + HippoExtConst.SYNCHRONIZABLE);
                 SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
                 workflow.commit(synchronizable);
 
@@ -114,7 +106,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends Compatibili
                 Node document = ((WorkflowDescriptorModel) getDefaultModel()).getNode();
                 document.getSession().save();
 
-                Synchronizable synchronizable = getExternalResourceService().getSynchronizableProcessor(document.getPrimaryNodeType().getName());
+                Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, document.getPrimaryNodeType().getName() + HippoExtConst.SYNCHRONIZABLE);
                 SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
                 workflow.commit(synchronizable);
 

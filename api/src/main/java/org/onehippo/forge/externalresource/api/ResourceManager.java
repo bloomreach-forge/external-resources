@@ -14,43 +14,23 @@ import java.io.InputStream;
 /**
  * @version $Id$
  */
-abstract public class ResourceManager extends Plugin {
+abstract public class ResourceManager implements ResourceHandler {
 
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(ResourceManager.class);
 
-    protected String type;
+    private final ResourceInvocationType type;
 
-    public ResourceManager(IPluginConfig config, ResourceInvocationType invocationType) {
-        super(null, config);
-        if (config.containsKey("type")) {
-            this.type = config.getString("type");
-        }
-        switch (invocationType) {
-            case CMS:
-                initCmsPlugin();
-                break;
-            case SITE:
-                initSitePlugin();
-                break;
-            default:
-                break;
-        }
+    public ResourceManager(final ResourceInvocationType type) {
+        this.type = type;
     }
 
-    public void initSitePlugin() {
-    }
-
-    public void initCmsPlugin() {
-    }
-
-    abstract public void create(Node node, InputStream istream, String mimetype) throws Exception;
-
-    abstract public void afterSave(Node node);
-
-    abstract public void delete(Node node);
 
     protected RepositoryScheduler getRepositoryScheduler() {
         return HippoServiceRegistry.getService(RepositoryScheduler.class);
+    }
+
+    public ResourceInvocationType getType() {
+        return type;
     }
 }

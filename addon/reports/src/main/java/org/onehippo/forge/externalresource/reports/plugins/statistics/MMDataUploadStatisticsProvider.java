@@ -59,7 +59,7 @@ public class MMDataUploadStatisticsProvider extends MediaMosaStatisticsProvider<
         } catch (Exception e) {
             log.error("Error invoking MediaMosa service.", e);
         }
-        return new ArrayList<StatsDatauploadType>();
+        return new ArrayList<>();
     }
 
     @Override

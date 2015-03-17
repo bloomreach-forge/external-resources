@@ -1,8 +1,16 @@
 package org.onehippo.forge.externalresource.api;
 
-import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.*;
-import nl.uva.mediamosa.util.ServiceException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
@@ -19,16 +27,18 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
-import org.hippoecm.frontend.plugin.config.IPluginConfig;
+import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobContext;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobListener;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobScheduler;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaThumbnailJob;
 import org.onehippo.forge.externalresource.api.scheduler.synchronization.SynchronizationExecutorJob;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.onehippo.forge.externalresource.api.utils.Utils;
+import org.onehippo.repository.modules.ProvidesService;
 import org.onehippo.repository.scheduling.RepositoryJobCronTrigger;
 import org.onehippo.repository.scheduling.RepositoryJobInfo;
 import org.onehippo.repository.scheduling.RepositoryJobSimpleTrigger;
@@ -36,20 +46,22 @@ import org.onehippo.repository.scheduling.RepositoryScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Strings;
+
+import nl.uva.mediamosa.MediaMosaService;
+import nl.uva.mediamosa.model.AssetDetailsType;
+import nl.uva.mediamosa.model.JobType;
+import nl.uva.mediamosa.model.LinkType;
+import nl.uva.mediamosa.model.MediafileDetailsType;
+import nl.uva.mediamosa.model.Response;
+import nl.uva.mediamosa.model.UploadTicketType;
+import nl.uva.mediamosa.util.ServiceException;
 
 /**
  * @version $Id:
  */
-public class HippoMediaMosaResourceManager extends ResourceManager implements Embeddable, Synchronizable {
+@ProvidesService(types = {Synchronizable.class, ResourceHandler.class, Embeddable.class})
+public class HippoMediaMosaResourceManager extends ResourceManager implements Embeddable, Synchronizable, MediamosaRemoteService {
     private static final String SYNCHRONIZATION_CRONEXPRESSION = "synchronization.cronexpression";
     private static final String SYNCHRONIZATION_ENABLED = "synchronization.enabled";
     private static final String SYNCHRONIZABLE = "synchronizable";
@@ -64,93 +76,85 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private String responseType;
     private Long width;
     private boolean createThumbnail;
-    private final MediaMosaService mediaMosaService;
+    private MediaMosaService mediaMosaService;
 
     private static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
     private static final String MASS_SYNC_JOB_TRIGGER = MASS_SYNC_JOB + "Trigger";
     private static final String MASS_SYNC_JOB_TRIGGER_GROUP = MASS_SYNC_JOB_TRIGGER + "Group";
     private static final String MASS_SYNC_JOB_GROUP = MASS_SYNC_JOB + "Group";
-
     private static final Long DEFAULT_WIDTH = 320L;
+    private EmbeddedHelper embeddedHelper;
 
-    private final static Map<String, String> map = new HashMap<String, String>();
-    private final EmbeddedHelper embeddedHelper;
-
-    static {
-        map.put("hippomediamosa:title", "title");
-        map.put("hippomediamosa:description", "description");
+    public HippoMediaMosaResourceManager(final ResourceInvocationType type) {
+        super(type);
     }
 
-    public static final String SYNCHRONIZABLE_SERVICE = "synchronizable." + HippoMediaMosaResourceManager.class.getSimpleName();
+    @Override
+    public void configure(final Node config) {
 
-    public HippoMediaMosaResourceManager(IPluginConfig config, ResourceInvocationType type) {
-        super(config, type);
-        if (config.containsKey("url")) {
-            this.url = config.getString("url");
-        }
-        if (config.containsKey("username")) {
-            this.username = config.getString("username");
-        }
-        if (config.containsKey("password")) {
-            this.password = config.getString("password");
-        }
-        if (config.containsKey("responseType")) {
-            this.responseType = config.getString("responseType");
-        }
-        if (config.containsKey("width")) {
-            this.width = config.getLong("width", DEFAULT_WIDTH);
-        }
-        if (config.containsKey("createThumbnail")) {
-            this.createThumbnail = config.getBoolean("createThumbnail");
-        }
-        if (config.containsKey("profiles")) {
-            this.profiles = config.getStringArray("profiles");
-        }
-        if (config.containsKey("playbackVideoCodec")) {
-            this.playbackVideoCodec = config.getString("playbackVideoCodec");
-        }
-
-
-        this.mediaMosaService = new MediaMosaService(getUrl());
         try {
-            this.mediaMosaService.setCredentials(getUsername(), getPassword());
-        } catch (ServiceException e) {
-            log.error("Service exception on setting media mosa credentials", e);
+            this.url = JcrUtils.getStringProperty(config, "url", null);
+            this.username = JcrUtils.getStringProperty(config, "username", null);
+            this.password = JcrUtils.getStringProperty(config, "password", null);
+            this.responseType = JcrUtils.getStringProperty(config, "responseType", null);
+            this.width = JcrUtils.getLongProperty(config, "width", DEFAULT_WIDTH);
+            this.createThumbnail = JcrUtils.getBooleanProperty(config, "createThumbnail", Boolean.FALSE);
+            this.playbackVideoCodec = JcrUtils.getStringProperty(config, "playbackVideoCodec", null);
+            // TODO multipropery
+            /*if (config.hasProperty("profiles")) {
+                this.profiles = config.getStringArray("profiles");
+            }*/
+            this.mediaMosaService = new MediaMosaService(getUrl());
+            try {
+                this.mediaMosaService.setCredentials(getUsername(), getPassword());
+            } catch (ServiceException e) {
+                log.error("Service exception on setting media mosa credentials", e);
+            }
+
+            Map<String, Object> propertyMap = new HashMap<>();
+            propertyMap.put("url", url);
+            propertyMap.put("username", username);
+            propertyMap.put("password", password);
+            propertyMap.put("width", width);
+            propertyMap.put("cache.size", JcrUtils.getLongProperty(config, "cache.size", 100L));
+            propertyMap.put("cache.overflowToDisk", JcrUtils.getBooleanProperty(config, "cache.overflowToDisk", Boolean.FALSE));
+            propertyMap.put("cache.eternal", JcrUtils.getBooleanProperty(config, "cache.eternal", Boolean.FALSE));
+            propertyMap.put("cache.timeToLiveSeconds", JcrUtils.getLongProperty(config, "cache.timeToLiveSeconds", 1000L));
+            propertyMap.put("cache.timeToIdleSeconds", JcrUtils.getLongProperty(config, "cache.timeToIdleSeconds", 1000L));
+            embeddedHelper = new MediaMosaEmbeddedHelper();
+            embeddedHelper.initialize(propertyMap);
+
+        } catch (RepositoryException e) {
+            log.error("Error configuring module", e);
+        }
+        if (getType() == ResourceInvocationType.CMS) {
+            initCmsPlugin(config);
+            registerServices();
         }
 
-        Map<String, Object> propertyMap = new HashMap<>();
-        propertyMap.put("url", url);
-        propertyMap.put("username", username);
-        propertyMap.put("password", password);
-        propertyMap.put("width", width);
-        propertyMap.put("cache.size", config.get("cache.size"));
-        propertyMap.put("cache.overflowToDisk", config.get("cache.overflowToDisk"));
-        propertyMap.put("cache.eternal", config.get("cache.eternal"));
-        propertyMap.put("cache.timeToLiveSeconds", config.get("cache.timeToLiveSeconds"));
-        propertyMap.put("cache.timeToIdleSeconds", config.get("cache.timeToIdleSeconds"));
-        embeddedHelper = new MediaMosaEmbeddedHelper();
-        embeddedHelper.initialize(propertyMap);
 
-//        HippoServiceRegistry.registerService(this, Synchronizable.class, SYNCHRONIZABLE_SERVICE);
     }
 
     @Override
-    public void initSitePlugin() {
+    public void unregister() {
+        // make sure we unregister first (reload after config)
+        HippoServiceRegistry.unregisterService(this, Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_SYNCHRONIZABLE);
+        HippoServiceRegistry.unregisterService(this, ResourceHandler.class, HippoExtConst.HIPPO_MEDIAMOSA_HANDLER);
+        HippoServiceRegistry.unregisterService(this, Embeddable.class, HippoExtConst.HIPPO_MEDIAMOSA_EMBEDDABLE);
+        HippoServiceRegistry.unregisterService(this, MediamosaRemoteService.class);
     }
 
-    @Override
-    public void initCmsPlugin() {
+
+    public void initCmsPlugin(final Node config) {
         try {
             RepositoryScheduler repositoryScheduler = getRepositoryScheduler();
             if (repositoryScheduler.checkExists(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP)) {
                 repositoryScheduler.deleteJob(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP);
             }
-            if (getPluginConfig().getAsBoolean(SYNCHRONIZATION_ENABLED, false)) {
-                if (getPluginConfig().containsKey(SYNCHRONIZATION_CRONEXPRESSION)) {
-                    String cronExpression = getPluginConfig().getString(SYNCHRONIZATION_CRONEXPRESSION);
-
+            if (JcrUtils.getBooleanProperty(config, "cache.overflowToDisk", Boolean.FALSE)) {
+                final String cronExpression = JcrUtils.getStringProperty(config, SYNCHRONIZATION_CRONEXPRESSION, null);
+                if (!Strings.isNullOrEmpty(cronExpression)) {
                     RepositoryJobInfo jobInfo = new RepositoryJobInfo(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
-                    jobInfo.setAttribute(SYNCHRONIZABLE, SYNCHRONIZABLE_SERVICE);
                     RepositoryJobCronTrigger trigger = new RepositoryJobCronTrigger(MASS_SYNC_JOB_TRIGGER, cronExpression);
                     repositoryScheduler.scheduleJob(jobInfo, trigger);
                 }
@@ -160,6 +164,27 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         }
     }
 
+    private void registerServices() {
+
+        registerService(Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_SYNCHRONIZABLE);
+        registerService(ResourceHandler.class, HippoExtConst.HIPPO_MEDIAMOSA_HANDLER);
+        registerService(Embeddable.class, HippoExtConst.HIPPO_MEDIAMOSA_EMBEDDABLE);
+        registerService(MediamosaRemoteService.class, null);
+    }
+
+
+    private void registerService(final Class<?> clazz, final String name) {
+        try {
+            if (Strings.isNullOrEmpty(name)) {
+                HippoServiceRegistry.registerService(this, clazz);
+            } else {
+                HippoServiceRegistry.registerService(this, clazz, name);
+            }
+
+        } catch (Exception e) {
+            log.error("Error registering services", e);
+        }
+    }
 
     public MediaMosaService getMediaMosaService() {
         return mediaMosaService;
@@ -188,6 +213,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             String uploadUrl = uploadTicketType.getAction();
 
             int code = submitFile(istream, uploadUrl, mimetype, node.getName(), profiles);
+            log.debug("Response code (file submit action): {}", code);
 
             AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
 
@@ -229,7 +255,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
             String videoCodec = mediafileDetails.getMetadata().getVideoCodec();
             if (StringUtils.isNotBlank(videoCodec)) {
-                Map map = new HashMap();
+                Map<String, Object> map = new HashMap<>();
                 map.put("still_type", "NORMAL");
                 map.put("still_per_mediafile", 6);
 
@@ -246,7 +272,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                         try {
                             getRepositoryScheduler().scheduleJob(jobInfo, now);
                         } catch (RepositoryException e) {
-                            log.error(e.getMessage(),e);
+                            log.error(e.getMessage(), e);
                         }
                     }
 
@@ -269,10 +295,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 MediaMosaJobScheduler.getInstance().offer(context);
                 log.debug("trying to request still creation");
             }
-        } catch (ServiceException e) {
-            log.error("", e);
-        } catch (IOException e) {
-            log.error("", e);
+        } catch (ServiceException | IOException e) {
+            log.error("Error executing create", e);
         }
     }
 
@@ -287,12 +311,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         try {
             mediaMosaService.deleteAsset(node.getProperty("hippomediamosa:assetid").getString(), getUsername(), true);
             log.debug("deleting asset");
-        } catch (RepositoryException e) {
-            log.error("", e);
-        } catch (ServiceException e) {
-            log.error("", e);
-        } catch (IOException e) {
-            log.error("", e);
+        } catch (RepositoryException | ServiceException | IOException e) {
+            log.error("Error deleting asset", e);
         }
     }
 
@@ -335,20 +355,28 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         this.url = url;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
+
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public MediaMosaService service() {
+        return mediaMosaService;
     }
 
     public boolean update(Node node) {
@@ -415,7 +443,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     public boolean commit(Node node) {
         try {
             String assetId = node.getProperty("hippomediamosa:assetid").getString();
-            Map map = new HashMap();
+            Map<String, String> map = new HashMap<>();
             map.put("title", node.getProperty("hippoexternal:title").getString());
             map.put("description", node.getProperty("hippoexternal:description").getString());
 
@@ -476,12 +504,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 }
                 return SynchronizationState.BROKEN;
             }
-        } catch (RepositoryException e) {
-            log.error("", e);
-        } catch (ServiceException e) {
-            log.error("", e);
-        } catch (IOException e) {
-            log.error("", e);
+        } catch (RepositoryException | ServiceException | IOException e) {
+            log.error("Error executing state check", e);
         }
         return SynchronizationState.UNKNOWN;
     }

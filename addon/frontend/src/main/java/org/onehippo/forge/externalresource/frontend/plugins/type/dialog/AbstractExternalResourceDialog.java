@@ -11,7 +11,6 @@ import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.service.IBrowseService;
 import org.hippoecm.frontend.session.UserSession;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,15 +64,7 @@ public abstract class AbstractExternalResourceDialog<T> extends AbstractDialog<T
                 .browse(nodeModel);
     }
 
-    protected ExternalResourceService getExternalResourceService() {
-        IPluginContext context = getContext();
-        ExternalResourceService service = context.getService(getConfig().getString("external.processor.id",
-                "external.processor.service"), ExternalResourceService.class);
-        if (service != null) {
-            return service;
-        }
-        return null;
-    }
+
 
     public IPluginConfig getConfig() {
         return config;

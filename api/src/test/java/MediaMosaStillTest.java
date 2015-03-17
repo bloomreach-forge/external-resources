@@ -68,7 +68,7 @@ public class MediaMosaStillTest {
         Node resourcemanagerNode = session.getNode("/hippo:configuration/hippo:frontend/cms/cms-services/externalResourceService/hippomediamosa:resource");
 
 
-        HippoMediaMosaResourceManager resourceManager = new HippoMediaMosaResourceManager(new JcrPluginConfig(new JcrNodeModel(resourcemanagerNode)), ResourceInvocationType.CMS);
+        HippoMediaMosaResourceManager resourceManager = new HippoMediaMosaResourceManager(ResourceInvocationType.CMS);
 
 
         AssetType assetType = mediaMosaService.getAssets().get(20);

@@ -1,5 +1,12 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize.actions;
 
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.wicket.Session;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
@@ -13,17 +20,13 @@ import org.hippoecm.repository.api.Workflow;
 import org.hippoecm.repository.api.WorkflowDescriptor;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
+import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
+
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.Map;
 
 /**
  * @version $Id$
@@ -35,70 +38,61 @@ public class SynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlug
     WorkflowAction updateAction;
     WorkflowAction commitAction;
 
-    protected ExternalResourceService getExternalResourceService() {
-        IPluginContext context = getPluginContext();
 
-        ExternalResourceService service = context.getService(getPluginConfig().getString("external.processor.id",
-                "external.processor.service"), ExternalResourceService.class);
-        if (service != null) {
-            return service;
-        }
-        return null;
-    }
 
     public SynchronizedActionsWorkflowPlugin(final IPluginContext context, IPluginConfig config) {
         super(context, config);
 
         add(updateAction = new WorkflowAction("update", new StringResourceModel("update-label", this, null).getString(), null) {
-            @Override
-            protected ResourceReference getIcon() {
-                return new PackageResourceReference(getClass(), "update-16.png");
-            }
+                    @Override
+                    protected ResourceReference getIcon() {
+                        return new PackageResourceReference(getClass(), "update-16.png");
+                    }
 
-            @Override
-            protected String execute(Workflow wf) throws Exception {
-                SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
+                    @Override
+                    protected String execute(Workflow wf) throws Exception {
+                        SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
 
-                WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) getDefaultModel();
-                WorkflowDescriptor workflowDescriptor = (WorkflowDescriptor) getDefaultModelObject();
-                if (workflowDescriptor != null) {
-                    Node documentNode = workflowDescriptorModel.getNode();
-                    String type = documentNode.getPrimaryNodeType().getName();
-                    Synchronizable sync = getExternalResourceService().getSynchronizableProcessor(type);
-                    //sync.update(documentNode);
-                    workflow.update(sync);
+                        WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) getDefaultModel();
+                        WorkflowDescriptor workflowDescriptor = (WorkflowDescriptor) getDefaultModelObject();
+                        if (workflowDescriptor != null) {
+                            Node documentNode = workflowDescriptorModel.getNode();
+                            String type = documentNode.getPrimaryNodeType().getName();
+                            Synchronizable sync = HippoServiceRegistry.getService(Synchronizable.class, type + HippoExtConst.SYNCHRONIZABLE);
+                            //sync.update(documentNode);
+                            workflow.update(sync);
+                        }
+                        return null;
+                    }
                 }
-                return null;
-            }
-        }
 
         );
 
         add(commitAction = new WorkflowAction("commit", new StringResourceModel("commit-label", this, null).getString(), null) {
-            @Override
-            protected ResourceReference getIcon
-                    () {
-                return new PackageResourceReference(getClass(), "commit-16.png");
-            }
+                    @Override
+                    protected ResourceReference getIcon
+                            () {
+                        return new PackageResourceReference(getClass(), "commit-16.png");
+                    }
 
-            @Override
-            protected String execute
-                    (Workflow wf) throws Exception {
-                SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
+                    @Override
+                    protected String execute
+                            (Workflow wf) throws Exception {
+                        SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
 
-                WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) getDefaultModel();
-                WorkflowDescriptor workflowDescriptor = (WorkflowDescriptor) getDefaultModelObject();
-                if (workflowDescriptor != null) {
-                    Node documentNode = workflowDescriptorModel.getNode();
-                    String type = documentNode.getPrimaryNodeType().getName();
-                    Synchronizable sync = getExternalResourceService().getSynchronizableProcessor(type);
-                    //sync.commit(documentNode);
-                    workflow.commit(sync);
+                        WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) getDefaultModel();
+                        WorkflowDescriptor workflowDescriptor = (WorkflowDescriptor) getDefaultModelObject();
+                        if (workflowDescriptor != null) {
+                            Node documentNode = workflowDescriptorModel.getNode();
+                            String type = documentNode.getPrimaryNodeType().getName();
+                            Synchronizable sync = HippoServiceRegistry.getService(Synchronizable.class, type + HippoExtConst.SYNCHRONIZABLE);
+                            //sync.commit(documentNode);
+                            workflow.commit(sync);
+                        }
+
+                        return null;
+                    }
                 }
-
-                return null;
-            }
-        }
 
         );
     }
@@ -116,11 +110,7 @@ public class SynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlug
                 Workflow workflow = manager.getWorkflow(workflowDescriptor);
                 Map<String, Serializable> info = workflow.hints();
             }
-        } catch (RepositoryException ex) {
-            log.error(ex.getMessage(), ex);
-        } catch (WorkflowException ex) {
-            log.error(ex.getMessage(), ex);
-        } catch (RemoteException ex) {
+        } catch (RepositoryException | WorkflowException | RemoteException ex) {
             log.error(ex.getMessage(), ex);
         }
     }

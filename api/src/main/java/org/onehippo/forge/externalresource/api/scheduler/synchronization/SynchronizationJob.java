@@ -5,6 +5,7 @@ import org.hippoecm.repository.api.HippoWorkspace;
 import org.hippoecm.repository.api.WorkflowException;
 import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Synchronizable;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.onehippo.repository.scheduling.RepositoryJob;
@@ -30,7 +31,8 @@ public class SynchronizationJob implements RepositoryJob {
             String uuid = context.getAttribute("identifier");
             session = context.createSystemSession();
             Node node = ((HippoNode) session.getNodeByIdentifier(uuid)).getCanonicalNode();
-            Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, context.getAttribute("synchronizable"));
+            // TODO  remove mediamosa const.
+            Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_ID + HippoExtConst.SYNCHRONIZABLE);
             log.debug(uuid);
             SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) ((HippoWorkspace) session.getWorkspace()).getWorkflowManager().getWorkflow("synchronization", node);
             SynchronizationState state = workflow.check(synchronizable);

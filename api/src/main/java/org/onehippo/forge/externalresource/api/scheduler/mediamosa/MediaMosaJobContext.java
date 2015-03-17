@@ -43,7 +43,7 @@ public class MediaMosaJobContext {
 
     public boolean add(MediaMosaJobListener mediaMosaJobListener) {
         if (listenerList == null) {
-            listenerList = new ArrayList<MediaMosaJobListener>();
+            listenerList = new ArrayList<>();
         }
         return listenerList.add(mediaMosaJobListener);
     }

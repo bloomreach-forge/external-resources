@@ -117,6 +117,11 @@
       <version>${hippo.repository.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-services</artifactId>
+      <version>1.04.02</version>
+    </dependency>
   </dependencies>
 
   <build>

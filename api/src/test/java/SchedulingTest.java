@@ -89,7 +89,7 @@ public class SchedulingTest {
     public void testShedualing() throws Exception {
         Node resourcemanagerNode = session.getNode("/hippo:configuration/hippo:frontend/cms/cms-services/externalResourceService/hippomediamosa:resource");
 
-        HippoMediaMosaResourceManager resourceManager = new HippoMediaMosaResourceManager(new JcrPluginConfig(new JcrNodeModel(resourcemanagerNode)), ResourceInvocationType.CMS);
+        HippoMediaMosaResourceManager resourceManager = new HippoMediaMosaResourceManager(ResourceInvocationType.CMS);
 
 
         MediaMosaJobListener listener = new MediaMosaJobListener() {

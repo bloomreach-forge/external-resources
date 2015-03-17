@@ -1,16 +1,26 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize;
 
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.*;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.string.Strings;
-import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.IValueMap;
 import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
 import org.hippoecm.addon.workflow.StdWorkflow;
@@ -33,20 +43,22 @@ import org.hippoecm.frontend.service.IEditor;
 import org.hippoecm.frontend.service.IEditorManager;
 import org.hippoecm.frontend.service.ISettingsService;
 import org.hippoecm.frontend.session.UserSession;
-import org.hippoecm.repository.api.*;
+import org.hippoecm.repository.api.Document;
+import org.hippoecm.repository.api.HippoNode;
+import org.hippoecm.repository.api.StringCodec;
+import org.hippoecm.repository.api.StringCodecFactory;
+import org.hippoecm.repository.api.Workflow;
+import org.hippoecm.repository.api.WorkflowDescriptor;
+import org.hippoecm.repository.api.WorkflowException;
+import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
-import org.onehippo.forge.externalresource.api.ResourceManager;
+import org.onehippo.cms7.services.HippoServiceRegistry;
+import org.onehippo.forge.externalresource.api.ResourceHandler;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.service.ExternalResourceService;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.Map;
 
 /**
  * @version $Id$
@@ -62,17 +74,6 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
 
     private String synchState = "";
     StdWorkflow infoAction;
-
-    protected ExternalResourceService getExternalResourceService() {
-        IPluginContext context = getPluginContext();
-
-        ExternalResourceService service = context.getService(getPluginConfig().getString("external.processor.id",
-                "external.processor.service"), ExternalResourceService.class);
-        if (service != null) {
-            return service;
-        }
-        return null;
-    }
 
     private CompatibilityWorkflowPlugin.WorkflowAction editAction;
     private CompatibilityWorkflowPlugin.WorkflowAction deleteAction;
@@ -93,7 +94,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             protected IModel getTitle() {
                 try {
                     Node document = ((WorkflowDescriptorModel) DefaultSynchronizedActionsWorkflowPlugin.this.getDefaultModel()).getNode();
-                    Synchronizable sync = getExternalResourceService().getSynchronizableProcessor(document.getPrimaryNodeType().getName());
+                    Synchronizable sync = HippoServiceRegistry.getService(Synchronizable.class, document.getPrimaryNodeType().getName() + HippoExtConst.SYNCHRONIZABLE);
                     synchState = sync.check(document).getState();
                 } catch (RepositoryException e) {
                     log.error("", e);
@@ -282,7 +283,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             @Override
             protected String execute(Workflow wf) throws Exception {
                 Node document = ((WorkflowDescriptorModel) getDefaultModel()).getNode();
-                ResourceManager manager = getExternalResourceService().getResourceProcessor(document.getPrimaryNodeType().getName());
+                ResourceHandler manager = HippoServiceRegistry.getService(ResourceHandler.class, document.getPrimaryNodeType().getName() + HippoExtConst.EMBEDDABLE);
                 ((SynchronizedActionsWorkflow) wf).delete(manager);
                 return null;
             }
@@ -442,16 +443,16 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             nameComponent.setRequired(true);
             nameComponent.setLabel(new StringResourceModel("name-label", DefaultSynchronizedActionsWorkflowPlugin.this, null));
             nameComponent.add(new OnChangeAjaxBehavior() {
-                                  @Override
-                                  protected void onUpdate(AjaxRequestTarget target) {
-                                      if (!uriModified) {
-                                          uriModel.setObject(getNodeNameCodec().encode(nameModel.getObject()));
-                                          target.add(uriComponent);
-                                      }
-                                  }
-                              });
-                    //.setThrottleDelay(Duration.milliseconds(500)));
-                    nameComponent.setOutputMarkupId(true);
+                @Override
+                protected void onUpdate(AjaxRequestTarget target) {
+                    if (!uriModified) {
+                        uriModel.setObject(getNodeNameCodec().encode(nameModel.getObject()));
+                        target.add(uriComponent);
+                    }
+                }
+            });
+            //.setThrottleDelay(Duration.milliseconds(500)));
+            nameComponent.setOutputMarkupId(true);
             setFocus(nameComponent);
             add(nameComponent);
 

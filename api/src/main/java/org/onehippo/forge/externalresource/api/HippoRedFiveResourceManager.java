@@ -42,7 +42,7 @@ import java.util.Calendar;
  * @version $Id$
  */
 
-public class HippoRedFiveResourceManager extends ResourceManager {
+public class HippoRedFiveResourceManager extends ResourceManager implements ExternalService{
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(HippoRedFiveResourceManager.class);
 
@@ -50,9 +50,9 @@ public class HippoRedFiveResourceManager extends ResourceManager {
     private String username;
     private String password;
 
-    public HippoRedFiveResourceManager(IPluginConfig config, ResourceInvocationType type) {
-        super(config, type);
-        if (config.containsKey("url")) {
+    public HippoRedFiveResourceManager(ResourceInvocationType type) {
+        super(type);
+       /* if (config.containsKey("url")) {
             this.url = config.getString("url");
         }
         if (config.containsKey("username")) {
@@ -60,7 +60,7 @@ public class HippoRedFiveResourceManager extends ResourceManager {
         }
         if (config.containsKey("password")) {
             this.password = config.getString("password");
-        }
+        }*/
     }
 
     @Override
@@ -184,6 +184,13 @@ public class HippoRedFiveResourceManager extends ResourceManager {
         }
     }
 
+    @Override
+    public void configure(final Node node) {
+
+    }
+
+    @Override
+    public void unregister() {}
 
     public static String submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
@@ -239,5 +246,6 @@ public class HippoRedFiveResourceManager extends ResourceManager {
     public void setPassword(String password) {
         this.password = password;
     }
+
 
 }
