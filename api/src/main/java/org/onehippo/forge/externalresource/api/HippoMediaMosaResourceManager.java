@@ -151,7 +151,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             if (repositoryScheduler.checkExists(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP)) {
                 repositoryScheduler.deleteJob(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP);
             }
-            if (JcrUtils.getBooleanProperty(config, "cache.overflowToDisk", Boolean.FALSE)) {
+            if (JcrUtils.getBooleanProperty(config, SYNCHRONIZATION_ENABLED, Boolean.FALSE)) {
                 final String cronExpression = JcrUtils.getStringProperty(config, SYNCHRONIZATION_CRONEXPRESSION, null);
                 if (!Strings.isNullOrEmpty(cronExpression)) {
                     RepositoryJobInfo jobInfo = new RepositoryJobInfo(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
