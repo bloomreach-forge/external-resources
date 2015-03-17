@@ -29,6 +29,10 @@ public class ExternalServicesModule extends AbstractReconfigurableDaemonModule {
     protected void doConfigure(final Node moduleConfig) throws RepositoryException {
         log.info("Configuring ExternalServicesModule");
         final NodeIterator nodes = moduleConfig.getNodes();
+        /**
+         * TODO: refactor this part, currently as a workaround
+         * because retrieving instance and un-registering it doesn't  work
+         */
         for (ExternalService service : oldServices.values()) {
             service.unregister();
         }
@@ -40,9 +44,6 @@ public class ExternalServicesModule extends AbstractReconfigurableDaemonModule {
                 final String clazz = node.getProperty(PLUGIN_CLASS).getString();
                 log.info("Configuring ExternalService for class: {}", clazz);
                 try {
-                    // TODO: refactor
-                    final ExternalService oldService = oldServices.get(clazz);
-
                     final Class<?> processorClass = Class.forName(clazz);
                     final Constructor constructor = processorClass.getConstructor(ResourceInvocationType.class);
                     final ExternalService service = (ExternalService) constructor.newInstance(ResourceInvocationType.CMS);
