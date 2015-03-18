@@ -25,13 +25,13 @@ public class FallbackVideoGalleryListColumnProvider implements IListColumnProvid
     public List<ListColumn<Node>> getColumns() {
         List<ListColumn<Node>> columns = new ArrayList<ListColumn<Node>>();
 
-        ListColumn<Node> column = new ListColumn<Node>(new Model<String>(""), null);
+        ListColumn<Node> column = new ListColumn<Node>(new Model<>(""), null);
         column.setRenderer(new EmptyRenderer<Node>());
         column.setAttributeModifier(new ImageGalleryIconModifier());
         column.setCssClass("video-gallery-icon");
         columns.add(column);
 
-        column = new ListColumn<Node>(new ClassResourceModel("video-name", Translations.class), "name");
+        column = new ListColumn<>(new ClassResourceModel("video-name", Translations.class), "name");
         column.setComparator(new NameComparator());
         column.setCssClass("video-name");
         columns.add(column);

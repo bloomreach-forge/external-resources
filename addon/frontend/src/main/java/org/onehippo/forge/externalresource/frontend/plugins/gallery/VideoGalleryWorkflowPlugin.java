@@ -204,7 +204,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
 
     protected IDataProvider<StdWorkflow> createListDataProvider() {
         List<StdWorkflow> list = new LinkedList<>();
-        list.add(0, new WorkflowAction("add", new StringResourceModel(getPluginConfig().getString("option.label", "add"),
+        list.add(0, new StdWorkflow("add", new StringResourceModel(getPluginConfig().getString("option.label", "add"),
                 this, null, "Add")) {
             private static final long serialVersionUID = 1L;
 
@@ -219,7 +219,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             }
         });
         //delegate to the WorkflowitemManager
-        list.add(1, new WorkflowAction("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"),
+        list.add(1, new StdWorkflow("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"),
                 this, null, "Add")) {
             private static final long serialVersionUID = 1L;
 
@@ -314,9 +314,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
                 if (nodeModel.getNode() != null
                         && (nodeModel.getNode().isNodeType(HippoNodeType.NT_DOCUMENT) || nodeModel.getNode()
                         .isNodeType(HippoNodeType.NT_HANDLE))) {
-                    if (browser != null) {
-                        browser.browse(nodeModel);
-                    }
+                    browser.browse(nodeModel);
                 }
             } catch (RepositoryException ex) {
                 log.error(ex.getClass().getName() + ": " + ex.getMessage(), ex);

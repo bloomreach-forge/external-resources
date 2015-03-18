@@ -62,9 +62,13 @@ import nl.uva.mediamosa.util.ServiceException;
  */
 @ProvidesService(types = {Synchronizable.class, ResourceHandler.class, Embeddable.class})
 public class HippoMediaMosaResourceManager extends ResourceManager implements Embeddable, Synchronizable, MediamosaRemoteService {
+
     private static final String SYNCHRONIZATION_CRONEXPRESSION = "synchronization.cronexpression";
     private static final String SYNCHRONIZATION_ENABLED = "synchronization.enabled";
     private static final String SYNCHRONIZABLE = "synchronizable";
+    public static final Long DEFAULT_TTL = 1000L;
+    public static final Long DEFAULT_CACHE_SIZE = 100L;
+    public static final Long DEFAULT_TTI = 1000L;
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(HippoMediaMosaResourceManager.class);
 
@@ -116,11 +120,11 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             propertyMap.put("username", username);
             propertyMap.put("password", password);
             propertyMap.put("width", width);
-            propertyMap.put("cache.size", JcrUtils.getLongProperty(config, "cache.size", 100L));
+            propertyMap.put("cache.size", JcrUtils.getLongProperty(config, "cache.size", DEFAULT_CACHE_SIZE));
             propertyMap.put("cache.overflowToDisk", JcrUtils.getBooleanProperty(config, "cache.overflowToDisk", Boolean.FALSE));
             propertyMap.put("cache.eternal", JcrUtils.getBooleanProperty(config, "cache.eternal", Boolean.FALSE));
-            propertyMap.put("cache.timeToLiveSeconds", JcrUtils.getLongProperty(config, "cache.timeToLiveSeconds", 1000L));
-            propertyMap.put("cache.timeToIdleSeconds", JcrUtils.getLongProperty(config, "cache.timeToIdleSeconds", 1000L));
+            propertyMap.put("cache.timeToLiveSeconds", JcrUtils.getLongProperty(config, "cache.timeToLiveSeconds", DEFAULT_TTL));
+            propertyMap.put("cache.timeToIdleSeconds", JcrUtils.getLongProperty(config, "cache.timeToIdleSeconds", DEFAULT_TTI));
             embeddedHelper = new MediaMosaEmbeddedHelper();
             embeddedHelper.initialize(propertyMap);
 

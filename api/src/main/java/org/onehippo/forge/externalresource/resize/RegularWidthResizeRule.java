@@ -34,11 +34,9 @@ public class RegularWidthResizeRule extends ImageProcessorRule {
 
         BufferedImage scaledImage;
         if (resizeRatio < 1.0d) {
-            scaledImage = ImageUtils.scaleImage(originalImage, resizeWidth, resizeHeight,
-                    RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+            scaledImage = ImageUtils.scaleImage(originalImage, resizeWidth, resizeHeight, ImageUtils.ScalingStrategy.QUALITY);
         } else {
-            scaledImage = ImageUtils.scaleImage(originalImage, resizeWidth, resizeHeight,
-                    RenderingHints.VALUE_INTERPOLATION_BILINEAR, false);
+            scaledImage = ImageUtils.scaleImage(originalImage, resizeWidth, resizeHeight, ImageUtils.ScalingStrategy.SPEED_AND_QUALITY);
         }
 
         return scaledImage;

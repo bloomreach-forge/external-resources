@@ -11,10 +11,11 @@ import org.apache.wicket.Session;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
-import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
+import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
+import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.session.UserSession;
 import org.hippoecm.repository.api.Workflow;
 import org.hippoecm.repository.api.WorkflowDescriptor;
@@ -22,7 +23,6 @@ import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
 import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-
 import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
@@ -31,19 +31,18 @@ import org.slf4j.LoggerFactory;
 /**
  * @version $Id$
  */
-public class SynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlugin {
+public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(SynchronizedActionsWorkflowPlugin.class);
 
-    WorkflowAction updateAction;
-    WorkflowAction commitAction;
-
+    StdWorkflow updateAction;
+    StdWorkflow commitAction;
 
 
     public SynchronizedActionsWorkflowPlugin(final IPluginContext context, IPluginConfig config) {
         super(context, config);
 
-        add(updateAction = new WorkflowAction("update", new StringResourceModel("update-label", this, null).getString(), null) {
+        add(updateAction = new StdWorkflow("update", new StringResourceModel("update-label", this, null), null) {
                     @Override
                     protected ResourceReference getIcon() {
                         return new PackageResourceReference(getClass(), "update-16.png");
@@ -68,7 +67,7 @@ public class SynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlug
 
         );
 
-        add(commitAction = new WorkflowAction("commit", new StringResourceModel("commit-label", this, null).getString(), null) {
+        add(commitAction = new StdWorkflow("commit", new StringResourceModel("commit-label", this, null), null) {
                     @Override
                     protected ResourceReference getIcon
                             () {

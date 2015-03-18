@@ -22,9 +22,9 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.util.value.IValueMap;
-import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
 import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
+import org.hippoecm.frontend.dialog.AbstractDialog;
 import org.hippoecm.frontend.dialog.ExceptionDialog;
 import org.hippoecm.frontend.dialog.IDialogService;
 import org.hippoecm.frontend.editor.workflow.CopyNameHelper;
@@ -42,6 +42,7 @@ import org.hippoecm.frontend.service.IBrowseService;
 import org.hippoecm.frontend.service.IEditor;
 import org.hippoecm.frontend.service.IEditorManager;
 import org.hippoecm.frontend.service.ISettingsService;
+import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.session.UserSession;
 import org.hippoecm.repository.api.Document;
 import org.hippoecm.repository.api.HippoNode;
@@ -63,9 +64,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @version $Id$
  */
-public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlugin {
-    @SuppressWarnings("unused")
-    private final static String SVN_ID = "$Id$";
+public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
 
     private static final long serialVersionUID = 1L;
 
@@ -75,14 +74,14 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
     private String synchState = "";
     StdWorkflow infoAction;
 
-    private CompatibilityWorkflowPlugin.WorkflowAction editAction;
-    private CompatibilityWorkflowPlugin.WorkflowAction deleteAction;
-    private CompatibilityWorkflowPlugin.WorkflowAction renameAction;
-    private CompatibilityWorkflowPlugin.WorkflowAction copyAction;
-    private CompatibilityWorkflowPlugin.WorkflowAction moveAction;
-    private CompatibilityWorkflowPlugin.WorkflowAction whereUsedAction;
+    private StdWorkflow editAction;
+    private StdWorkflow deleteAction;
+    private StdWorkflow renameAction;
+    private StdWorkflow copyAction;
+    private StdWorkflow moveAction;
+    private StdWorkflow whereUsedAction;
 
-    public DefaultSynchronizedActionsWorkflowPlugin(IPluginContext context, IPluginConfig config) {
+    public DefaultSynchronizedActionsWorkflowPlugin(final IPluginContext context, final IPluginConfig config) {
         super(context, config);
 
         onModelChanged();
@@ -100,13 +99,12 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                     log.error("", e);
                 }
 
-                return translator.getValueName("hippoexternal:state", new PropertyModel(
-                        DefaultSynchronizedActionsWorkflowPlugin.this, "synchState"));
+                return translator.getValueName("hippoexternal:state", new PropertyModel(DefaultSynchronizedActionsWorkflowPlugin.this, "synchState"));
             }
         });
         ///
 
-        add(editAction = new CompatibilityWorkflowPlugin.WorkflowAction("edit", new StringResourceModel("edit", this, null).getString(), null) {
+        add(editAction = new StdWorkflow("edit", new StringResourceModel("edit", this, null)) {
             @Override
             protected ResourceReference getIcon() {
                 return new PackageResourceReference(getClass(), "edit-16.png");
@@ -132,7 +130,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             }
         });
 
-        add(renameAction = new CompatibilityWorkflowPlugin.WorkflowAction("rename", new StringResourceModel("rename-label", this, null)) {
+        add(renameAction = new StdWorkflow("rename", new StringResourceModel("rename-label", this, null)) {
             public String targetName;
             public String uriName;
 
@@ -150,19 +148,18 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                 } catch (RepositoryException ex) {
                     uriName = targetName = "";
                 }
-                return new RenameDocumentDialog(this, new StringResourceModel("rename-title",
-                        DefaultSynchronizedActionsWorkflowPlugin.this, null));
+                return new RenameDocumentDialog(this, new StringResourceModel("rename-title", DefaultSynchronizedActionsWorkflowPlugin.this, null));
             }
 
             @Override
             protected String execute(Workflow wf) throws Exception {
-                if (targetName == null || targetName.trim().equals("")) {
+                if (targetName == null || targetName.trim().isEmpty()) {
                     throw new WorkflowException("No name for destination given");
                 }
                 HippoNode node = (HippoNode) ((WorkflowDescriptorModel) getDefaultModel()).getNode();
                 String nodeName = getNodeNameCodec().encode(uriName);
                 String localName = getLocalizeCodec().encode(targetName);
-                if ("".equals(nodeName)) {
+                if (nodeName != null && nodeName.isEmpty()) {
                     throw new IllegalArgumentException("You need to enter a name");
                 }
                 WorkflowManager manager = ((UserSession) Session.get()).getWorkflowManager();
@@ -177,7 +174,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             }
         });
 
-        add(copyAction = new CompatibilityWorkflowPlugin.WorkflowAction("copy", new StringResourceModel("copy-label", this, null)) {
+        add(copyAction = new StdWorkflow("copy", new StringResourceModel("copy-label", this, null), null) {
             NodeModelWrapper destination = null;
             String name = null;
 
@@ -198,7 +195,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                 } catch (RepositoryException ex) {
                     return new ExceptionDialog(ex);
                 }
-                return new CompatibilityWorkflowPlugin.WorkflowAction.DestinationDialog(
+                return new DestinationDialog(context, config,
                         new StringResourceModel("copy-title", DefaultSynchronizedActionsWorkflowPlugin.this, null),
                         new StringResourceModel("copy-name", DefaultSynchronizedActionsWorkflowPlugin.this, null),
                         new PropertyModel(this, "name"),
@@ -220,7 +217,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
 
                 DefaultWorkflow workflow = (DefaultWorkflow) wf;
                 workflow.copy(new Document(folderModel.getNode().getUUID()), nodeName);
-                JcrNodeModel copyMode = new JcrNodeModel(folderModel.getItemModel().getPath() + "/" + nodeName);
+                JcrNodeModel copyMode = new JcrNodeModel(folderModel.getItemModel().getPath() + '/' + nodeName);
                 HippoNode node = (HippoNode) copyMode.getNode().getNode(nodeName);
 
                 String localName = getLocalizeCodec().encode(name);
@@ -234,7 +231,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             }
         });
 
-        add(moveAction = new CompatibilityWorkflowPlugin.WorkflowAction("move", new StringResourceModel("move-label", this, null)) {
+        add(moveAction = new StdWorkflow("move", new StringResourceModel("move-label", this, null)) {
             public NodeModelWrapper destination = null;
 
             @Override
@@ -246,7 +243,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             protected IDialogService.Dialog createRequestDialog() {
                 destination = new NodeModelWrapper(getFolder()) {
                 };
-                return new CompatibilityWorkflowPlugin.WorkflowAction.DestinationDialog(new StringResourceModel("move-title",
+                return new DestinationDialog(context, config, new StringResourceModel("move-title",
                         DefaultSynchronizedActionsWorkflowPlugin.this, null), null, null, destination);
             }
 
@@ -258,13 +255,13 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                 }
                 String nodeName = ((WorkflowDescriptorModel) getDefaultModel()).getNode().getName();
                 DefaultWorkflow workflow = (DefaultWorkflow) wf;
-                workflow.move(new Document(folderModel.getNode().getUUID()), nodeName);
+                workflow.move(new Document(folderModel.getNode().getIdentifier()), nodeName);
                 return null;
             }
         });
 
-        add(deleteAction = new CompatibilityWorkflowPlugin.WorkflowAction("delete",
-                new StringResourceModel("delete-label", this, null).getString(), null) {
+        add(deleteAction = new StdWorkflow("delete",
+                new StringResourceModel("delete-label", this, null).getString()) {
             @Override
             protected ResourceReference getIcon() {
                 return new PackageResourceReference(getClass(), "delete-16.png");
@@ -274,9 +271,9 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             protected IDialogService.Dialog createRequestDialog() {
                 final IModel<String> docName = getDocumentName();
                 IModel<String> message = new StringResourceModel("delete-message", DefaultSynchronizedActionsWorkflowPlugin.this, null,
-                        new Object[]{docName});
+                        docName);
                 IModel<String> title = new StringResourceModel("delete-title", DefaultSynchronizedActionsWorkflowPlugin.this, null,
-                        new Object[]{docName});
+                        docName);
                 return new DeleteDialog(title, this.getModel(), message, this, getEditorManager());
             }
 
@@ -289,8 +286,8 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             }
         });
 
-        add(whereUsedAction = new CompatibilityWorkflowPlugin.WorkflowAction("where-used", new StringResourceModel("where-used-label", this, null)
-                .getString(), null) {
+        add(whereUsedAction = new StdWorkflow("where-used", new StringResourceModel("where-used-label", this, null)
+                .getString()) {
             @Override
             protected ResourceReference getIcon() {
                 return new PackageResourceReference(getClass(), "where-used-16.png");
@@ -357,7 +354,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                     .getNodeName();
         } catch (RepositoryException ex) {
             try {
-                return new Model<String>(((WorkflowDescriptorModel) getDefaultModel()).getNode().getName());
+                return new Model<>(((WorkflowDescriptorModel) getDefaultModel()).getNode().getName());
             } catch (RepositoryException e) {
                 return new StringResourceModel("unknown", this, null);
             }
@@ -380,56 +377,52 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
                     synchState = documentNode.getProperty("hippoexternal:state").getString();
                 }
                 //
-                WorkflowDescriptor workflowDescriptor = (WorkflowDescriptor) model.getObject();
+                WorkflowDescriptor workflowDescriptor = model.getObject();
                 if (workflowDescriptor != null) {
                     WorkflowManager manager = ((UserSession) org.apache.wicket.Session.get()).getWorkflowManager();
                     Workflow workflow = manager.getWorkflow(workflowDescriptor);
                     Map<String, Serializable> info = workflow.hints();
                     if (info != null) {
                         if (info.containsKey("edit") && info.get("edit") instanceof Boolean
-                                && !((Boolean) info.get("edit")).booleanValue()) {
+                                && !(Boolean) info.get("edit")) {
                             editAction.setVisible(false);
                         }
                         if (info.containsKey("delete") && info.get("delete") instanceof Boolean
-                                && !((Boolean) info.get("delete")).booleanValue()) {
+                                && !(Boolean) info.get("delete")) {
                             deleteAction.setVisible(false);
                         }
                         if (info.containsKey("rename") && info.get("rename") instanceof Boolean
-                                && !((Boolean) info.get("rename")).booleanValue()) {
+                                && !(Boolean) info.get("rename")) {
                             renameAction.setVisible(false);
                         }
                         if (info.containsKey("move") && info.get("move") instanceof Boolean
-                                && !((Boolean) info.get("move")).booleanValue()) {
+                                && !(Boolean) info.get("move")) {
                             moveAction.setVisible(false);
                         }
                         if (info.containsKey("copy") && info.get("copy") instanceof Boolean
-                                && !((Boolean) info.get("copy")).booleanValue()) {
+                                && !(Boolean) info.get("copy")) {
                             copyAction.setVisible(false);
                         }
                         if (info.containsKey("status") && info.get("status") instanceof Boolean
-                                && !((Boolean) info.get("status")).booleanValue()) {
+                                && !(Boolean) info.get("status")) {
                             whereUsedAction.setVisible(false);
                         }
                     }
                 }
-            } catch (RepositoryException ex) {
+            } catch (RepositoryException | WorkflowException | RemoteException ex) {
                 log.error(ex.getMessage());
-            } catch (RemoteException e) {
-                log.error(e.getMessage());
-            } catch (WorkflowException e) {
-                log.error(e.getMessage());
             }
         }
     }
 
-    public class RenameDocumentDialog extends CompatibilityWorkflowPlugin.WorkflowAction.WorkflowDialog {
+    public class RenameDocumentDialog extends AbstractDialog {
         private IModel title;
         private TextField nameComponent;
         private TextField uriComponent;
         private boolean uriModified;
 
-        public RenameDocumentDialog(CompatibilityWorkflowPlugin.WorkflowAction action, IModel title) {
-            action.super();
+        public RenameDocumentDialog(StdWorkflow action, IModel title) {
+
             this.title = title;
 
             final PropertyModel<String> nameModel = new PropertyModel<String>(action, "targetName");
@@ -439,7 +432,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkf
             String s2 = uriModel.getObject();
             uriModified = !s1.equals(s2);
 
-            nameComponent = new TextField<String>("name", nameModel);
+            nameComponent = new TextField<>("name", nameModel);
             nameComponent.setRequired(true);
             nameComponent.setLabel(new StringResourceModel("name-label", DefaultSynchronizedActionsWorkflowPlugin.this, null));
             nameComponent.add(new OnChangeAjaxBehavior() {

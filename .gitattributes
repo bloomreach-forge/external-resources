@@ -3,6 +3,8 @@ addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugin
 addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/gallery/impl/video.png -text svneol=unset#image/png
 addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/gallery/import-16.png -text svneol=unset#image/png
 addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/gallery/upload-video.gif -text
+addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/DestinationDialog.html -text
+addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/DestinationDialog.java -text
 addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/actions/commit-16.png -text svneol=unset#image/png
 addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/actions/update-16.png -text svneol=unset#image/png
 addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/copy-16.png -text svneol=unset#image/png

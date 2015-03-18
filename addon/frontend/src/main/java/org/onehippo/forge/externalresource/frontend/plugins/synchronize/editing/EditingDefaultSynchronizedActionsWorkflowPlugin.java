@@ -7,7 +7,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
-import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
+import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
@@ -15,6 +15,7 @@ import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.service.IEditor;
 import org.hippoecm.frontend.service.IEditorFilter;
 import org.hippoecm.frontend.service.IEditorManager;
+import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.validation.IValidationResult;
 import org.hippoecm.frontend.validation.IValidationService;
 import org.hippoecm.frontend.validation.ValidationException;
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @version $Id$
  */
-public class EditingDefaultSynchronizedActionsWorkflowPlugin extends CompatibilityWorkflowPlugin {
+public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
 
 
     private static final long serialVersionUID = 1L;
@@ -59,8 +60,8 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends Compatibili
             }
         }, context.getReference(editor).getServiceId());
 
-        add(new WorkflowAction("save", new StringResourceModel("save", this, null, "Save").getString(),
-                new PackageResourceReference(EditingDefaultSynchronizedActionsWorkflowPlugin.class, "document-save-16.png")) {
+        add(new StdWorkflow("save", new StringResourceModel("save", this, null, "Save"),
+                new PackageResourceReference(EditingDefaultSynchronizedActionsWorkflowPlugin.class, "document-save-16.png"), null) {
             @Override
             protected String execute(Workflow wf) throws Exception {
                 validate();
@@ -78,8 +79,8 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends Compatibili
             }
         });
 
-        add(new WorkflowAction("done", new StringResourceModel("done", this, null, "Done").getString(),
-                new PackageResourceReference(getClass(), "document-saveclose-16.png")) {
+        add(new StdWorkflow("done", new StringResourceModel("done", this, null, "Done"),
+                new PackageResourceReference(getClass(), "document-saveclose-16.png"), null) {
 
             @Override
             protected String execute(Workflow wf) throws Exception {

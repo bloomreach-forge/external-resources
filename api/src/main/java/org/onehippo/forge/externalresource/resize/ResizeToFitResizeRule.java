@@ -31,6 +31,6 @@ public class ResizeToFitResizeRule extends ImageProcessorRule {
 
     public BufferedImage apply(BufferedImage originalImage) {
 
-        return ImageUtils.scaleImage(originalImage, width, height, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
+        return ImageUtils.scaleImage(originalImage, width, height, ImageUtils.ScalingStrategy.QUALITY);
     }
 }
