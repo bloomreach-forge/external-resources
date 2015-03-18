@@ -49,6 +49,7 @@ import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.yui.upload.MultiFileUploadDialog;
 import org.hippoecm.frontend.service.IBrowseService;
 import org.hippoecm.frontend.service.ISettingsService;
+import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.session.UserSession;
 import org.hippoecm.frontend.translation.ILocaleProvider;
 import org.hippoecm.frontend.widgets.AbstractView;
@@ -68,11 +69,8 @@ import org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialo
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<GalleryWorkflow> {
+public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
     private static final long serialVersionUID = 1L;
-
-    @SuppressWarnings("unused")
-    private final static String SVN_ID = "$Id$";
 
     private static final Logger log = LoggerFactory.getLogger(VideoGalleryWorkflowPlugin.class);
 
@@ -84,8 +82,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
         }
 
         public IModel getTitle() {
-            return new StringResourceModel(VideoGalleryWorkflowPlugin.this.getPluginConfig().getString("option.text", ""),
-                    VideoGalleryWorkflowPlugin.this, null);
+            return new StringResourceModel(VideoGalleryWorkflowPlugin.this.getPluginConfig().getString("option.text", ""), VideoGalleryWorkflowPlugin.this, null);
         }
 
         @Override
@@ -105,13 +102,15 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
 
     public VideoGalleryWorkflowPlugin(IPluginContext context, IPluginConfig config) {
         super(context, config);
-        newItems = new LinkedList<String>();
+        newItems = new LinkedList<>();
+        onModelChanged();
     }
+
 
     @Override
     public void onModelChanged() {
         AbstractView<StdWorkflow> add;
-        addOrReplace(add = new AbstractView<StdWorkflow>("new", createListDataProvider()) {
+        addOrReplace(add = new AbstractView<StdWorkflow>("new", createListDataProvider(getPluginContext())) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -202,10 +201,9 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
     }
 
 
-    protected IDataProvider<StdWorkflow> createListDataProvider() {
+    protected IDataProvider<StdWorkflow> createListDataProvider(final IPluginContext pluginContext) {
         List<StdWorkflow> list = new LinkedList<>();
-        list.add(0, new StdWorkflow("add", new StringResourceModel(getPluginConfig().getString("option.label", "add"),
-                this, null, "Add"), getModel()) {
+        list.add(0, new StdWorkflow("add",  new StringResourceModel(getPluginConfig().getString("option.label", "add"), this, null, "Add"), pluginContext, (WorkflowDescriptorModel) getDefaultModel()) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -219,8 +217,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             }
         });
         //delegate to the WorkflowitemManager
-        list.add(1, new StdWorkflow("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"),
-                this, null, "Add"), getModel()) {
+        list.add(1, new StdWorkflow("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"), this, null, "Add"), pluginContext, (WorkflowDescriptorModel) getDefaultModel()) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -237,8 +234,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
     }
 
     private Dialog createImportDialog() {
-        WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this
-                .getDefaultModel();
+        WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this.getDefaultModel();
         Node node = null;
         try {
             node = workflowDescriptorModel.getNode();
@@ -254,10 +250,8 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
         List<String> galleryTypes = null;
         try {
             WorkflowManager manager = ((UserSession) Session.get()).getWorkflowManager();
-            WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this
-                    .getDefaultModel();
-            GalleryWorkflow workflow = (GalleryWorkflow) manager
-                    .getWorkflow(workflowDescriptorModel.getObject());
+            WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this.getDefaultModel();
+            GalleryWorkflow workflow = (GalleryWorkflow) manager.getWorkflow(workflowDescriptorModel.getObject());
             if (workflow == null) {
                 VideoGalleryWorkflowPlugin.log.error("No gallery workflow accessible");
             } else {
@@ -321,5 +315,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             }
         }
     }
+
+
 
 }
