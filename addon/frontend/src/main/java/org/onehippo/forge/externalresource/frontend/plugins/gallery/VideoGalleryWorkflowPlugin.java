@@ -63,6 +63,7 @@ import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
+import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
 import org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.imports.MediaMosaImportDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +156,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
             if (node != null) {
                 try {
                     node.setProperty("hippoexternal:mimeType", mimetype);
-                    final ResourceHandler processor = HippoServiceRegistry.getService(ResourceHandler.class, (node.getPrimaryNodeType().getName()));
+                    final ResourceHandler processor = HippoServiceRegistry.getService(ResourceHandler.class, (node.getPrimaryNodeType().getName()) + HippoExtConst.RESOURCE_HANDLER);
                     processor.create(node, istream, mimetype);
                     node.getSession().save();
                     processor.afterSave(node);
