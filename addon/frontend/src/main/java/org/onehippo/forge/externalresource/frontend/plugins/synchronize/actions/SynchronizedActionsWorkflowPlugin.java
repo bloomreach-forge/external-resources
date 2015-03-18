@@ -42,7 +42,7 @@ public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
     public SynchronizedActionsWorkflowPlugin(final IPluginContext context, IPluginConfig config) {
         super(context, config);
 
-        add(updateAction = new StdWorkflow("update", new StringResourceModel("update-label", this, null), null) {
+        add(updateAction = new StdWorkflow("update", new StringResourceModel("update-label", this, null), getModel()) {
                     @Override
                     protected ResourceReference getIcon() {
                         return new PackageResourceReference(getClass(), "update-16.png");
@@ -67,7 +67,7 @@ public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
 
         );
 
-        add(commitAction = new StdWorkflow("commit", new StringResourceModel("commit-label", this, null), null) {
+        add(commitAction = new StdWorkflow("commit", new StringResourceModel("commit-label", this, null), getModel()) {
                     @Override
                     protected ResourceReference getIcon
                             () {
@@ -96,6 +96,10 @@ public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
         );
     }
 
+    @Override
+    public WorkflowDescriptorModel getModel() {
+        return (WorkflowDescriptorModel) getDefaultModel();
+    }
     @Override
     protected void onModelChanged
             () {

@@ -104,7 +104,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
         });
         ///
 
-        add(editAction = new StdWorkflow("edit", new StringResourceModel("edit", this, null)) {
+        add(editAction = new StdWorkflow("edit", new StringResourceModel("edit", this, null), getModel()) {
             @Override
             protected ResourceReference getIcon() {
                 return new PackageResourceReference(getClass(), "edit-16.png");
@@ -130,7 +130,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
             }
         });
 
-        add(renameAction = new StdWorkflow("rename", new StringResourceModel("rename-label", this, null)) {
+        add(renameAction = new StdWorkflow("rename", new StringResourceModel("rename-label", this, null), getModel()) {
             public String targetName;
             public String uriName;
 
@@ -174,7 +174,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
             }
         });
 
-        add(copyAction = new StdWorkflow("copy", new StringResourceModel("copy-label", this, null), null) {
+        add(copyAction = new StdWorkflow("copy", new StringResourceModel("copy-label", this, null), getModel()) {
             NodeModelWrapper destination = null;
             String name = null;
 
@@ -231,7 +231,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
             }
         });
 
-        add(moveAction = new StdWorkflow("move", new StringResourceModel("move-label", this, null)) {
+        add(moveAction = new StdWorkflow("move", new StringResourceModel("move-label", this, null), getModel()) {
             public NodeModelWrapper destination = null;
 
             @Override
@@ -261,7 +261,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
         });
 
         add(deleteAction = new StdWorkflow("delete",
-                new StringResourceModel("delete-label", this, null).getString()) {
+                new StringResourceModel("delete-label", this, null), getModel()) {
             @Override
             protected ResourceReference getIcon() {
                 return new PackageResourceReference(getClass(), "delete-16.png");
@@ -287,7 +287,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
         });
 
         add(whereUsedAction = new StdWorkflow("where-used", new StringResourceModel("where-used-label", this, null)
-                .getString()) {
+                , getModel()) {
             @Override
             protected ResourceReference getIcon() {
                 return new PackageResourceReference(getClass(), "where-used-16.png");
@@ -363,6 +363,10 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
 
     IEditorManager getEditorManager() {
         return getPluginContext().getService(getPluginConfig().getString("editor.id"), IEditorManager.class);
+    }
+
+    public WorkflowDescriptorModel getModel() {
+        return (WorkflowDescriptorModel) getDefaultModel();
     }
 
     @Override

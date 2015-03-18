@@ -205,7 +205,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
     protected IDataProvider<StdWorkflow> createListDataProvider() {
         List<StdWorkflow> list = new LinkedList<>();
         list.add(0, new StdWorkflow("add", new StringResourceModel(getPluginConfig().getString("option.label", "add"),
-                this, null, "Add")) {
+                this, null, "Add"), getModel()) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -220,7 +220,7 @@ public class VideoGalleryWorkflowPlugin extends CompatibilityWorkflowPlugin<Gall
         });
         //delegate to the WorkflowitemManager
         list.add(1, new StdWorkflow("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"),
-                this, null, "Add")) {
+                this, null, "Add"), getModel()) {
             private static final long serialVersionUID = 1L;
 
             @Override
