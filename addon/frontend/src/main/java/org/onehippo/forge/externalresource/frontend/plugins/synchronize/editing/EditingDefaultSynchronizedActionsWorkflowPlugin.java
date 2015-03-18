@@ -61,7 +61,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
         }, context.getReference(editor).getServiceId());
 
         add(new StdWorkflow("save", new StringResourceModel("save", this, null, "Save"),
-                new PackageResourceReference(EditingDefaultSynchronizedActionsWorkflowPlugin.class, "document-save-16.png"), null) {
+                new PackageResourceReference(EditingDefaultSynchronizedActionsWorkflowPlugin.class, "document-save-16.png"), getModel()) {
             @Override
             protected String execute(Workflow wf) throws Exception {
                 validate();
@@ -79,8 +79,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
             }
         });
 
-        add(new StdWorkflow("done", new StringResourceModel("done", this, null, "Done"),
-                new PackageResourceReference(getClass(), "document-saveclose-16.png"), null) {
+        add(new StdWorkflow("done", new StringResourceModel("done", this, null, "Done"), new PackageResourceReference(getClass(), "document-saveclose-16.png"), getModel()) {
 
             @Override
             protected String execute(Workflow wf) throws Exception {
@@ -131,5 +130,9 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
 
     boolean isValid() {
         return isValid;
+    }
+
+    public WorkflowDescriptorModel getModel() {
+        return (WorkflowDescriptorModel) getDefaultModel();
     }
 }

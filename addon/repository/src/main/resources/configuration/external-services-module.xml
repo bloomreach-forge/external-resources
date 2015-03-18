@@ -21,7 +21,7 @@
         <sv:value>hippomediamosa:resource</sv:value>
       </sv:property>
       <sv:property sv:name="url" sv:type="String">
-        <sv:value>http://10.10.100.164/mediamosa</sv:value>
+        <sv:value>http://mediamosa.io</sv:value>
       </sv:property>
       <sv:property sv:name="username" sv:type="String">
         <sv:value>Hippo</sv:value>
