@@ -35,6 +35,7 @@ import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobS
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaThumbnailJob;
 import org.onehippo.forge.externalresource.api.scheduler.synchronization.SynchronizationExecutorJob;
 import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaEmbeddedHelper;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.onehippo.forge.externalresource.api.utils.Utils;
@@ -140,7 +141,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
     @Override
-    public void unregister() {
+    public void unregisterServices() {
         // make sure we unregister first (reload after config)
         HippoServiceRegistry.unregisterService(this, Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_SYNCHRONIZABLE);
         HippoServiceRegistry.unregisterService(this, ResourceHandler.class, HippoExtConst.HIPPO_MEDIAMOSA_HANDLER);
@@ -168,7 +169,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         }
     }
 
-    private void registerServices() {
+    @Override
+    public void registerServices() {
 
         registerService(Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_SYNCHRONIZABLE);
         registerService(ResourceHandler.class, HippoExtConst.HIPPO_MEDIAMOSA_HANDLER);
@@ -177,7 +179,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
 
-    private void registerService(final Class<?> clazz, final String name) {
+    protected void registerService(final Class<?> clazz, final String name) {
         try {
             if (Strings.isNullOrEmpty(name)) {
                 HippoServiceRegistry.registerService(this, clazz);

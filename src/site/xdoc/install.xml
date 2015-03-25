@@ -60,6 +60,17 @@
         <p>Rebuild your project to include the add-on.</p>
       </subsection>
 
+      <subsection name="Cargo">
+        <p>The following should be added to the cargo profile in your pom.xml:</p>
+        <source>
+          <![CDATA[
+    <dependency>
+      <groupId>org.onehippo.forge</groupId>
+      <artifactId>externalresource-common</artifactId>
+      <classpath>shared</classpath>
+    </dependency>
+        ]]></source>
+      </subsection>
     </section>
   </body>
 </document>

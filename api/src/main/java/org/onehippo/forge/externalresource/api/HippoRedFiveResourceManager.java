@@ -190,7 +190,11 @@ public class HippoRedFiveResourceManager extends ResourceManager implements Exte
     }
 
     @Override
-    public void unregister() {}
+    public void unregisterServices() {}
+
+    @Override
+    public void registerServices() {
+    }
 
     public static String submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();

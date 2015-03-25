@@ -46,8 +46,8 @@ api/src/main/java/org/onehippo/forge/externalresource/api/MediamosaRemoteService
 api/src/main/java/org/onehippo/forge/externalresource/api/ResourceHandler.java -text
 api/src/main/java/org/onehippo/forge/externalresource/api/module/ExternalServicesModule.java -text
 api/src/main/java/org/onehippo/forge/externalresource/api/utils/HippoExtConst.java -text
+api/src/main/java/org/onehippo/forge/externalresource/api/utils/MediaMosaEmbeddedHelper.java -text
 common/src/main/java/org/onehippo/forge/externalresource/api/Embeddable.java -text
 common/src/main/java/org/onehippo/forge/externalresource/api/EmbeddedHelper.java -text
-common/src/main/java/org/onehippo/forge/externalresource/api/MediaMosaEmbeddedHelper.java -text
 /pom.xml -text svneol=unset#text/plain
 src/site/resources/MANUAL_NL.txt -text

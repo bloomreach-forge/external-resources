@@ -10,21 +10,4 @@
 
   <artifactId>externalresource-common</artifactId>
   <name>External Resources Common Package</name>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>mediamosa</groupId>
-      <artifactId>mediamosa-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache-core</artifactId>
-    </dependency>
-
-
-  </dependencies>
-
-
 </project>

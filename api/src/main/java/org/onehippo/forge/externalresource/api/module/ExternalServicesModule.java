@@ -3,7 +3,6 @@ package org.onehippo.forge.externalresource.api.module;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -34,7 +33,7 @@ public class ExternalServicesModule extends AbstractReconfigurableDaemonModule {
          * because retrieving instance and un-registering it doesn't  work
          */
         for (ExternalService service : oldServices.values()) {
-            service.unregister();
+            service.unregisterServices();
         }
         oldServices.clear();
         // process config nodes & register services

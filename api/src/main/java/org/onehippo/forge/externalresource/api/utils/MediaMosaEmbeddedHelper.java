@@ -1,4 +1,4 @@
-package org.onehippo.forge.externalresource.api;
+package org.onehippo.forge.externalresource.api.utils;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -9,6 +9,7 @@ import nl.uva.mediamosa.model.AssetDetailsType;
 import nl.uva.mediamosa.model.LinkType;
 import nl.uva.mediamosa.model.MediafileDetailsType;
 import nl.uva.mediamosa.util.ServiceException;
+import org.onehippo.forge.externalresource.api.EmbeddedHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

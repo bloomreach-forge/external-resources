@@ -21,7 +21,11 @@ public class HippoYoutubeResourceManager extends ResourceManager implements Exte
 
 
     @Override
-    public void unregister() {
+    public void unregisterServices() {
+    }
+
+    @Override
+    public void registerServices() {
     }
 
     @Override
