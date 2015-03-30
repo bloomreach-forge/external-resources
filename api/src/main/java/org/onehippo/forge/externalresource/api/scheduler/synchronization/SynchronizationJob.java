@@ -23,17 +23,18 @@ import java.rmi.RemoteException;
  */
 public class SynchronizationJob implements RepositoryJob {
     private static final Logger log = LoggerFactory.getLogger(SynchronizationJob.class);
+    public static final String IDENTIFIER_ATTRIBUTE = "identifier";
 
     @Override
     public void execute(RepositoryJobExecutionContext context) throws RepositoryException {
         Session session = null;
         try {
-            String uuid = context.getAttribute("identifier");
+            String uuid = context.getAttribute(IDENTIFIER_ATTRIBUTE);
+            log.debug("External resources synchronizing {}", uuid);
             session = context.createSystemSession();
             Node node = ((HippoNode) session.getNodeByIdentifier(uuid)).getCanonicalNode();
             // TODO  remove mediamosa const.
             Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_ID + HippoExtConst.SYNCHRONIZABLE);
-            log.debug(uuid);
             SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) ((HippoWorkspace) session.getWorkspace()).getWorkflowManager().getWorkflow("synchronization", node);
             SynchronizationState state = workflow.check(synchronizable);
 

@@ -1,7 +1,5 @@
 package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
 import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
 import org.onehippo.repository.scheduling.RepositoryJob;
@@ -9,6 +7,8 @@ import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
 import org.onehippo.repository.scheduling.RepositoryJobInfo;
 import org.onehippo.repository.scheduling.RepositoryJobSimpleTrigger;
 import org.onehippo.repository.scheduling.RepositoryScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -21,39 +21,43 @@ import java.util.Date;
  * @version $Id$
  */
 public class SynchronizationExecutorJob implements RepositoryJob {
+    private static final Logger LOG = LoggerFactory.getLogger(SynchronizationExecutorJob.class);
 
     @Override
     public void execute(RepositoryJobExecutionContext context) {
+        Session session = null;
         try {
-            Session session = context.createSystemSession();
-            try {
-                RepositoryScheduler repositoryScheduler = HippoServiceRegistry.getService(RepositoryScheduler.class);
+            session = context.createSystemSession();
+            RepositoryScheduler repositoryScheduler = HippoServiceRegistry.getService(RepositoryScheduler.class);
 
+            NodeIterator it = session.getWorkspace()
+                    .getQueryManager()
+                    .createQuery("content/videos//element(*,hippoexternal:synchronizable)", Query.XPATH)
+                    .execute()
+                    .getNodes();
 
-                NodeIterator it = session.getWorkspace()
-                        .getQueryManager()
-                        .createQuery("content/videos//element(*,hippoexternal:synchronizable)", Query.XPATH)
-                        .execute()
-                        .getNodes();
-
-                while (it.hasNext()) {
-                    Node node = it.nextNode();
-                    RepositoryJobInfo jobInfo = new RepositoryJobInfo(node.getIdentifier(), HippoMediaMosaResourceManager.MASS_SYNC_JOB_GROUP, SynchronizationJob.class);
-                    jobInfo.setAttribute("identifier", node.getIdentifier());
-                    RepositoryJobSimpleTrigger now = new RepositoryJobSimpleTrigger("now", new Date());
-                    repositoryScheduler.scheduleJob(jobInfo, now);
-                }
-                //TODO call listener
+            while (it.hasNext()) {
+                Node node = it.nextNode();
+                RepositoryJobInfo jobInfo = new RepositoryJobInfo(node.getIdentifier(), HippoMediaMosaResourceManager.MASS_SYNC_JOB_GROUP, SynchronizationJob.class);
+                jobInfo.setAttribute(SynchronizationJob.IDENTIFIER_ATTRIBUTE, node.getIdentifier());
+                RepositoryJobSimpleTrigger trigger = new RepositoryJobSimpleTrigger("now", new Date());
+                repositoryScheduler.scheduleJob(jobInfo, trigger);
+            }
+            //TODO call listener for SynchronizationListPanel
 //            if(jobDataMap.containsKey("listener")){
 //                SynchronizationListener listener = (SynchronizationListener) jobDataMap.get("listener");
 //                listener.onFinished();
 //            }
-            } finally {
+        } catch (RepositoryException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.error("External resources cannot find hippoexternal:synchronizable nodes", e);
+            } else {
+                LOG.error("External resources cannot find hippoexternal:synchronizable nodes");
+            }
+        } finally {
+            if (session != null && session.isLive()) {
                 session.logout();
             }
-        } catch (RepositoryException e) {
         }
-
     }
-
 }
