@@ -21,23 +21,7 @@ import java.util.Date;
  * @version $Id$
  */
 public class SynchronizationExecutorJob implements RepositoryJob {
-public static class AutoClosableSession implements AutoCloseable, Supplier<Session> {
-    private final Session session;
 
-    public AutoClosableSession(Session session) {
-        this.session = Preconditions.checkNotNull(session);
-    }
-
-    @Override
-    public void close() throws Exception {
-        session.logout();
-    }
-
-    @Override
-    public Session get() {
-        return session;
-    }
-}
     @Override
     public void execute(RepositoryJobExecutionContext context) {
         try {
