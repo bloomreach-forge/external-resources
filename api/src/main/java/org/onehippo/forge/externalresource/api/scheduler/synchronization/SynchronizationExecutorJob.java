@@ -3,6 +3,7 @@ package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import org.onehippo.cms7.services.HippoServiceRegistry;
+import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
 import org.onehippo.repository.scheduling.RepositoryJob;
 import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
 import org.onehippo.repository.scheduling.RepositoryJobInfo;
@@ -53,9 +54,8 @@ public static class AutoClosableSession implements AutoCloseable, Supplier<Sessi
 
                 while (it.hasNext()) {
                     Node node = it.nextNode();
-                    RepositoryJobInfo jobInfo = new RepositoryJobInfo(node.getIdentifier(), SynchronizationJob.class);
+                    RepositoryJobInfo jobInfo = new RepositoryJobInfo(node.getIdentifier(), HippoMediaMosaResourceManager.MASS_SYNC_JOB_GROUP, SynchronizationJob.class);
                     jobInfo.setAttribute("identifier", node.getIdentifier());
-                    jobInfo.setAttribute("synchronizable", context.getAttribute("synchronizable"));
                     RepositoryJobSimpleTrigger now = new RepositoryJobSimpleTrigger("now", new Date());
                     repositoryScheduler.scheduleJob(jobInfo, now);
                 }

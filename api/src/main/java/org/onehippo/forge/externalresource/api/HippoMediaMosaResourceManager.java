@@ -83,10 +83,10 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private boolean createThumbnail;
     private MediaMosaService mediaMosaService;
 
-    private static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
-    private static final String MASS_SYNC_JOB_TRIGGER = MASS_SYNC_JOB + "Trigger";
-    private static final String MASS_SYNC_JOB_TRIGGER_GROUP = MASS_SYNC_JOB_TRIGGER + "Group";
-    private static final String MASS_SYNC_JOB_GROUP = MASS_SYNC_JOB + "Group";
+    public static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
+    public static final String MASS_SYNC_JOB_TRIGGER = MASS_SYNC_JOB + "Trigger";
+    public static final String MASS_SYNC_JOB_TRIGGER_GROUP = MASS_SYNC_JOB_TRIGGER + "Group";
+    public static final String MASS_SYNC_JOB_GROUP = MASS_SYNC_JOB + "Group";
     private static final Long DEFAULT_WIDTH = 320L;
     private EmbeddedHelper embeddedHelper;
 
