@@ -37,6 +37,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
+import org.apache.wicket.util.lang.Bytes;
 import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.dialog.IDialogService.Dialog;
@@ -273,6 +274,9 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
         }
 
         UploadDialog dialog = new UploadDialog(getPluginContext(), getPluginConfig());
+        if (getPluginConfig().containsKey("maxSize")) {
+            dialog.setMaxSize(Bytes.valueOf(getPluginConfig().getString("maxSize")));
+        }
         dialog.add(typeComponent);
         return dialog;
     }
