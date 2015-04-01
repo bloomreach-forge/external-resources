@@ -127,7 +127,7 @@
         <sv:value>nl</sv:value>
       </sv:property>
       <sv:property sv:name="hippo:message" sv:type="String">
-        <sv:value>Synchronizatie</sv:value>
+        <sv:value>Synchronisatie</sv:value>
       </sv:property>
     </sv:node>
     <sv:node sv:name="hippo:translation">
