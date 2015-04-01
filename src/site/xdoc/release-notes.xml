@@ -25,6 +25,7 @@
         <ul>
           <li>Cleaned up code for MediaMosa helper interfaces</li>
           <li>Add size contstraint on upload dialog</li>
+          <li>fix the stillviewpanel</li>
         </ul>
       </subsection>
       <subsection name="1.09.01">
