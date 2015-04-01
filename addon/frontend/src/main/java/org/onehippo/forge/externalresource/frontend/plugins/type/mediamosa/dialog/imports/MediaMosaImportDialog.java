@@ -39,11 +39,9 @@ import org.hippoecm.repository.api.HippoWorkspace;
 import org.hippoecm.repository.api.NodeNameCodec;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
-import org.onehippo.cms7.services.HippoServiceRegistry;
-import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
-import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
+import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.AbstractExternalResourceDialog;
 import org.slf4j.Logger;
@@ -85,7 +83,7 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
     public MediaMosaImportDialog(IModel model, final IPluginContext context, IPluginConfig config) {
         super(model, context, config);
         setOutputMarkupId(true);
-        this.service = HippoServiceRegistry.getService(MediamosaRemoteService.class).service();
+        this.service = MediaMosaServices.getMediamosaRemoteService().service();
         this.assetsToBeImported = new ArrayList<>();
         setOkLabel(new StringResourceModel("import", this, null));
 
@@ -125,12 +123,12 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
             private Map<String, Object> searchMap = new HashMap<String, Object>();
 
             //todo retrieve from cache
-            public Iterator<? extends AssetType> iterator(long  first, long count) {
+            public Iterator<? extends AssetType> iterator(long first, long count) {
                 MediaMosaImportDialog.this.current = (first + 1);
                 List<AssetType> list = new ArrayList<AssetType>();
                 try {
                     populateSearchMap();
-                    list = service.getAssets((int)count, (int)first, searchMap);
+                    list = service.getAssets((int) count, (int) first, searchMap);
                 } catch (ServiceException e) {
                     log.error("Service exception on retrieving assets for the MediaMosa Import dialog", e);
                     error(e.getLocalizedMessage());
@@ -158,7 +156,7 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
             public long size() {
                 try {
                     populateSearchMap();
-                    MediaMosaImportDialog.this.count =  service.getAssetCount(200, searchMap);
+                    MediaMosaImportDialog.this.count = service.getAssetCount(200, searchMap);
                     return MediaMosaImportDialog.this.count;
                 } catch (IOException e) {
                     log.error("Service exception on retrieving total asset size for the MediaMosa Import dialog", e);
@@ -389,12 +387,13 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
                 } else {
                     title = NodeNameCodec.encode(title, true);
                 }
-                Document doc = workflow.createGalleryItem(title, getResourceManagerId());
+                String jcrType = JcrUtils.getStringProperty(folder, "hippostd:gallerytype", "hippomediamosa:resource");
+                Document doc = workflow.createGalleryItem(title, jcrType);
                 if (folder.getSession().itemExists(doc.getIdentity())) {
                     Node node = folder.getSession().getNode(doc.getIdentity()); //getnode from doc
                     node.setProperty("hippomediamosa:assetid", type.getAssetId());
                     node.getSession().save();
-                    Synchronizable synchronizer = HippoServiceRegistry.getService(Synchronizable.class, getResourceManagerId() + HippoExtConst.SYNCHRONIZABLE);
+                    Synchronizable synchronizer = MediaMosaServices.forType(jcrType).getSynchronizable();
                     SynchronizedActionsWorkflow synchronizedActionsWorkflow = (SynchronizedActionsWorkflow) workspace.getWorkflowManager().getWorkflow("synchronization", node);
                     synchronizedActionsWorkflow.update(synchronizer);
                     log.info("just created: {}", type.getAssetId());
@@ -403,10 +402,5 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
         } catch (RepositoryException | RemoteException | WorkflowException e) {
             log.error("", e);
         }
-    }
-    
-
-    protected String getResourceManagerId() {
-        return HippoExtConst.HIPPO_MEDIAMOSA_ID;
     }
 }

@@ -6,7 +6,6 @@ import nl.uva.mediamosa.util.ServiceException;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugin.config.impl.JcrClusterConfig;
-import org.hippoecm.frontend.plugin.config.impl.JcrPluginConfig;
 import org.hippoecm.repository.HippoRepository;
 import org.hippoecm.repository.HippoRepositoryFactory;
 import org.junit.After;
@@ -115,7 +114,7 @@ public class SchedulingTest {
             }
         };
 
-        MediaMosaService service = resourceManager.getMediaMosaService();
+        MediaMosaService service = resourceManager.service();
 
         List<AssetType> list = service.getAssets();
 
@@ -211,7 +210,7 @@ public class SchedulingTest {
         public void run() {
             HippoMediaMosaResourceManager resourceManager = (HippoMediaMosaResourceManager) context.getResourceManager();
             try {
-                String stateType = resourceManager.getMediaMosaService().getJobStatus(context.getJobId(), "Hippo").getStatus();
+                String stateType = resourceManager.service().getJobStatus(context.getJobId(), "Hippo").getStatus();
                 if (!done) {
                     Iterator<MediaMosaJobListener> it = context.iterator();
 
@@ -266,7 +265,7 @@ public class SchedulingTest {
         public void run() {
             HippoMediaMosaResourceManager resourceManager = (HippoMediaMosaResourceManager) context.getResourceManager();
             try {
-                String stateType = resourceManager.getMediaMosaService().getJobStatus(context.getJobId(), "Hippo").getStatus();
+                String stateType = resourceManager.service().getJobStatus(context.getJobId(), "Hippo").getStatus();
                 if (!done) {
                     Iterator<MediaMosaJobListener> it = context.iterator();
 

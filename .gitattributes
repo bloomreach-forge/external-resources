@@ -45,8 +45,11 @@ api/src/main/java/org/onehippo/forge/externalresource/api/ExternalService.java -
 api/src/main/java/org/onehippo/forge/externalresource/api/MediamosaRemoteService.java -text
 api/src/main/java/org/onehippo/forge/externalresource/api/ResourceHandler.java -text
 api/src/main/java/org/onehippo/forge/externalresource/api/module/ExternalServicesModule.java -text
-api/src/main/java/org/onehippo/forge/externalresource/api/utils/HippoExtConst.java -text
 api/src/main/java/org/onehippo/forge/externalresource/api/utils/MediaMosaEmbeddedHelper.java -text
+api/src/main/java/org/onehippo/forge/externalresource/api/utils/MediaMosaServices.java -text
+api/src/test/java/org/onehippo/forge/externalresource/api/scheduler/ExternalResourceScheduler.java -text
+api/src/test/java/org/onehippo/forge/externalresource/api/scheduler/synchronization/FakeMassSync.java -text
+api/src/test/java/org/onehippo/forge/externalresource/api/scheduler/synchronization/FakeSync.java -text
 common/src/main/java/org/onehippo/forge/externalresource/api/Embeddable.java -text
 common/src/main/java/org/onehippo/forge/externalresource/api/EmbeddedHelper.java -text
 /pom.xml -text svneol=unset#text/plain

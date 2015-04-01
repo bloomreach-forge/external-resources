@@ -1,7 +1,6 @@
 package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 
 import org.onehippo.cms7.services.HippoServiceRegistry;
-import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
 import org.onehippo.repository.scheduling.RepositoryJob;
 import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
 import org.onehippo.repository.scheduling.RepositoryJobInfo;
@@ -22,24 +21,26 @@ import java.util.Date;
  */
 public class SynchronizationExecutorJob implements RepositoryJob {
     private static final Logger LOG = LoggerFactory.getLogger(SynchronizationExecutorJob.class);
+    private static final String QUERY = "content/videos//element(*,hippoexternal:synchronizable)";
+
+    /**
+     * Name of attribute that must be set on RepositoryJobInfo when scheduling SynchronizationExecutorJob.
+     */
+    public static final String JOB_GROUP = "jobGroup";
 
     @Override
     public void execute(RepositoryJobExecutionContext context) {
+        String jobGroup = context.getAttribute(JOB_GROUP);
         Session session = null;
         try {
             session = context.createSystemSession();
             RepositoryScheduler repositoryScheduler = HippoServiceRegistry.getService(RepositoryScheduler.class);
 
-            NodeIterator it = session.getWorkspace()
-                    .getQueryManager()
-                    .createQuery("content/videos//element(*,hippoexternal:synchronizable)", Query.XPATH)
-                    .execute()
-                    .getNodes();
-
+            NodeIterator it = session.getWorkspace().getQueryManager().createQuery(QUERY, Query.XPATH).execute().getNodes();
             while (it.hasNext()) {
                 Node node = it.nextNode();
-                RepositoryJobInfo jobInfo = new RepositoryJobInfo(node.getIdentifier(), HippoMediaMosaResourceManager.MASS_SYNC_JOB_GROUP, SynchronizationJob.class);
-                jobInfo.setAttribute(SynchronizationJob.IDENTIFIER_ATTRIBUTE, node.getIdentifier());
+                RepositoryJobInfo jobInfo = new RepositoryJobInfo(node.getIdentifier(), jobGroup, SynchronizationJob.class);
+                jobInfo.setAttribute(SynchronizationJob.IDENTIFIER, node.getIdentifier());
                 RepositoryJobSimpleTrigger trigger = new RepositoryJobSimpleTrigger("now", new Date());
                 repositoryScheduler.scheduleJob(jobInfo, trigger);
             }
@@ -50,9 +51,9 @@ public class SynchronizationExecutorJob implements RepositoryJob {
 //            }
         } catch (RepositoryException e) {
             if (LOG.isDebugEnabled()) {
-                LOG.error("External resources cannot find hippoexternal:synchronizable nodes", e);
+                LOG.error("External resources cannot find nodes hippoexternal:synchronizable" , e);
             } else {
-                LOG.error("External resources cannot find hippoexternal:synchronizable nodes");
+                LOG.error("External resources cannot find nodes hippoexternal:synchronizable");
             }
         } finally {
             if (session != null && session.isLive()) {

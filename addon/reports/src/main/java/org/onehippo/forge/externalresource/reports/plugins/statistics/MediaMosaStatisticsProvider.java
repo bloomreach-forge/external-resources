@@ -1,13 +1,6 @@
 package org.onehippo.forge.externalresource.reports.plugins.statistics;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import nl.uva.mediamosa.MediaMosaService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.core.util.lang.PropertyResolver;
@@ -17,17 +10,20 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.onehippo.cms7.services.HippoServiceRegistry;
-import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
 import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
-import org.onehippo.forge.externalresource.api.ResourceManager;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.reports.plugins.statistics.list.IStatisticsListColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.js.ext.data.ExtDataField;
 
-import nl.uva.mediamosa.MediaMosaService;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @version $Id$
@@ -49,7 +45,7 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
 
     public MediaMosaStatisticsProvider(Map<String, String> statisticsServiceParameters) {
         this.statisticsServiceParameters = statisticsServiceParameters;
-        final MediamosaRemoteService remoteService = HippoServiceRegistry.getService(MediamosaRemoteService.class);
+        final MediamosaRemoteService remoteService = MediaMosaServices.getMediamosaRemoteService();
         if (remoteService != null) {
             this.service = remoteService.service();
         }
@@ -114,10 +110,6 @@ public class MediaMosaStatisticsProvider<T> extends StatisticsProvider<T> {
                 statisticsServiceParameters.get(name) : defaultValue;
     }
 
-
-    protected String getResourceManagerId() {
-        return HippoExtConst.HIPPO_MEDIAMOSA_ID;
-    }
 
     // ==================================== Columns ====================================
 

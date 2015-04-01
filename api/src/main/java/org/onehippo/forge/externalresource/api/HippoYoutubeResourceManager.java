@@ -19,15 +19,6 @@ public class HippoYoutubeResourceManager extends ResourceManager implements Exte
         super(type);
     }
 
-
-    @Override
-    public void unregisterServices() {
-    }
-
-    @Override
-    public void registerServices() {
-    }
-
     @Override
     public void create(Node node, InputStream istream, String mimetype) throws Exception {
     }
@@ -43,5 +34,9 @@ public class HippoYoutubeResourceManager extends ResourceManager implements Exte
     @Override
     public void configure(final Node node) {
 
+    }
+
+    @Override
+    public void close() {
     }
 }

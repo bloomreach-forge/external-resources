@@ -26,7 +26,7 @@ public class MediaMosaJobTask implements Runnable {
     public void run() {
         HippoMediaMosaResourceManager resourceManager = (HippoMediaMosaResourceManager) context.getResourceManager();
         try {
-            String stateType = resourceManager.getMediaMosaService().getJobStatus(context.getJobId(), resourceManager.getUsername()).getStatus();
+            String stateType = resourceManager.service().getJobStatus(context.getJobId(), resourceManager.getUsername()).getStatus();
             if (!done) {
                 Iterator<MediaMosaJobListener> it = context.iterator();
 

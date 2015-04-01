@@ -33,7 +33,7 @@ public class ExternalServicesModule extends AbstractReconfigurableDaemonModule {
          * because retrieving instance and un-registering it doesn't  work
          */
         for (ExternalService service : oldServices.values()) {
-            service.unregisterServices();
+            service.close();
         }
         oldServices.clear();
         // process config nodes & register services

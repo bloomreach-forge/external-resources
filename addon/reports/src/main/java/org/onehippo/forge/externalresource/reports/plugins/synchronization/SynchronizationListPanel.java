@@ -28,10 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.onehippo.cms7.reports.plugins.ReportPanel;
 import org.onehippo.cms7.reports.plugins.ReportUtil;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.onehippo.forge.externalresource.reports.plugins.synchronization.column.SynchronizationListColumns;
 import org.onehippo.forge.externalresource.reports.plugins.synchronization.store.SynchronizationStore;
@@ -100,8 +99,8 @@ public class SynchronizationListPanel extends ReportPanel {
                     Node node = getNode(path);
                     try {
                         SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) ((HippoWorkspace) node.getSession().getWorkspace()).getWorkflowManager().getWorkflow("synchronization", node);
-                        ResourceHandler manager = HippoServiceRegistry.getService(ResourceHandler.class, node.getPrimaryNodeType().getName() + HippoExtConst.RESOURCE_HANDLER);
-                        Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, node.getPrimaryNodeType().getName() + HippoExtConst.SYNCHRONIZABLE);
+                        ResourceHandler manager =  MediaMosaServices.forNode(node).getResourceHandler();
+                        Synchronizable synchronizable = MediaMosaServices.forNode(node).getSynchronizable();
                         switch (mediumName) {
                             case "synchronize":
                                 workflow.update(synchronizable);

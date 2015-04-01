@@ -1,12 +1,5 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.Map;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
@@ -53,13 +46,18 @@ import org.hippoecm.repository.api.WorkflowDescriptor;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.Map;
 
 /**
  * @version $Id$
@@ -93,7 +91,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
             protected IModel getTitle() {
                 try {
                     Node document = ((WorkflowDescriptorModel) DefaultSynchronizedActionsWorkflowPlugin.this.getDefaultModel()).getNode();
-                    Synchronizable sync = HippoServiceRegistry.getService(Synchronizable.class, document.getPrimaryNodeType().getName() + HippoExtConst.SYNCHRONIZABLE);
+                    Synchronizable sync = MediaMosaServices.forNode(document).getSynchronizable();
                     synchState = sync.check(document).getState();
                 } catch (RepositoryException e) {
                     log.error("", e);
@@ -280,7 +278,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
             @Override
             protected String execute(Workflow wf) throws Exception {
                 Node document = ((WorkflowDescriptorModel) getDefaultModel()).getNode();
-                ResourceHandler manager = HippoServiceRegistry.getService(ResourceHandler.class, document.getPrimaryNodeType().getName() + HippoExtConst.EMBEDDABLE);
+                ResourceHandler manager = MediaMosaServices.forNode(document).getResourceHandler();
                 ((SynchronizedActionsWorkflow) wf).delete(manager);
                 return null;
             }

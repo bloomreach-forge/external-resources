@@ -21,6 +21,11 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="1.09.02">
+        <ul>
+          <li>Cleaned up code for MediaMosa helper interfaces</li>
+        </ul>
+      </subsection>
       <subsection name="1.09.01">
         <ul>
           <li>Put SynchronizationJobs under same JobGroup as SynchronizationExecutorJob</li>

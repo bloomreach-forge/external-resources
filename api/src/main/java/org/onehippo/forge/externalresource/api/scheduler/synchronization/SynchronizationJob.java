@@ -3,9 +3,8 @@ package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 import org.hippoecm.repository.api.HippoNode;
 import org.hippoecm.repository.api.HippoWorkspace;
 import org.hippoecm.repository.api.WorkflowException;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.onehippo.repository.scheduling.RepositoryJob;
@@ -23,19 +22,22 @@ import java.rmi.RemoteException;
  */
 public class SynchronizationJob implements RepositoryJob {
     private static final Logger log = LoggerFactory.getLogger(SynchronizationJob.class);
-    public static final String IDENTIFIER_ATTRIBUTE = "identifier";
+
+    /**
+     * Name of attribute that must be set on RepositoryJobInfo when scheduling SynchronizationExecutorJob.
+     */
+    public static final String IDENTIFIER = "identifier";
 
     @Override
     public void execute(RepositoryJobExecutionContext context) throws RepositoryException {
+        String identifier = context.getAttribute(IDENTIFIER);
         Session session = null;
         try {
-            String uuid = context.getAttribute(IDENTIFIER_ATTRIBUTE);
-            log.debug("External resources synchronizing {}", uuid);
+            log.debug("External resources synchronizing {}", identifier);
             session = context.createSystemSession();
-            Node node = ((HippoNode) session.getNodeByIdentifier(uuid)).getCanonicalNode();
-            // TODO  remove mediamosa const.
-            Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_ID + HippoExtConst.SYNCHRONIZABLE);
+            Node node = ((HippoNode) session.getNodeByIdentifier(identifier)).getCanonicalNode();
             SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) ((HippoWorkspace) session.getWorkspace()).getWorkflowManager().getWorkflow("synchronization", node);
+            Synchronizable synchronizable =  MediaMosaServices.forNode(node).getSynchronizable();
             SynchronizationState state = workflow.check(synchronizable);
 
             switch (state) {

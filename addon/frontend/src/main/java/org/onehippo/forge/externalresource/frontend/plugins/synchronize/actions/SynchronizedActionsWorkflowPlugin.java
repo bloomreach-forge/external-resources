@@ -21,9 +21,8 @@ import org.hippoecm.repository.api.Workflow;
 import org.hippoecm.repository.api.WorkflowDescriptor;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +56,7 @@ public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
                         if (workflowDescriptor != null) {
                             Node documentNode = workflowDescriptorModel.getNode();
                             String type = documentNode.getPrimaryNodeType().getName();
-                            Synchronizable sync = HippoServiceRegistry.getService(Synchronizable.class, type + HippoExtConst.SYNCHRONIZABLE);
+                            Synchronizable sync =  MediaMosaServices.forType(type).getSynchronizable();
                             //sync.update(documentNode);
                             workflow.update(sync);
                         }
@@ -83,8 +82,7 @@ public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
                         WorkflowDescriptor workflowDescriptor = (WorkflowDescriptor) getDefaultModelObject();
                         if (workflowDescriptor != null) {
                             Node documentNode = workflowDescriptorModel.getNode();
-                            String type = documentNode.getPrimaryNodeType().getName();
-                            Synchronizable sync = HippoServiceRegistry.getService(Synchronizable.class, type + HippoExtConst.SYNCHRONIZABLE);
+                            Synchronizable sync = MediaMosaServices.forNode(documentNode).getSynchronizable();
                             //sync.commit(documentNode);
                             workflow.commit(sync);
                         }

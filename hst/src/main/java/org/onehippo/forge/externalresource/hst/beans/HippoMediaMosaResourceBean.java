@@ -3,8 +3,6 @@ package org.onehippo.forge.externalresource.hst.beans;
 import org.hippoecm.hst.content.beans.Node;
 import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Embeddable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 
@@ -14,9 +12,6 @@ import javax.jcr.RepositoryException;
 
 @Node(jcrType = "hippomediamosa:resource")
 public class HippoMediaMosaResourceBean extends HippoExternalVideoResourceBean {
-
-//    @SuppressWarnings({"UnusedDeclaration"})
-    private static Logger log = LoggerFactory.getLogger(HippoMediaMosaResourceBean.class);
 
     public String getAssetId() {
         return getProperty("hippomediamosa:assetid");

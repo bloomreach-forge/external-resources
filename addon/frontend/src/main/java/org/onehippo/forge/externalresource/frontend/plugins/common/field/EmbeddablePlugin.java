@@ -3,7 +3,6 @@ package org.onehippo.forge.externalresource.frontend.plugins.common.field;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -18,9 +17,8 @@ import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.types.IFieldDescriptor;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Embeddable;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +83,7 @@ public class EmbeddablePlugin extends RenderPlugin<Node> {
         if (primaryNodeType != null) {
 
 
-                Embeddable processor = HippoServiceRegistry.getService(Embeddable.class, primaryNodeType + HippoExtConst.EMBEDDABLE);
+                Embeddable processor = MediaMosaServices.forType(primaryNodeType).getEmbeddable();
 
                 if (processor == null) {
                     log.warn("No embeddable processor found in ExternalResourceService by primaryNodeType {}",  primaryNodeType);

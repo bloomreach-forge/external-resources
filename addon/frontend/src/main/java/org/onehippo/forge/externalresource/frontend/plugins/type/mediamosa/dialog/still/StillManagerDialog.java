@@ -1,19 +1,13 @@
 package org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.still;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+import nl.uva.mediamosa.MediaMosaService;
+import nl.uva.mediamosa.model.JobDetailsType;
+import nl.uva.mediamosa.model.JobType;
+import nl.uva.mediamosa.model.Response;
+import nl.uva.mediamosa.model.StillDetailType;
+import nl.uva.mediamosa.model.StillType;
+import nl.uva.mediamosa.model.UploadTicketType;
+import nl.uva.mediamosa.util.ServiceException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -52,23 +46,25 @@ import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidget;
 import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidgetSettings;
-import org.onehippo.cms7.services.HippoServiceRegistry;
-import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
 import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobState;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.AbstractExternalResourceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.JobDetailsType;
-import nl.uva.mediamosa.model.JobType;
-import nl.uva.mediamosa.model.Response;
-import nl.uva.mediamosa.model.StillDetailType;
-import nl.uva.mediamosa.model.StillType;
-import nl.uva.mediamosa.model.UploadTicketType;
-import nl.uva.mediamosa.util.ServiceException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @version $Id$
@@ -101,11 +97,7 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     public StillManagerDialog(IModel iModel, IPluginContext context, IPluginConfig config) {
         super(iModel, context, config);
 
-        this.resourceManager = HippoServiceRegistry.getService(MediamosaRemoteService.class);
-        this.service = resourceManager.service();
-
         Node node = (Node) getModelObject();
-
         try {
             node = node.getParent();
             if (node.hasProperty("hippomediamosa:assetid")) {
@@ -114,6 +106,8 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             if (node.hasProperty("hippomediamosa:mediaid")) {
                 this.mediaId = node.getProperty("hippomediamosa:mediaid").getString();
             }
+            this.resourceManager = MediaMosaServices.forNode(node).getMediamosaRemoteService();
+            this.service = resourceManager.service();
         } catch (RepositoryException e) {
             log.error("Error fetching asset id", e);
         }
@@ -495,9 +489,4 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             return false;
         }
     }
-
-    protected String getResourceManagerId() {
-        return HippoExtConst.HIPPO_MEDIAMOSA_ID;
-    }
-
 }

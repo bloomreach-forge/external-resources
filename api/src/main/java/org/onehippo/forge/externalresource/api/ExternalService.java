@@ -6,7 +6,5 @@ public interface ExternalService {
 
     void configure(Node node);
 
-    void unregisterServices();
-
-    void registerServices();
+    void close();
 }

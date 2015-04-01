@@ -20,9 +20,8 @@ import org.hippoecm.frontend.validation.IValidationResult;
 import org.hippoecm.frontend.validation.IValidationService;
 import org.hippoecm.frontend.validation.ValidationException;
 import org.hippoecm.repository.api.Workflow;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.Synchronizable;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
                 Node document = ((WorkflowDescriptorModel) getDefaultModel()).getNode();
                 document.getSession().save();
 
-                Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, document.getPrimaryNodeType().getName() + HippoExtConst.SYNCHRONIZABLE);
+                Synchronizable synchronizable = MediaMosaServices.forNode(document).getSynchronizable();
                 SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
                 workflow.commit(synchronizable);
 
@@ -106,7 +105,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
                 Node document = ((WorkflowDescriptorModel) getDefaultModel()).getNode();
                 document.getSession().save();
 
-                Synchronizable synchronizable = HippoServiceRegistry.getService(Synchronizable.class, document.getPrimaryNodeType().getName() + HippoExtConst.SYNCHRONIZABLE);
+                Synchronizable synchronizable = MediaMosaServices.forNode(document).getSynchronizable();
                 SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
                 workflow.commit(synchronizable);
 

@@ -10,7 +10,9 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
@@ -28,13 +30,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.repository.util.JcrUtils;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobContext;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobListener;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobScheduler;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaThumbnailJob;
 import org.onehippo.forge.externalresource.api.scheduler.synchronization.SynchronizationExecutorJob;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.utils.MediaMosaEmbeddedHelper;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
@@ -89,6 +90,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     public static final String MASS_SYNC_JOB_GROUP = MASS_SYNC_JOB + "Group";
     private static final Long DEFAULT_WIDTH = 320L;
     private EmbeddedHelper embeddedHelper;
+    private MediaMosaServices services;
 
     public HippoMediaMosaResourceManager(final ResourceInvocationType type) {
         super(type);
@@ -105,16 +107,15 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             this.width = JcrUtils.getLongProperty(config, "width", DEFAULT_WIDTH);
             this.createThumbnail = JcrUtils.getBooleanProperty(config, "createThumbnail", Boolean.FALSE);
             this.playbackVideoCodec = JcrUtils.getStringProperty(config, "playbackVideoCodec", null);
-            // TODO multipropery
-            /*if (config.hasProperty("profiles")) {
-                this.profiles = config.getStringArray("profiles");
-            }*/
+            this.profiles = getStringArray(config, "profiles");
             this.mediaMosaService = new MediaMosaService(getUrl());
             try {
                 this.mediaMosaService.setCredentials(getUsername(), getPassword());
             } catch (ServiceException e) {
                 log.error("Service exception on setting media mosa credentials", e);
             }
+
+            this.services = MediaMosaServices.init(JcrUtils.getStringProperty(config, "type", "hippomediamosa:resource"));
 
             Map<String, Object> propertyMap = new HashMap<>();
             propertyMap.put("url", url);
@@ -134,19 +135,24 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         }
         if (getType() == ResourceInvocationType.CMS) {
             initCmsPlugin(config);
-            registerServices();
+            services.register(this);
         }
+    }
 
-
+    private String[] getStringArray(Node node, String relPath) throws RepositoryException {
+        ImmutableList.Builder<String> builder = ImmutableList.builder();
+        if (node.hasProperty(relPath)) {
+            for (Value value : node.getProperty(relPath).getValues()) {
+                builder.add(value.getString());
+            }
+        }
+        return builder.build().toArray(ArrayUtils.EMPTY_STRING_ARRAY);
     }
 
     @Override
-    public void unregisterServices() {
+    public void close() {
         // make sure we unregister first (reload after config)
-        HippoServiceRegistry.unregisterService(this, Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_SYNCHRONIZABLE);
-        HippoServiceRegistry.unregisterService(this, ResourceHandler.class, HippoExtConst.HIPPO_MEDIAMOSA_HANDLER);
-        HippoServiceRegistry.unregisterService(this, Embeddable.class, HippoExtConst.HIPPO_MEDIAMOSA_EMBEDDABLE);
-        HippoServiceRegistry.unregisterService(this, MediamosaRemoteService.class);
+        services.unregister(this);
     }
 
 
@@ -160,6 +166,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 final String cronExpression = JcrUtils.getStringProperty(config, SYNCHRONIZATION_CRONEXPRESSION, null);
                 if (!Strings.isNullOrEmpty(cronExpression)) {
                     RepositoryJobInfo jobInfo = new RepositoryJobInfo(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
+                    jobInfo.setAttribute(SynchronizationExecutorJob.JOB_GROUP, MASS_SYNC_JOB_TRIGGER_GROUP);
                     RepositoryJobCronTrigger trigger = new RepositoryJobCronTrigger(MASS_SYNC_JOB_TRIGGER, cronExpression);
                     repositoryScheduler.scheduleJob(jobInfo, trigger);
                 }
@@ -167,33 +174,6 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
         } catch (RepositoryException e) {
             log.error("RepositoryException (re)scheduling job", e);
         }
-    }
-
-    @Override
-    public void registerServices() {
-
-        registerService(Synchronizable.class, HippoExtConst.HIPPO_MEDIAMOSA_SYNCHRONIZABLE);
-        registerService(ResourceHandler.class, HippoExtConst.HIPPO_MEDIAMOSA_HANDLER);
-        registerService(Embeddable.class, HippoExtConst.HIPPO_MEDIAMOSA_EMBEDDABLE);
-        registerService(MediamosaRemoteService.class, null);
-    }
-
-
-    protected void registerService(final Class<?> clazz, final String name) {
-        try {
-            if (Strings.isNullOrEmpty(name)) {
-                HippoServiceRegistry.registerService(this, clazz);
-            } else {
-                HippoServiceRegistry.registerService(this, clazz, name);
-            }
-
-        } catch (Exception e) {
-            log.error("Error registering services", e);
-        }
-    }
-
-    public MediaMosaService getMediaMosaService() {
-        return mediaMosaService;
     }
 
     /**

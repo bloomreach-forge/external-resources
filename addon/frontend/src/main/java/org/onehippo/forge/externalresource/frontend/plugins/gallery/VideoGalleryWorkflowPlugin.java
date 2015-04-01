@@ -37,7 +37,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
-import org.hippoecm.addon.workflow.CompatibilityWorkflowPlugin;
 import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.dialog.IDialogService.Dialog;
@@ -62,9 +61,8 @@ import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
-import org.onehippo.cms7.services.HippoServiceRegistry;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
-import org.onehippo.forge.externalresource.api.utils.HippoExtConst;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.imports.MediaMosaImportDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +153,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
             if (node != null) {
                 try {
                     node.setProperty("hippoexternal:mimeType", mimetype);
-                    final ResourceHandler processor = HippoServiceRegistry.getService(ResourceHandler.class, (node.getPrimaryNodeType().getName()) + HippoExtConst.RESOURCE_HANDLER);
+                    final ResourceHandler processor = MediaMosaServices.forNode(node).getResourceHandler();
                     processor.create(node, istream, mimetype);
                     node.getSession().save();
                     processor.afterSave(node);

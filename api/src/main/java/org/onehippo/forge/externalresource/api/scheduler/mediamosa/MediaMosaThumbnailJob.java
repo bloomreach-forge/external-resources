@@ -6,8 +6,8 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.onehippo.cms7.services.HippoServiceRegistry;
-import org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager;
+import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.repository.scheduling.RepositoryJob;
 import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
 import org.slf4j.Logger;
@@ -33,47 +33,54 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
 
     @Override
     public void execute(RepositoryJobExecutionContext context) throws RepositoryException {
+        Session session = null;
         try {
 
             String assetId = context.getAttribute(ASSET_ID_ATTRIBUTE);
-            HippoMediaMosaResourceManager resourceManager = HippoServiceRegistry.getService(HippoMediaMosaResourceManager.class);
 
-            Session session = context.createSystemSession();
+            session = context.createSystemSession();
             QueryManager queryManager = session.getWorkspace().getQueryManager();
             Query query = queryManager.createQuery(String.format(RESOURCE_QUERY_STRING, assetId), Query.XPATH);
             NodeIterator it = query.execute().getNodes();
             while (it.hasNext()) {
                 Node mediamosaAsset = it.nextNode();
-                AssetDetailsType detail = resourceManager.getMediaMosaService().getAssetDetails(assetId);
-                if (StringUtils.isNotBlank(detail.getVpxStillUrl())) {
-                    String imageUrl = detail.getVpxStillUrl();
-                    //Utils.resolveThumbnailToVideoNode(imageUrl, mediamosaAsset);
-                    org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
-                    HttpMethod getMethod = new GetMethod(imageUrl);
-                    InputStream is = null;
-                    try {
-                        client.executeMethod(getMethod);
-                        is = getMethod.getResponseBodyAsStream();
-                        String mimeType = getMethod.getResponseHeader("content-type").getValue();
-                        if (mimeType.startsWith("image")) {
-                            if (mediamosaAsset.hasNode("hippoexternal:thumbnail")) {
-                                Node thumbnail = mediamosaAsset.getNode("hippoexternal:thumbnail");
-                                thumbnail.setProperty("jcr:data", session.getValueFactory().createBinary(is));
-                                thumbnail.setProperty("jcr:mimeType", mimeType);
-                                thumbnail.setProperty("jcr:lastModified", java.util.Calendar.getInstance());
-                                // mediamosaAsset.setProperty("hippoexternal:state", SynchronizationState.SYNCHRONIZED.getState());
-                                session.save();
+                MediamosaRemoteService mediamosaRemoteService = MediaMosaServices.forNode(mediamosaAsset).getMediamosaRemoteService();
+                if (mediamosaRemoteService != null) {
+                    AssetDetailsType detail = mediamosaRemoteService.service().getAssetDetails(assetId);
+                    if (StringUtils.isNotBlank(detail.getVpxStillUrl())) {
+                        String imageUrl = detail.getVpxStillUrl();
+                        //Utils.resolveThumbnailToVideoNode(imageUrl, mediamosaAsset);
+                        org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
+                        HttpMethod getMethod = new GetMethod(imageUrl);
+                        InputStream is = null;
+                        try {
+                            client.executeMethod(getMethod);
+                            is = getMethod.getResponseBodyAsStream();
+                            String mimeType = getMethod.getResponseHeader("content-type").getValue();
+                            if (mimeType.startsWith("image")) {
+                                if (mediamosaAsset.hasNode("hippoexternal:thumbnail")) {
+                                    Node thumbnail = mediamosaAsset.getNode("hippoexternal:thumbnail");
+                                    thumbnail.setProperty("jcr:data", session.getValueFactory().createBinary(is));
+                                    thumbnail.setProperty("jcr:mimeType", mimeType);
+                                    thumbnail.setProperty("jcr:lastModified", java.util.Calendar.getInstance());
+                                    // mediamosaAsset.setProperty("hippoexternal:state", SynchronizationState.SYNCHRONIZED.getState());
+                                    session.save();
+                                }
                             }
+                        } catch (IOException e) {
+                            LOG.error("", e);
+                        } finally {
+                            IOUtils.closeQuietly(is);
                         }
-                    } catch (IOException e) {
-                        LOG.error("", e);
-                    } finally {
-                        IOUtils.closeQuietly(is);
                     }
                 }
             }
         } catch (ServiceException | IOException e) {
             LOG.error("", e);
+        } finally {
+            if (session != null && session.isLive()) {
+                session.logout();
+            }
         }
     }
 }
