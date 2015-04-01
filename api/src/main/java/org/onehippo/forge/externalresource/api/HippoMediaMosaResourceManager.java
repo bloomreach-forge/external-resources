@@ -252,7 +252,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                     }
 
                     public void onFinished(String assetId) {
-                        RepositoryJobInfo jobInfo = new RepositoryJobInfo("thumbnail." + assetId, MediaMosaThumbnailJob.class);
+                        RepositoryJobInfo jobInfo = new RepositoryJobInfo("thumbnail." + assetId, MASS_SYNC_JOB_TRIGGER_GROUP, MediaMosaThumbnailJob.class);
                         jobInfo.setAttribute(MediaMosaThumbnailJob.ASSET_ID_ATTRIBUTE, assetId);
                         RepositoryJobSimpleTrigger now = new RepositoryJobSimpleTrigger("now", new Date());
                         try {
