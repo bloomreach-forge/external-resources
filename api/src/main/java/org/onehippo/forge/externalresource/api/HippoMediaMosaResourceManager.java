@@ -134,7 +134,20 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             log.error("Error configuring module", e);
         }
         if (getType() == ResourceInvocationType.CMS) {
-            initCmsPlugin(config);
+            try {
+                RepositoryScheduler repositoryScheduler = getRepositoryScheduler();
+                final String cronExpression = JcrUtils.getStringProperty(config, SYNCHRONIZATION_CRONEXPRESSION, null);
+                if (JcrUtils.getBooleanProperty(config, SYNCHRONIZATION_ENABLED, Boolean.FALSE)
+                        && !repositoryScheduler.checkExists(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP)
+                        && !Strings.isNullOrEmpty(cronExpression)) {
+                    RepositoryJobInfo jobInfo = new RepositoryJobInfo(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
+                    jobInfo.setAttribute(SynchronizationExecutorJob.JOB_GROUP, MASS_SYNC_JOB_TRIGGER_GROUP);
+                    RepositoryJobCronTrigger trigger = new RepositoryJobCronTrigger(MASS_SYNC_JOB_TRIGGER, cronExpression);
+                    repositoryScheduler.scheduleJob(jobInfo, trigger);
+                }
+            } catch (RepositoryException e) {
+                log.error("Error starting scheduled job " + MASS_SYNC_JOB, e);
+            }
             services.register(this);
         }
     }
@@ -151,30 +164,19 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     @Override
     public void close() {
-        // make sure we unregister first (reload after config)
-        services.unregister(this);
-    }
-
-
-    public void initCmsPlugin(final Node config) {
         try {
             RepositoryScheduler repositoryScheduler = getRepositoryScheduler();
             if (repositoryScheduler.checkExists(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP)) {
                 repositoryScheduler.deleteJob(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP);
             }
-            if (JcrUtils.getBooleanProperty(config, SYNCHRONIZATION_ENABLED, Boolean.FALSE)) {
-                final String cronExpression = JcrUtils.getStringProperty(config, SYNCHRONIZATION_CRONEXPRESSION, null);
-                if (!Strings.isNullOrEmpty(cronExpression)) {
-                    RepositoryJobInfo jobInfo = new RepositoryJobInfo(MASS_SYNC_JOB, MASS_SYNC_JOB_GROUP, SynchronizationExecutorJob.class);
-                    jobInfo.setAttribute(SynchronizationExecutorJob.JOB_GROUP, MASS_SYNC_JOB_TRIGGER_GROUP);
-                    RepositoryJobCronTrigger trigger = new RepositoryJobCronTrigger(MASS_SYNC_JOB_TRIGGER, cronExpression);
-                    repositoryScheduler.scheduleJob(jobInfo, trigger);
-                }
-            }
         } catch (RepositoryException e) {
-            log.error("RepositoryException (re)scheduling job", e);
+            log.error("Error stopping scheduled job " + MASS_SYNC_JOB, e);
         }
+
+        // make sure we unregister first (reload after config)
+        services.unregister(this);
     }
+
 
     /**
      * Return the width as an integer. Internally a Long value is used.

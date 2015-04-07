@@ -68,7 +68,7 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
                                 }
                             }
                         } catch (IOException e) {
-                            LOG.error("", e);
+                            LOG.error(e.getMessage(), e);
                         } finally {
                             IOUtils.closeQuietly(is);
                         }
@@ -76,7 +76,7 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
                 }
             }
         } catch (ServiceException | IOException e) {
-            LOG.error("", e);
+            LOG.error(e.getMessage(), e);
         } finally {
             if (session != null && session.isLive()) {
                 session.logout();
