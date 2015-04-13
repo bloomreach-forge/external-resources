@@ -1,8 +1,8 @@
 package org.onehippo.forge.externalresource.gallery.deriveddata;
 
+import org.hippoecm.frontend.editor.plugins.resource.MimeTypeHelper;
 import org.onehippo.forge.externalresource.resize.BoxedResizeRule;
 import org.onehippo.forge.externalresource.resize.ImageProcessorRule;
-import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.frontend.plugins.gallery.imageutil.ImageUtils;
 import org.hippoecm.frontend.plugins.gallery.model.GalleryException;
 import org.hippoecm.repository.ext.DerivedDataFunction;
@@ -99,8 +99,8 @@ public class ThumbnailGenerator extends DerivedDataFunction {
         //doesn't have an ImageReader. Simply replacing the mimetype with image/jpeg solves this.
         //For more info see http://www.iana.org/assignments/media-types/image/ and
         //http://groups.google.com/group/comp.infosystems.www.authoring.images/msg/7706603e4bd1d9d4?hl=en
-        if (mimeType.equals(ResourceHelper.MIME_TYPE_PJPEG)) {
-            mimeType = ResourceHelper.MIME_TYPE_JPEG;
+        if (mimeType.equals(MimeTypeHelper.MIME_TYPE_PJPEG)) {
+            mimeType = MimeTypeHelper.MIME_TYPE_JPEG;
         }
 
         ImageReader reader = null;
