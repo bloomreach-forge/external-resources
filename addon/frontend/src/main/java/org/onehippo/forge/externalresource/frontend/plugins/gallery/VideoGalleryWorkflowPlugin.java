@@ -202,7 +202,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
 
     protected IDataProvider<StdWorkflow> createListDataProvider(final IPluginContext pluginContext) {
         List<StdWorkflow> list = new LinkedList<>();
-        list.add(0, new StdWorkflow("add",  new StringResourceModel(getPluginConfig().getString("option.label", "add"), this, null, "Add"), pluginContext, (WorkflowDescriptorModel) getDefaultModel()) {
+        list.add(0, new StdWorkflow("add", new StringResourceModel(getPluginConfig().getString("option.label", "add"), this, null, "Add"), pluginContext, (WorkflowDescriptorModel) getDefaultModel()) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -215,20 +215,22 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
                 return createUploadDialog();
             }
         });
-        //delegate to the WorkflowitemManager
-        list.add(1, new StdWorkflow("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"), this, null, "Add"), pluginContext, (WorkflowDescriptorModel) getDefaultModel()) {
-            private static final long serialVersionUID = 1L;
+        if (getPluginConfig().getAsBoolean("importDisabled", false) == false) {
+            //delegate to the WorkflowitemManager
+            list.add(1, new StdWorkflow("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"), this, null, "Add"), pluginContext, (WorkflowDescriptorModel) getDefaultModel()) {
+                private static final long serialVersionUID = 1L;
 
-            @Override
-            protected ResourceReference getIcon() {
-                return new PackageResourceReference(getClass(), "import-16.png");
-            }
+                @Override
+                protected ResourceReference getIcon() {
+                    return new PackageResourceReference(getClass(), "import-16.png");
+                }
 
-            @Override
-            protected Dialog createRequestDialog() {
-                return createImportDialog();
-            }
-        });
+                @Override
+                protected Dialog createRequestDialog() {
+                    return createImportDialog();
+                }
+            });
+        }
         return new ListDataProvider<>(list);
     }
 
@@ -317,7 +319,6 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
             }
         }
     }
-
 
 
 }

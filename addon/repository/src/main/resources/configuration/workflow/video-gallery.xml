@@ -33,6 +33,9 @@
     <sv:property sv:name="gallery.thumbnail.size" sv:type="Long">
       <sv:value>60</sv:value>
     </sv:property>
+    <sv:property sv:name="importDisabled" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
     <sv:property sv:name="option.label" sv:type="String">
       <sv:value>upload-video-label</sv:value>
     </sv:property>
