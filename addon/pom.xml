@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.forge</groupId>
     <artifactId>externalresource</artifactId>
-    <version>1.09.04</version>
+    <version>1.09.05-SNAPSHOT</version>
   </parent>
 
   <groupId>org.onehippo.forge</groupId>
