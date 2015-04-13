@@ -13,6 +13,7 @@ import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
+import org.hippoecm.frontend.editor.plugins.resource.MimeTypeHelper;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.gallery.imageutil.ImageUtils;
@@ -146,8 +147,8 @@ public class HippoRedFiveResourceManager extends ResourceManager implements Exte
         //doesn't have an ImageReader. Simply replacing the mimetype with image/jpeg solves this.
         //For more info see http://www.iana.org/assignments/media-types/image/ and
         //http://groups.google.com/group/comp.infosystems.www.authoring.images/msg/7706603e4bd1d9d4?hl=en
-        if (mimeType.equals(ResourceHelper.MIME_TYPE_PJPEG)) {
-            mimeType = ResourceHelper.MIME_TYPE_JPEG;
+        if (mimeType.equals(MimeTypeHelper.MIME_TYPE_PJPEG)) {
+            mimeType = MimeTypeHelper.MIME_TYPE_JPEG;
         }
 
         ImageReader reader = null;
