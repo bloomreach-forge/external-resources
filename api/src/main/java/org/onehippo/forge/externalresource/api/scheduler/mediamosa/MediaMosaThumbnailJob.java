@@ -30,6 +30,7 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
     private static final Logger LOG = LoggerFactory.getLogger(MediaMosaThumbnailJob.class);
     private static final String RESOURCE_QUERY_STRING = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
     public static final String ASSET_ID_ATTRIBUTE = "assetId";
+    public static final int CONNECTION_TIMEOUT = 30000;
 
     @Override
     public void execute(RepositoryJobExecutionContext context) throws RepositoryException {
@@ -51,6 +52,7 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
                         String imageUrl = detail.getVpxStillUrl();
                         //Utils.resolveThumbnailToVideoNode(imageUrl, mediamosaAsset);
                         org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
+                        client.getHttpConnectionManager().getParams().setConnectionTimeout(CONNECTION_TIMEOUT);
                         HttpMethod getMethod = new GetMethod(imageUrl);
                         InputStream is = null;
                         try {
