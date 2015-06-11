@@ -21,6 +21,14 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="1.09.05">
+        <ul>
+          <li>New version of MediaMosa api (version 0.0.6h). Replaced old commons.httpclient 3.1 with apache.httpclient version 4.5 for compatibility</li>
+          <li>Fixed issue with scheduled MediaMosa jobs blocking the scheduler due to not being removed after run</li>
+          <li>Fixed issue with MediaMosa not always connecting correctly over https://</li>
+          <li>Various third party jars now use the latest version to avoid compatibility issues with Hippo 7.9</li>
+        </ul>
+      </subsection>
       <subsection name="1.09.04">
         <ul>
           <li>Import menu item made optional.</li>
