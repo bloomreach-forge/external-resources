@@ -1,26 +1,17 @@
 package org.onehippo.forge.externalresource.api;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
+import nl.uva.mediamosa.MediaMosaService;
+import nl.uva.mediamosa.model.*;
+import nl.uva.mediamosa.util.ServiceException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
@@ -29,17 +20,14 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
+import org.hippoecm.repository.api.HippoNodeType;
 import org.hippoecm.repository.util.JcrUtils;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobContext;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobListener;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobScheduler;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaThumbnailJob;
 import org.onehippo.forge.externalresource.api.scheduler.synchronization.SynchronizationExecutorJob;
-import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
-import org.onehippo.forge.externalresource.api.utils.MediaMosaEmbeddedHelper;
-import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
-import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
-import org.onehippo.forge.externalresource.api.utils.Utils;
+import org.onehippo.forge.externalresource.api.utils.*;
 import org.onehippo.repository.modules.ProvidesService;
 import org.onehippo.repository.scheduling.RepositoryJobCronTrigger;
 import org.onehippo.repository.scheduling.RepositoryJobInfo;
@@ -48,16 +36,16 @@ import org.onehippo.repository.scheduling.RepositoryScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
-import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.AssetDetailsType;
-import nl.uva.mediamosa.model.JobType;
-import nl.uva.mediamosa.model.LinkType;
-import nl.uva.mediamosa.model.MediafileDetailsType;
-import nl.uva.mediamosa.model.Response;
-import nl.uva.mediamosa.model.UploadTicketType;
-import nl.uva.mediamosa.util.ServiceException;
+import static org.hippoecm.repository.quartz.HippoSchedJcrConstants.HIPPOSCHED_SUBJECT_ID;
+import static org.hippoecm.repository.quartz.HippoSchedJcrConstants.HIPPOSCHED_WORKFLOW_JOB;
 
 /**
  * @version $Id:
@@ -98,7 +86,6 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     @Override
     public void configure(final Node config) {
-
         try {
             this.url = JcrUtils.getStringProperty(config, "url", null);
             this.username = JcrUtils.getStringProperty(config, "username", null);
@@ -228,6 +215,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             node.setProperty("hippoexternal:height", height);
             node.setProperty("hippoexternal:width", width);
 
+            final Node handleNode = node.getParent();
+
             //node.setProperty("hippoexternal:state", "inprogress");
             log.debug(assetDetails.getVideotimestampmodified().toString());
             log.debug(assetDetails.getVideotimestamp().toString());
@@ -254,10 +243,11 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                     }
 
                     public void onFinished(String assetId) {
-                        RepositoryJobInfo jobInfo = new RepositoryJobInfo("thumbnail." + assetId, MASS_SYNC_JOB_TRIGGER_GROUP, MediaMosaThumbnailJob.class);
-                        jobInfo.setAttribute(MediaMosaThumbnailJob.ASSET_ID_ATTRIBUTE, assetId);
-                        RepositoryJobSimpleTrigger now = new RepositoryJobSimpleTrigger("now", new Date());
                         try {
+                            RepositoryJobInfo jobInfo = new MediaMosaResourceThumbnailJobInfo(handleNode.getIdentifier(), MASS_SYNC_JOB_TRIGGER_GROUP);
+                            jobInfo.setAttribute(MediaMosaThumbnailJob.ASSET_ID_ATTRIBUTE, assetId);
+                            RepositoryJobSimpleTrigger now = new RepositoryJobSimpleTrigger("now", new Date());
+
                             getRepositoryScheduler().scheduleJob(jobInfo, now);
                         } catch (RepositoryException e) {
                             log.error(e.getMessage(), e);
@@ -396,16 +386,15 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             if (StringUtils.isNotEmpty(assetDetailsType.getVpxStillUrl())) {
                 String url = assetDetailsType.getVpxStillUrl();
                 //Utils.resolveThumbnailToVideoNode(url, node);
-                org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
-                HttpMethod getMethod = new GetMethod(url);
-                client.executeMethod(getMethod);
-                String mimeType = getMethod.getResponseHeader("content-type").getValue();
+                HttpClient client = Utils.getHttpClient();
+                HttpResponse httpResponse = client.execute(new HttpGet(url));
+                String mimeType = httpResponse.getFirstHeader("content-type").getValue();
                 if (!mimeType.startsWith("image")) {
                     log.error("Illegal mimetype used: {}", mimeType);
                     throw new IllegalArgumentException();
                 }
 
-                is = getMethod.getResponseBodyAsStream();
+                is = httpResponse.getEntity().getContent();
                 if (node.hasNode("hippoexternal:thumbnail")) {
                     Node thumbnail = node.getNode("hippoexternal:thumbnail");
                     thumbnail.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(is));
@@ -499,46 +488,21 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
 
-//    /**
-//     * Create a cache holding the embedded video codes per asset id
-//     */
-//    protected void createAssetCache(final IPluginConfig config) {
-//
-//        if (!cacheManager.cacheExists(EMBEDDED_CACHE_NAME)) {
-//
-//            final int cacheSize = config.getInt("cache.size", CACHE_DEFAULT_SIZE);
-//            final boolean overflowToDisk = config.getBoolean("cache.overflowToDisk");
-//            final boolean eternal = config.getBoolean("cache.eternal");
-//            final int timeToLiveSeconds = config.getInt("cache.timeToLiveSeconds", CACHE_DEFAULT_TIME_TO_LIVE);
-//            final int timeToIdleSeconds = config.getInt("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
-//
-//            Cache cache = new Cache(new CacheConfiguration(EMBEDDED_CACHE_NAME, cacheSize)
-//                    .overflowToDisk(overflowToDisk)
-//                    .eternal(eternal)
-//                    .timeToLiveSeconds(timeToLiveSeconds)
-//                    .timeToIdleSeconds(timeToIdleSeconds));
-//            cacheManager.addCache(cache);
-//            log.info("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
-//        }
-//    }
-//
-//    protected String cacheRetrieve(String assetId) {
-//        log.info("trying to retrieving from cache with assetId: {}", assetId);
-//        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
-//        Element element = cache.get(assetId);
-//        if (element == null) {
-//            log.info("trying failed with assetId: {} .. return null", assetId);
-//            return null;
-//        } else {
-//            log.info("trying succeeded to retrieving from cache with assetId: {}", assetId);
-//            return (String) element.getObjectValue();
-//        }
-//    }
-//
-//    protected void cacheStore(String assetId, String embeddedCode) {
-//        log.info("storing to cache with assetId: {} and embedded code : {}", assetId, embeddedCode);
-//        Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
-//        Element element = new Element(assetId, embeddedCode);
-//        cache.put(element);
-//    }
+    public static class MediaMosaResourceThumbnailJobInfo extends RepositoryJobInfo {
+
+        private final String handleIdentifier;
+
+        public MediaMosaResourceThumbnailJobInfo(final String handleIdentifier, final String jobGroup) {
+            super(HippoNodeType.HIPPO_REQUEST, jobGroup, MediaMosaThumbnailJob.class);
+            this.handleIdentifier = handleIdentifier;
+            setAttribute(HIPPOSCHED_SUBJECT_ID, handleIdentifier);
+        }
+
+        @Override
+        public Node createNode(final Session session) throws RepositoryException {
+            final Node handleNode = session.getNodeByIdentifier(handleIdentifier);
+            return handleNode.addNode(HippoNodeType.HIPPO_REQUEST, HIPPOSCHED_WORKFLOW_JOB);
+        }
+    }
+
 }

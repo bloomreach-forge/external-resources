@@ -1,15 +1,32 @@
 package org.onehippo.forge.externalresource.api.utils;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Calendar;
 
 /**
@@ -38,13 +55,12 @@ public class Utils {
     public static boolean resolveThumbnailToVideoNode(String imageUrl, Node node) {
         try {
             if (node.isNodeType("hippoexternal:video")) {
-                org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
-                HttpMethod getMethod = new GetMethod(imageUrl);
+                HttpClient client = getHttpClient();
                 InputStream is = null;
                 try {
-                    client.executeMethod(getMethod);
-                    is = getMethod.getResponseBodyAsStream();
-                    String mimeType = getMethod.getResponseHeader("content-type").getValue();
+                    HttpResponse httpResponse = client.execute(new HttpGet(imageUrl));
+                    is = httpResponse.getEntity().getContent();
+                    String mimeType = httpResponse.getFirstHeader("content-type").getValue();
                     if (mimeType.startsWith("image")) {
                         if (node.hasNode("hippoexternal:thumbnail")) {
                             Node thumbnail = node.getNode("hippoexternal:thumbnail");
@@ -65,6 +81,35 @@ public class Utils {
             log.error("", e);
         }
         return false;
+    }
+
+    public static HttpClient getHttpClient() {
+        HttpClientBuilder b = HttpClientBuilder.create();
+
+        SSLContext sslContext = null;
+        try {
+            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    return true;
+                }
+            }).build();
+        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+            e.printStackTrace();
+        }
+        b.setSSLContext(sslContext);
+
+        HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+
+        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslSocketFactory)
+                .build();
+        // allows multi-threaded use
+        PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+        b.setConnectionManager(connMgr);
+
+        return b.build();
     }
 
 }

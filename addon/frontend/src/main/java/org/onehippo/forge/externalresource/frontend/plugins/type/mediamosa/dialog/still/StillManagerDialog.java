@@ -1,16 +1,11 @@
 package org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.still;
 
 import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.JobDetailsType;
-import nl.uva.mediamosa.model.JobType;
-import nl.uva.mediamosa.model.Response;
-import nl.uva.mediamosa.model.StillDetailType;
-import nl.uva.mediamosa.model.StillType;
-import nl.uva.mediamosa.model.UploadTicketType;
+import nl.uva.mediamosa.model.*;
 import nl.uva.mediamosa.util.ServiceException;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
@@ -30,11 +25,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.*;
 import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.time.Duration;
@@ -49,6 +40,7 @@ import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidgetSettings;
 import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobState;
 import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
+import org.onehippo.forge.externalresource.api.utils.Utils;
 import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.AbstractExternalResourceDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,13 +50,7 @@ import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @version $Id$
@@ -163,19 +149,18 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
                     if (detail.getStillId().equals(id)) {
                         String url = detail.getStillTicket();
 
-                        HttpClient client = new HttpClient();
-                        HttpMethod getMethod = new GetMethod(url);
-                        client.executeMethod(getMethod);
-                        String mimeType = getMethod.getResponseHeader("content-type").getValue();
+                        HttpClient client = Utils.getHttpClient();
+                        HttpResponse httpResponse = client.execute(new HttpGet(url));
+                        String mimeType = httpResponse.getFirstHeader("content-type").getValue();
                         if (!mimeType.startsWith("image")) {
                             log.error("Illegal mimetype used: {}", mimeType);
                             throw new IllegalArgumentException();
                         }
-                        is = getMethod.getResponseBodyAsStream();
+                        is = httpResponse.getEntity().getContent();
                         node.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(is));
                         node.setProperty("jcr:mimeType", mimeType);
                         node.setProperty("jcr:lastModified", Calendar.getInstance());
-                        Map<String,String> map = new HashMap<>();
+                        Map<String, String> map = new HashMap<>();
                         map.put("mediafile_id", mediaId);
                         map.put("still_id", id);
                         log.info(service.setDefaultStill(assetId, resourceManager.getUsername(), map).getHeader().getRequestResult());

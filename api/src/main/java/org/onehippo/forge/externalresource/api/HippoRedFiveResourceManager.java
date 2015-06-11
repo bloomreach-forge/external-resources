@@ -1,11 +1,10 @@
 package org.onehippo.forge.externalresource.api;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
@@ -15,10 +14,10 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 import org.hippoecm.frontend.editor.plugins.resource.MimeTypeHelper;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
-import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.gallery.imageutil.ImageUtils;
 import org.hippoecm.frontend.plugins.gallery.model.GalleryException;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
+import org.onehippo.forge.externalresource.api.utils.Utils;
 import org.onehippo.forge.externalresource.resize.ImageProcessorRule;
 import org.onehippo.forge.externalresource.resize.ResizeToFitResizeRule;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ import java.util.Calendar;
  * @version $Id$
  */
 
-public class HippoRedFiveResourceManager extends ResourceManager implements ExternalService{
+public class HippoRedFiveResourceManager extends ResourceManager implements ExternalService {
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(HippoRedFiveResourceManager.class);
 
@@ -74,13 +73,11 @@ public class HippoRedFiveResourceManager extends ResourceManager implements Exte
         String videoUrl = document.getElementsByTagName("url").item(0).getTextContent();
         String imageUrl = document.getElementsByTagName("image").item(0).getTextContent();
 
-        org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
-        HttpMethod getMethod = new GetMethod(imageUrl);
+        HttpClient client = Utils.getHttpClient();
+        HttpResponse httpResponse = client.execute(new HttpGet(imageUrl));
 
-        client.executeMethod(getMethod);
-
-        InputStream is = getMethod.getResponseBodyAsStream();
-        String mimeType = getMethod.getResponseHeader("content-type").getValue();
+        InputStream is = httpResponse.getEntity().getContent();
+        String mimeType = httpResponse.getFirstHeader("content-type").getValue();
 
         Node preview;
         if (node.hasNode("hippoexternal:preview")) {

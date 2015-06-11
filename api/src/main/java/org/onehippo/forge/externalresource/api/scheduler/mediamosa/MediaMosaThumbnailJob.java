@@ -2,12 +2,14 @@ package org.onehippo.forge.externalresource.api.scheduler.mediamosa;
 
 import nl.uva.mediamosa.model.AssetDetailsType;
 import nl.uva.mediamosa.util.ServiceException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
 import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
+import org.onehippo.forge.externalresource.api.utils.Utils;
 import org.onehippo.repository.scheduling.RepositoryJob;
 import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
 import org.slf4j.Logger;
@@ -51,14 +53,12 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
                     if (StringUtils.isNotBlank(detail.getVpxStillUrl())) {
                         String imageUrl = detail.getVpxStillUrl();
                         //Utils.resolveThumbnailToVideoNode(imageUrl, mediamosaAsset);
-                        org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
-                        client.getHttpConnectionManager().getParams().setConnectionTimeout(CONNECTION_TIMEOUT);
-                        HttpMethod getMethod = new GetMethod(imageUrl);
+                        HttpClient client = Utils.getHttpClient();
                         InputStream is = null;
                         try {
-                            client.executeMethod(getMethod);
-                            is = getMethod.getResponseBodyAsStream();
-                            String mimeType = getMethod.getResponseHeader("content-type").getValue();
+                            HttpResponse httpResponse = client.execute(new HttpGet(imageUrl));
+                            is = httpResponse.getEntity().getContent();
+                            String mimeType = httpResponse.getFirstHeader("content-type").getValue();
                             if (mimeType.startsWith("image")) {
                                 if (mediamosaAsset.hasNode("hippoexternal:thumbnail")) {
                                     Node thumbnail = mediamosaAsset.getNode("hippoexternal:thumbnail");

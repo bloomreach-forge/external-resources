@@ -1,11 +1,8 @@
 package org.onehippo.forge.externalresource.api.scheduler.synchronization;
 
+import org.hippoecm.repository.api.HippoNodeType;
 import org.onehippo.cms7.services.HippoServiceRegistry;
-import org.onehippo.repository.scheduling.RepositoryJob;
-import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
-import org.onehippo.repository.scheduling.RepositoryJobInfo;
-import org.onehippo.repository.scheduling.RepositoryJobSimpleTrigger;
-import org.onehippo.repository.scheduling.RepositoryScheduler;
+import org.onehippo.repository.scheduling.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +12,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import java.util.Date;
+
+import static org.hippoecm.repository.quartz.HippoSchedJcrConstants.HIPPOSCHED_SUBJECT_ID;
+import static org.hippoecm.repository.quartz.HippoSchedJcrConstants.HIPPOSCHED_WORKFLOW_JOB;
 
 /**
  * @version $Id$
@@ -39,19 +39,15 @@ public class SynchronizationExecutorJob implements RepositoryJob {
             NodeIterator it = session.getWorkspace().getQueryManager().createQuery(QUERY, Query.XPATH).execute().getNodes();
             while (it.hasNext()) {
                 Node node = it.nextNode();
-                RepositoryJobInfo jobInfo = new RepositoryJobInfo(node.getIdentifier(), jobGroup, SynchronizationJob.class);
+                Node handleNode = node.getParent();
+                RepositoryJobInfo jobInfo = new SynchronizationJobInfo(handleNode.getIdentifier(), jobGroup);
                 jobInfo.setAttribute(SynchronizationJob.IDENTIFIER, node.getIdentifier());
                 RepositoryJobSimpleTrigger trigger = new RepositoryJobSimpleTrigger("now", new Date());
                 repositoryScheduler.scheduleJob(jobInfo, trigger);
             }
-            //TODO call listener for SynchronizationListPanel
-//            if(jobDataMap.containsKey("listener")){
-//                SynchronizationListener listener = (SynchronizationListener) jobDataMap.get("listener");
-//                listener.onFinished();
-//            }
         } catch (RepositoryException e) {
             if (LOG.isDebugEnabled()) {
-                LOG.error("External resources cannot find nodes hippoexternal:synchronizable" , e);
+                LOG.error("External resources cannot find nodes hippoexternal:synchronizable", e);
             } else {
                 LOG.error("External resources cannot find nodes hippoexternal:synchronizable");
             }
@@ -61,4 +57,23 @@ public class SynchronizationExecutorJob implements RepositoryJob {
             }
         }
     }
+
+    private static class SynchronizationJobInfo extends RepositoryJobInfo {
+
+        private final String handleIdentifier;
+
+        public SynchronizationJobInfo(final String handleIdentifier, final String jobGroup) {
+            super(HippoNodeType.HIPPO_REQUEST, jobGroup, SynchronizationJob.class);
+            this.handleIdentifier = handleIdentifier;
+            setAttribute(HIPPOSCHED_SUBJECT_ID, handleIdentifier);
+        }
+
+        @Override
+        public Node createNode(final Session session) throws RepositoryException {
+            final Node handleNode = session.getNodeByIdentifier(handleIdentifier);
+            return handleNode.addNode(HippoNodeType.HIPPO_REQUEST, HIPPOSCHED_WORKFLOW_JOB);
+        }
+    }
+
+
 }

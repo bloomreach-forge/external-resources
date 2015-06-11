@@ -48,15 +48,15 @@
 -->
 
     <!-- third party -->
-    <ehcache.version>2.2.0</ehcache.version>
+    <ehcache.version>2.6.11</ehcache.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
-    <httpcomponents-httpclient.version>4.1</httpcomponents-httpclient.version>
-    <httpcomponents-httpmime.version>4.1-beta1</httpcomponents-httpmime.version>
-    <mediamosa-api.version>0.0.5h</mediamosa-api.version>
+    <httpcomponents-httpclient.version>4.5</httpcomponents-httpclient.version>
+    <httpcomponents-httpmime.version>4.5</httpcomponents-httpmime.version>
+    <mediamosa-api.version>0.0.6h</mediamosa-api.version>
 
     <!-- dev related -->
-    <junit.version>4.10</junit.version>
-    <extension.wagon-svn.version>1.9</extension.wagon-svn.version>
+    <junit.version>4.12</junit.version>
+    <extension.wagon-svn.version>1.12</extension.wagon-svn.version>
   </properties>
 
   <scm>
@@ -170,12 +170,6 @@
       </dependency>
 
       <!-- apache http -->
-
-      <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>${commons-httpclient.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
