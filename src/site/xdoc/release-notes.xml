@@ -21,6 +21,11 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="1.09.06">
+        <ul>
+          <li>Fix error with bootstrap explicit merge</li>
+        </ul>
+      </subsection>
       <subsection name="1.09.05">
         <ul>
           <li>New version of MediaMosa api (version 0.0.6h). Replaced old commons.httpclient 3.1 with apache.httpclient version 4.5 for compatibility</li>
