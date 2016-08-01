@@ -54,3 +54,58 @@ common/src/main/java/org/onehippo/forge/externalresource/api/Embeddable.java -te
 common/src/main/java/org/onehippo/forge/externalresource/api/EmbeddedHelper.java -text
 /pom.xml -text svneol=unset#text/plain
 src/site/resources/MANUAL_NL.txt -text
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/gallery/film-add-icon.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/gallery/impl/video.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/gallery/import-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/gallery/upload-video.gif -text
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/DestinationDialog.html -text
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/DestinationDialog.java -text
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/actions/commit-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/actions/update-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/copy-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/delete-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/edit-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/editing/document-save-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/editing/document-saveclose-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/move-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/rename-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/update-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/synchronize/where-used-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/type/mediamosa/dialog/imports/no-thumb.jpg -text svneol=unset#image/jpeg
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/frontend/plugins/type/mediamosa/dialog/still/delete-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/columns/icon/red5.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/columns/icon/youtube.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/hippo-gallery-folder.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/image-add-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/new-folder-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/render/res/mediamosa.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/render/res/red5.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/render/res/video-16.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/render/res/video.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/render/res/videoicon-16.gif -text
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/render/res/youtube.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/toggle_list.png -text svneol=unset#image/png
+trunk/addon/frontend/src/main/java/org/onehippo/forge/externalresource/gallery/toggle_thumb.png -text svneol=unset#image/png
+trunk/addon/reports/src/main/java/org/onehippo/forge/externalresource/reports/panel/statistics-report-48.png -text svneol=unset#image/png
+trunk/addon/reports/src/main/java/org/onehippo/forge/externalresource/reports/panel/synchronization-48.png -text svneol=unset#image/png
+trunk/addon/reports/src/main/java/org/onehippo/forge/externalresource/reports/plugins/synchronization/delete-16.png -text svneol=unset#image/png
+trunk/addon/reports/src/main/java/org/onehippo/forge/externalresource/reports/plugins/synchronization/refresh-icon.png -text svneol=unset#image/png
+trunk/addon/reports/src/main/java/org/onehippo/forge/externalresource/reports/plugins/synchronization/update-16.png -text svneol=unset#image/png
+trunk/addon/repository/src/main/resources/configuration/external-services-module.xml -text
+trunk/addon/repository/src/main/resources/hippoexternal.cnd -text
+trunk/addon/repository/src/main/resources/types/mediamosa/hippo-mediamosa.cnd -text
+trunk/addon/repository/src/main/resources/types/red5/hippo-red5.cnd -text
+trunk/addon/repository/src/main/resources/types/youtube/hippo-youtube.cnd -text
+trunk/api/src/main/java/org/onehippo/forge/externalresource/api/ExternalService.java -text
+trunk/api/src/main/java/org/onehippo/forge/externalresource/api/MediamosaRemoteService.java -text
+trunk/api/src/main/java/org/onehippo/forge/externalresource/api/ResourceHandler.java -text
+trunk/api/src/main/java/org/onehippo/forge/externalresource/api/module/ExternalServicesModule.java -text
+trunk/api/src/main/java/org/onehippo/forge/externalresource/api/utils/MediaMosaEmbeddedHelper.java -text
+trunk/api/src/main/java/org/onehippo/forge/externalresource/api/utils/MediaMosaServices.java -text
+trunk/api/src/test/java/org/onehippo/forge/externalresource/api/scheduler/ExternalResourceScheduler.java -text
+trunk/api/src/test/java/org/onehippo/forge/externalresource/api/scheduler/synchronization/FakeMassSync.java -text
+trunk/api/src/test/java/org/onehippo/forge/externalresource/api/scheduler/synchronization/FakeSync.java -text
+trunk/common/src/main/java/org/onehippo/forge/externalresource/api/Embeddable.java -text
+trunk/common/src/main/java/org/onehippo/forge/externalresource/api/EmbeddedHelper.java -text
+trunk/pom.xml -text svneol=unset#text/plain
+trunk/src/site/resources/MANUAL_NL.txt -text

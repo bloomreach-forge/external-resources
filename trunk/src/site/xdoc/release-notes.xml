@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN" "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<!--
+    Copyright 2011-2013 Hippo
+
+    Licensed under the Apache License, Version 2.0 (the  "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document>
+  <properties>
+    <title>Release Notes</title>
+  </properties>
+  <body>
+    <section name="Release Notes">
+      <subsection name="1.09.06">
+        <ul>
+          <li>Fix error with bootstrap explicit merge</li>
+        </ul>
+      </subsection>
+      <subsection name="1.09.05">
+        <ul>
+          <li>New version of MediaMosa api (version 0.0.6h). Replaced old commons.httpclient 3.1 with apache.httpclient version 4.5 for compatibility</li>
+          <li>Fixed issue with scheduled MediaMosa jobs blocking the scheduler due to not being removed after run</li>
+          <li>Fixed issue with MediaMosa not always connecting correctly over https://</li>
+          <li>Various third party jars now use the latest version to avoid compatibility issues with Hippo 7.9</li>
+        </ul>
+      </subsection>
+      <subsection name="1.09.04">
+        <ul>
+          <li>Import menu item made optional.</li>
+          <li>Upgrade to hippos.cms.version 2.26.13 to fix still image flash uploads. see https://issues.onehippo.com/browse/CMS7-8589</li>
+        </ul>
+      </subsection>
+      <subsection name="1.09.03">
+        <ul>
+          <li>Better handling of synchronize job scheduling</li>
+        </ul>
+      </subsection>
+      <subsection name="1.09.02">
+        <ul>
+          <li>Cleaned up code for MediaMosa helper interfaces</li>
+          <li>Add size contstraint on upload dialog</li>
+          <li>fix the stillviewpanel</li>
+        </ul>
+      </subsection>
+      <subsection name="1.09.01">
+        <ul>
+          <li>Put SynchronizationJobs under same JobGroup as SynchronizationExecutorJob</li>
+          <li>Removed unused attribute that caused NPE</li>
+          <li>Improved logging of SynchronizationJobs</li>
+        </ul>
+      </subsection>
+      <subsection name="1.09.00">
+        <ul>
+          <li>Migrate to Hippo 7.9</li>
+          <li>externalresources-common should be included in the shared classloader</li>
+        </ul>
+      </subsection>
+      <subsection name="1.08.02">
+        <ul>
+          <li>Do not create stills in MediaMosa for audio files.</li>
+        </ul>
+      </subsection>
+      <subsection name="1.08.01">
+        <ul>
+          <li>Add transcode profile parameter to configuration and MediaMosa upload properties</li>
+        </ul>
+      </subsection>
+      <subsection name="1.08.00">
+        <ul>
+          <li><strong>Compatibility with Hippo 7.8.3</strong>, including bump mediamosa-api version to 0.0.5h</li>
+          <li>More robustness in <code>org.onehippo.forge.externalresource.frontend.plugins.common.field.EmbeddablePlugin</code></li>
+          <li>Add hippo:availability to prototypes, see similar selection plugin issue <a href="https://issues.onehippo.com/browse/HIPPLUG-497">HIPPLUG-497</a></li>
+          <li>Rename package <code>org.onehippo.forge.externalresource.api.scheduale</code> to <code>scheduler</code>,
+            also <code>schedular</code> to <code>scheduler</code> and more.</li>
+        </ul>
+      </subsection>
+      <subsection name="1.07.06">
+        <ul>
+          <li>Compatibility with CMS 2.22.11 (changed UploadDialog constructor)</li>
+          <li>Add HST bean HippoExternalDisplayImageBean for the display image (thumbnail) of a video</li>
+        </ul>
+      </subsection>
+      <subsection name="1.07.05">
+        <ul>
+          <li>In StillManagerDialog, replace a hard coded user name 'Hippo' with resourcemanager.getUsername().</li>
+        </ul>
+      </subsection>
+     <subsection name="1.07.04">
+        <ul>
+          <li>Convert the MediaMosa resource manager configuration setting 'width' from int to Long as JCR only supports Long values.</li>
+        </ul>
+      </subsection>
+      <subsection name="1.07.03">
+        <ul>
+          <li>Better extendability of org.onehippo.forge.externalresource.reports.plugins.statistics.MediaMosaStatisticsProvider</li>
+        </ul>
+      </subsection>
+      <subsection name="1.07.02">
+        <ul>
+          <li>HST module depends no longer on externalresources-api module but on the new externalresources-common module
+            so dependencies to CMS, wicket etc. are no longer pulled in</li>
+          <li>Configurable cache settings</li>
+          <li>Fix NPE on hippomediamosa:assetid</li>
+        </ul>
+      </subsection>
+      <subsection name="1.07.01">
+        <ul>
+          <li>Second release</li>
+          <li>Works with the 7.7 GA release, previous version doesn't work with 7.7</li>
+        </ul>
+      </subsection>
+      <subsection name="1.07.00">
+        <ul>
+          <li>First release on 7.6</li>
+        </ul>
+      </subsection>
+    </section>
+  </body>
+</document>
