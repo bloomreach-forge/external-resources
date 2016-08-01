@@ -21,10 +21,28 @@
   </properties>
   <body>
     <section name="Release Notes">
-      <subsection name="1.09.06">
+      <subsection name="1.09.12">
         <ul>
           <li>Fix error with bootstrap explicit merge</li>
         </ul>
+      </subsection>
+      <subsection name="1.09.11">
+        non-existing due to release errors
+      </subsection>
+      <subsection name="1.09.10">
+        non-existing due to release errors
+      </subsection>
+      <subsection name="1.09.09">
+        non-existing due to release errors
+      </subsection>
+      <subsection name="1.09.08">
+        non-existing due to release errors
+      </subsection>
+      <subsection name="1.09.07">
+        non-existing due to release errors
+      </subsection>
+      <subsection name="1.09.06">
+        non-existing due to release errors
       </subsection>
       <subsection name="1.09.05">
         <ul>
