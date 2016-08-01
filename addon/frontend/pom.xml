@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.onehippo.forge</groupId>
     <artifactId>externalresource-addon</artifactId>
-    <version>1.09.07</version>
+    <version>1.09.08-SNAPSHOT</version>
   </parent>
 
   <artifactId>externalresource-addon-frontend</artifactId>
