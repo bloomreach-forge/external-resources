@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="hippo-reports" xmlns:sv="http://www.jcp.org/jcr/sv/1.0">
-  <sv:property sv:name="jcr:primaryType" sv:type="Name">
-    <sv:value>frontend:plugincluster</sv:value>
-  </sv:property>
+<sv:node sv:name="hippo-reports" xmlns:sv="http://www.jcp.org/jcr/sv/1.0"
+         xmlns:h="http://www.onehippo.org/jcr/xmlimport" h:merge="combine">
 
   <sv:node sv:name="statistics">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -51,7 +49,8 @@
       <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin</sv:value>
     </sv:property>
     <sv:property sv:name="statistics.provider.class" sv:type="String">
-      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider</sv:value>
+      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider
+      </sv:value>
     </sv:property>
     <sv:property sv:name="translator.id" sv:type="String">
       <sv:value>service.reports.mm-played-streams.translator</sv:value>
@@ -95,7 +94,7 @@
             <sv:value>Data not available</sv:value>
           </sv:property>
         </sv:node>
-         <sv:node sv:name="hippo:translation">
+        <sv:node sv:name="hippo:translation">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>hippo:translation</sv:value>
           </sv:property>
@@ -176,7 +175,8 @@
       <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin</sv:value>
     </sv:property>
     <sv:property sv:name="statistics.provider.class" sv:type="String">
-      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider</sv:value>
+      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider
+      </sv:value>
     </sv:property>
     <sv:property sv:name="translator.id" sv:type="String">
       <sv:value>service.reports.mm-data-usage-video.translator</sv:value>
@@ -220,7 +220,7 @@
             <sv:value>Data not available</sv:value>
           </sv:property>
         </sv:node>
-         <sv:node sv:name="hippo:translation">
+        <sv:node sv:name="hippo:translation">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>hippo:translation</sv:value>
           </sv:property>
@@ -416,7 +416,8 @@
       <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin</sv:value>
     </sv:property>
     <sv:property sv:name="statistics.provider.class" sv:type="String">
-      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularCollectionsStatisticsProvider</sv:value>
+      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularCollectionsStatisticsProvider
+      </sv:value>
     </sv:property>
     <sv:property sv:name="translator.id" sv:type="String">
       <sv:value>service.reports.mm-popular-collections.translator</sv:value>
@@ -539,7 +540,8 @@ props: mediafileId, ownerId, groupId, filename, assetId, requested, appId -->
       <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin</sv:value>
     </sv:property>
     <sv:property sv:name="statistics.provider.class" sv:type="String">
-      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularMediaFilesStatisticsProvider</sv:value>
+      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularMediaFilesStatisticsProvider
+      </sv:value>
     </sv:property>
     <sv:property sv:name="translator.id" sv:type="String">
       <sv:value>service.reports.mm-popular-streams.translator</sv:value>
@@ -641,7 +643,8 @@ props: mediafileId, ownerId, groupId, filename, assetId, requested, appId -->
       <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore</sv:value>
     </sv:property>
     <sv:property sv:name="statistics.provider.class" sv:type="String">
-      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider</sv:value>
+      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider
+      </sv:value>
     </sv:property>
     <sv:property sv:multiple="true" sv:name="service.parameter.names" sv:type="String">
       <sv:value>year</sv:value>
@@ -773,7 +776,8 @@ props: mediafileId, ownerId, groupId, filename, assetId, requested, appId -->
       <sv:value>Hippo</sv:value>
     </sv:property>
     <sv:property sv:name="statistics.provider.class" sv:type="String">
-      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider</sv:value>
+      <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider
+      </sv:value>
     </sv:property>
     <sv:property sv:name="store.class" sv:type="String">
       <sv:value>org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore</sv:value>
