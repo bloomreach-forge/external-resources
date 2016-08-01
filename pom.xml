@@ -11,7 +11,7 @@
   <name>Hippo External Resource Project</name>
   <groupId>org.onehippo.forge</groupId>
   <artifactId>externalresource</artifactId>
-  <version>1.09.07-SNAPSHOT</version>
+  <version>1.09.06-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
