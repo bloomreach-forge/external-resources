@@ -60,18 +60,29 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:https://forge.onehippo.org/svn/external/trunk</connection>
-    <developerConnection>scm:svn:https://forge.onehippo.org/svn/external/trunk</developerConnection>
-    <url>https://forge.onehippo.org/svn/external/trunk</url>
+    <connection>scm:git:git@github.com:onehippo-forge/external-resources.git</connection>
+    <developerConnection>scm:git:git@github.com:onehippo-forge/external-resources.git</developerConnection>
+    <url>https://github.com/onehippo-forge/external-resources.git</url>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
     <repository>
+      <name>Hippo Maven 2 Forge Repository</name>
+      <id>hippo-maven2-forge</id>
+      <url>https://maven.onehippo.com/content/repositories/forge-releases/</url>
       <uniqueVersion>false</uniqueVersion>
-      <id>external-maven-repo</id>
-      <url>svn:https://forge.onehippo.org/svn/external/maven2/</url>
     </repository>
   </distributionManagement>
+
+  <issueManagement>
+    <url>https://issues.onehippo.com/projects/HIPFORGE</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Travic CI</system>
+    <url>https://travis-ci.org/onehippo-forge/external-resources</url>
+  </ciManagement>
 
   <licenses>
     <license>
@@ -270,6 +281,15 @@
 
   <build>
     <defaultGoal>package</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <outputDirectory>docs</outputDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
     <extensions>
       <extension>
         <groupId>org.jvnet.wagon-svn</groupId>

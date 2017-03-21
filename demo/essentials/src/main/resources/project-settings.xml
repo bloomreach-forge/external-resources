@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project>
+  <projectNamespace>externalresourcedemo</projectNamespace>
+  <confirmParams>false</confirmParams>
+  <selectedBeansPackage>org.onehippo.forge.externalresourcedemo.beans</selectedBeansPackage>
+  <selectedComponentsPackage>org.onehippo.forge.externalresourcedemo.components</selectedComponentsPackage>
+  <selectedRestPackage>org.onehippo.forge.externalresourcedemo.rest</selectedRestPackage>
+  <setupDone>false</setupDone>
+  <templateLanguage>freemarker</templateLanguage>
+  <useSamples>true</useSamples>
+</project>
