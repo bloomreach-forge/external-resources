@@ -15,15 +15,20 @@
  */
 package org.onehippo.forge.externalresource.gallery;
 
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.request.resource.PackageResourceReference;
-import org.apache.wicket.request.resource.ResourceReference;
-import org.onehippo.forge.externalresource.gallery.columns.FallbackVideoGalleryListColumnProvider;
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
@@ -35,6 +40,8 @@ import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.frontend.PluginRequestTarget;
 import org.hippoecm.frontend.i18n.model.NodeTranslator;
 import org.hippoecm.frontend.model.JcrHelper;
@@ -42,26 +49,20 @@ import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
 import org.hippoecm.frontend.plugins.standards.DocumentListFilter;
+import org.hippoecm.frontend.plugins.standards.icon.HippoIcon;
 import org.hippoecm.frontend.plugins.standards.list.DocumentsProvider;
 import org.hippoecm.frontend.plugins.standards.list.ExpandCollapseListingPlugin;
 import org.hippoecm.frontend.plugins.standards.list.IListColumnProvider;
-import org.hippoecm.frontend.plugins.yui.AbstractYuiBehavior;
-import org.hippoecm.frontend.plugins.yui.HippoNamespace;
 import org.hippoecm.frontend.plugins.yui.JsFunction;
-import org.hippoecm.frontend.plugins.yui.header.IYuiContext;
 import org.hippoecm.frontend.plugins.yui.widget.WidgetBehavior;
 import org.hippoecm.frontend.plugins.yui.widget.WidgetSettings;
+import org.hippoecm.frontend.skin.Icon;
 import org.hippoecm.frontend.widgets.LabelWithTitle;
 import org.hippoecm.repository.api.HippoNodeType;
+import org.onehippo.forge.externalresource.gallery.columns.FallbackVideoGalleryListColumnProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import static org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin.Mode.LIST;
 import static org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin.Mode.THUMBNAILS;
@@ -94,19 +95,9 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
     public VideoGalleryPlugin(final IPluginContext context, final IPluginConfig config) throws RepositoryException {
         super(context, config);
 
-        add(new AbstractYuiBehavior() {
-
-            private static final long serialVersionUID = -263770450388652348L;
-
-            @Override
-            public void addHeaderContribution(IYuiContext context) {
-                context.addModule(HippoNamespace.NS, "accordionmanager");
-            }
-        });
-
-
         this.setClassName("hippo-video-images");
-        getSettings().setAutoWidthClassName("gallery-name");
+        //FIXME
+        // getSettings().setAutoWidthClassName("gallery-name");
 
         add(videoList = new WebMarkupContainer("video-list"));
         videoList.setOutputMarkupId(true);
@@ -118,6 +109,8 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
                 "function(sizes) {return {width: sizes.wrap.w, height: sizes.wrap.h-25};}"));
         videoList.add(new WidgetBehavior(settings));
 
+        addButton(new VideoGalleryModeButton("listButton", Mode.LIST, Icon.LIST_UL));
+        addButton(new VideoGalleryModeButton("thumbnailsButton", Mode.THUMBNAILS, Icon.THUMBNAILS));
         addButton(toggleLink = new AjaxLink<String>("toggle", new Model<String>()) {
 
             private static final long serialVersionUID = 4491421913280564773L;
@@ -317,6 +310,34 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
             target.focusComponent(listItem);
 
             previousSelected = listItem;
+        }
+    }
+
+    private class VideoGalleryModeButton extends AjaxLink<String> {
+
+        private final VideoGalleryPlugin.Mode activatedMode;
+
+        public VideoGalleryModeButton(final String id, final VideoGalleryPlugin.Mode activatedMode, final Icon icon) {
+            super(id);
+
+            this.activatedMode = activatedMode;
+            setOutputMarkupId(true);
+
+            add(HippoIcon.fromSprite("icon", icon));
+        }
+
+        @Override
+        protected void onComponentTag(final ComponentTag tag) {
+            if (mode == activatedMode) {
+                tag.put("class", "gallery-mode-active");
+            }
+            super.onComponentTag(tag);
+        }
+
+        @Override
+        public void onClick(final AjaxRequestTarget target) {
+            mode = activatedMode;
+            this.onModelChanged();
         }
     }
 
