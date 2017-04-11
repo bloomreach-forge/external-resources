@@ -15,6 +15,15 @@
  */
 package org.onehippo.forge.externalresource.gallery;
 
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -59,14 +68,6 @@ import org.onehippo.forge.externalresource.gallery.columns.FallbackVideoGalleryL
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin.Mode.LIST;
 import static org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin.Mode.THUMBNAILS;
@@ -77,15 +78,12 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
     @SuppressWarnings("unused")
     private final static String SVN_ID = "$Id: ";
 
-    final static Logger log = LoggerFactory.getLogger(VideoGalleryPlugin.class);
-
-    private static final String CONFIG_GALLERY_THUMBNAIL_SIZE = "gallery.thumbnail.size";
+    private final static Logger log = LoggerFactory.getLogger(VideoGalleryPlugin.class);
 
     private static final String VIDEO_BANK_CSS = "VideoGalleryPlugin.css";
-    private static final String TOGGLE_LIST_IMG = "toggle_list.png";
-    private static final String TOGGLE_THUMBNAIL_IMG = "toggle_thumb.png";
 
     private static final String VIDEO_FOLDER_TYPE = "hippoexternal:folder";
+    private static final int THUMBNAIL_SIZE = 60;
 
 
     enum Mode {
@@ -94,15 +92,12 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
 
     private Mode mode = THUMBNAILS;
 
-    private WebMarkupContainer videoList;
-//    private AjaxLink<String> toggleLink;
-//    private Image toggleImage;
-   //only thing for this one is maybe to change some css class names!
     public VideoGalleryPlugin(final IPluginContext context, final IPluginConfig config) throws RepositoryException {
         super(context, config);
 
         this.setClassName("hippo-video-images");
 
+        WebMarkupContainer videoList;
         add(videoList = new WebMarkupContainer("video-list"));
         videoList.setOutputMarkupId(true);
         videoList.setVisible(false);
@@ -113,24 +108,6 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
                 "function(sizes) {return {width: sizes.wrap.w, height: sizes.wrap.h-25};}"));
         videoList.add(new WidgetBehavior(settings));
 
-//        addButton(toggleLink = new AjaxLink<String>("toggle", new Model<String>()) {
-//
-//            private static final long serialVersionUID = 4491421913280564773L;
-//
-//            @Override
-//            public void onClick(AjaxRequestTarget target) {
-//                mode = mode == LIST ? THUMBNAILS : LIST;
-//                redraw();
-//
-//            }
-//        });
-//        toggleLink.setOutputMarkupId(true);
-//
-//        toggleImage = new Image("toggleimg", TOGGLE_LIST_IMG);
-//        toggleImage.setOutputMarkupId(true);
-//        addButton(toggleImage);
-//        toggleLink.add(toggleImage);
-
         add(CssClass.append("image-gallery"));
         add(CssClass.append(new AbstractReadOnlyModel<String>() {
             @Override
@@ -139,25 +116,9 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
             }
         }));
 
-        addButton(new VideGalleryModeButton("listButton", LIST, Icon.LIST_UL));
-        addButton(new VideGalleryModeButton("thumbnailsButton", Mode.THUMBNAILS, Icon.THUMBNAILS));
+        addButton(new VideoGalleryModeButton("listButton", LIST, Icon.LIST_UL));
+        addButton(new VideoGalleryModeButton("thumbnailsButton", Mode.THUMBNAILS, Icon.THUMBNAILS));
     }
-
-//    @Override
-//    public void render(PluginRequestTarget target) {
-//        super.render(target);
-//        if (mode == LIST) {
-//            this.dataTable.setVisible(true);
-//            this.videoList.setVisible(false);
-//            toggleImage = new Image("toggleimg", TOGGLE_LIST_IMG);
-//        } else {
-//            this.dataTable.setVisible(false);
-//            this.videoList.setVisible(true);
-//            toggleImage = new Image("toggleimg", TOGGLE_THUMBNAIL_IMG);
-//        }
-//
-//        toggleLink.replace(toggleImage);
-//    }
 
     @Override
     public void renderHead(HtmlHeaderContainer container) {
@@ -191,10 +152,9 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
         }
     }
 
-    public List<ListColumn<Node>> getThumbnailModeColumns() {
-        int thumbnailSize = 32;
+    private List<ListColumn<Node>> getThumbnailModeColumns() {
         return Arrays.asList(
-                ImageGalleryColumnProviderPlugin.createIconColumn(thumbnailSize, thumbnailSize),
+                ImageGalleryColumnProviderPlugin.createIconColumn(THUMBNAIL_SIZE, THUMBNAIL_SIZE),
                 ImageGalleryColumnProviderPlugin.NAME_COLUMN
         );
     }
@@ -211,7 +171,7 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
         private static final long serialVersionUID = 9009788253056596052L;
         private org.apache.wicket.markup.repeater.Item<Node> previousSelected;
 
-        public VideoItemView(String id) {
+        private VideoItemView(String id) {
             super(id);
 
             setOutputMarkupId(true);
@@ -221,7 +181,7 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
 
         @Override
         protected Iterator<IModel<Node>> getItemModels() {
-            ArrayList<IModel<Node>> nodeModels = new ArrayList<IModel<Node>>();
+            ArrayList<IModel<Node>> nodeModels = new ArrayList<>();
 
             IDataProvider<Node> dataProvider = VideoGalleryPlugin.this.dataTable.getDataProvider();
             if (dataProvider != null) {
@@ -262,7 +222,7 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
 
         @Override
         protected void populateItem(final org.apache.wicket.markup.repeater.Item<Node> listItem) {
-            listItem.add(new AttributeAppender("class", true, new Model<String>("selected"), " ") {
+            listItem.add(new AttributeAppender("class", new Model<>("selected")) {
                 private static final long serialVersionUID = 7296628905659498502L;
 
                 @Override
@@ -354,11 +314,11 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
         }
     }
 
-    private class VideGalleryModeButton extends AjaxLink<String> {
+    private class VideoGalleryModeButton extends AjaxLink<String> {
 
         private final Mode activatedMode;
 
-        public VideGalleryModeButton(final String id, final Mode activatedMode, final Icon icon) {
+        private VideoGalleryModeButton(final String id, final Mode activatedMode, final Icon icon) {
             super(id);
 
             this.activatedMode = activatedMode;
