@@ -1,20 +1,20 @@
 package org.onehippo.forge.externalresource.gallery.render;
 
-import org.apache.wicket.request.resource.PackageResourceReference;
-import org.apache.wicket.request.resource.ResourceReference;
-import org.hippoecm.frontend.plugins.standards.list.resolvers.IconRenderer;
-import org.hippoecm.repository.api.HippoNodeType;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.hippoecm.frontend.plugins.standards.icon.HippoIcon;
+import org.hippoecm.frontend.plugins.standards.list.resolvers.IconRenderer;
+import org.hippoecm.repository.api.HippoNodeType;
+
 public class VideoIconRenderer extends IconRenderer {
 
     private static final long serialVersionUID = -4385582873739274710L;
 
-    private static final Map<String, String> VIDEOTYPE_TO_ICON = new HashMap<String, String>();
+    private static final Map<String, String> VIDEOTYPE_TO_ICON = new HashMap<>();
 
     static {
         VIDEOTYPE_TO_ICON.put("hippoyoutube:resource", "res/youtube.png");
@@ -24,7 +24,7 @@ public class VideoIconRenderer extends IconRenderer {
     }
 
     @Override
-    protected ResourceReference getResourceReference(Node node) throws RepositoryException {
+    protected HippoIcon getIcon(final String id, final Node node) throws RepositoryException {
         if (node.isNodeType(HippoNodeType.NT_HANDLE)) {
             Node item = node.getNode(node.getName());
             String primaryName = item.getPrimaryNodeType().getName();
@@ -35,9 +35,9 @@ public class VideoIconRenderer extends IconRenderer {
             } else {
                 iconPath = VIDEOTYPE_TO_ICON.get("default");
             }
-            return new PackageResourceReference(VideoIconRenderer.class, iconPath);
+            return HippoIcon.fromResource(id, new PackageResourceReference(VideoIconRenderer.class, iconPath));
         }
-        return super.getResourceReference(node);
+        return super.getIcon(id, node);
     }
 
 }

@@ -1,16 +1,18 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.Map;
+
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.*;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.string.Strings;
@@ -18,6 +20,7 @@ import org.apache.wicket.util.value.IValueMap;
 import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.dialog.AbstractDialog;
+import org.hippoecm.frontend.dialog.DialogConstants;
 import org.hippoecm.frontend.dialog.ExceptionDialog;
 import org.hippoecm.frontend.dialog.IDialogService;
 import org.hippoecm.frontend.editor.workflow.CopyNameHelper;
@@ -37,14 +40,7 @@ import org.hippoecm.frontend.service.IEditorManager;
 import org.hippoecm.frontend.service.ISettingsService;
 import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.session.UserSession;
-import org.hippoecm.repository.api.Document;
-import org.hippoecm.repository.api.HippoNode;
-import org.hippoecm.repository.api.StringCodec;
-import org.hippoecm.repository.api.StringCodecFactory;
-import org.hippoecm.repository.api.Workflow;
-import org.hippoecm.repository.api.WorkflowDescriptor;
-import org.hippoecm.repository.api.WorkflowException;
-import org.hippoecm.repository.api.WorkflowManager;
+import org.hippoecm.repository.api.*;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
 import org.onehippo.forge.externalresource.api.Synchronizable;
@@ -52,12 +48,6 @@ import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.Map;
 
 /**
  * @version $Id$
@@ -495,7 +485,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
 
         @Override
         public IValueMap getProperties() {
-            return MEDIUM;
+            return DialogConstants.MEDIUM;
         }
     }
 }

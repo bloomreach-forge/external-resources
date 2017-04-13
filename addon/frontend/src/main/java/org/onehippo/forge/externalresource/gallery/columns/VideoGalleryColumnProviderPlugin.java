@@ -15,11 +15,16 @@
  */
 package org.onehippo.forge.externalresource.gallery.columns;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.resource.CssPackageResource;
 import org.apache.wicket.request.resource.CssResourceReference;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
@@ -39,12 +44,6 @@ import org.hippoecm.frontend.plugins.standards.list.resolvers.EmptyRenderer;
 import org.hippoecm.frontend.plugins.standards.list.resolvers.IconAttributeModifier;
 import org.hippoecm.frontend.plugins.standards.list.resolvers.IconRenderer;
 import org.onehippo.forge.externalresource.gallery.render.VideoIconRenderer;
-
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class VideoGalleryColumnProviderPlugin extends AbstractListColumnProviderPlugin {
     private static final long serialVersionUID = 1L;
@@ -78,8 +77,8 @@ public class VideoGalleryColumnProviderPlugin extends AbstractListColumnProvider
         //image icon
         ListColumn<Node> column = new ListColumn<Node>(new Model<String>(""), null);
         if ("cssIconRenderer".equals(iconRenderer)) {
-            column.setRenderer(new EmptyRenderer<Node>());
-            column.setAttributeModifier(new DocumentTypeIconAttributeModifier());
+            column.setRenderer(EmptyRenderer.getInstance());
+            column.setAttributeModifier(DocumentTypeIconAttributeModifier.getInstance());
         } else if ("resourceIconRenderer".equals(iconRenderer)) {
             column.setRenderer(new IconRenderer());
             column.setAttributeModifier(new IconAttributeModifier());
@@ -93,7 +92,7 @@ public class VideoGalleryColumnProviderPlugin extends AbstractListColumnProvider
 
         //node name
         column = new ListColumn<Node>(new ClassResourceModel("video-name", Translations.class), "name");
-        column.setComparator(new NameComparator());
+        column.setComparator(NameComparator.getInstance());
         column.setCssClass("video-name");
         columns.add(column);
 
