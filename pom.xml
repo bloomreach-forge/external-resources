@@ -19,7 +19,7 @@
     <module>addon</module>
     <module>hst</module>
     <module>api</module>
-    <module>mediamosa-api</module>
+<!-- <module>mediamosa-api</module>  -->
   </modules>
 
 
