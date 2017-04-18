@@ -3,7 +3,7 @@
         "-//Apache Software Foundation//DTD XDOC 1.0//EN"
         "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2011-2012 Hippo
+    Copyright 2011-2017 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
     <section name="Using the MediaMosa Video Platform">
       <subsection name="Manual (in Dutch)">
         <p>
-          <a href="/MANUAL_NL.txt">Textual manual</a>
+          <a href="MANUAL_NL.txt">Textual manual</a>
         </p>
         <p>
           Don't forget to have a mediamosa instance running and insert credential info at:

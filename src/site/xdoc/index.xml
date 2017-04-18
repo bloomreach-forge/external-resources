@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN" "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2011-2014 Hippo
+    Copyright 2011-2017 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -24,11 +24,12 @@
     <section name="Introduction">
 
       <subsection name="What is the External Resource Project?">
-        <p>An API which enables a developer to manage external resources in Hippo CMS</p>
+        <p>An API which enables a developer to manage external resources in Hippo CMS.</p>
+        <p>We currently only support MediaMosa video platform integration.</p>
       </subsection>
 
-      <subsection name="What kind of external management does it support">
-        <p>We currently only support MediaMosa video platform integration</p>
+      <subsection name="Code base on GitHub">
+        <p>The code of this project is on GitHub at <a href="https://github.com/onehippo-forge/external-resources/">https://github.com/onehippo-forge/external-resources/</a>.</p>
       </subsection>
 
       <subsection name="Info, screenshots and movies">
@@ -44,9 +45,9 @@
         </p>
       </subsection>
 
-      <subsection name="Project Status">
-        <p>The latest version of the External Resource Project is <b>1.09.12</b>. This version is compatible with
-           Hippo CMS 7.9.</p>
+      <subsection name="Project status">
+        <p>The latest version of the External Resource Project is <b>2.0.0</b>. This version is compatible with
+           Hippo 10.</p>
       </subsection>
 
     </section>
