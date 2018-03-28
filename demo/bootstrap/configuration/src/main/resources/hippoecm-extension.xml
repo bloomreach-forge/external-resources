@@ -563,7 +563,7 @@
     </sv:property>
   </sv:node>
 
-<sv:node sv:name="externalresourcedemo-hippo-configuration-hippo-frontend-cms">
+<!--<sv:node sv:name="externalresourcedemo-hippo-configuration-hippo-frontend-cms">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>hippo:initializeitem</sv:value>
     </sv:property>
@@ -576,8 +576,8 @@
     <sv:property sv:name="hippo:contentroot" sv:type="String">
       <sv:value>/hippo:configuration/hippo:frontend</sv:value>
     </sv:property>
-  </sv:node>
-<sv:node sv:name="externalresourcedemo-hippo-configuration-hippo-modules-emailmodule">
+  </sv:node>-->
+<!--<sv:node sv:name="externalresourcedemo-hippo-configuration-hippo-modules-emailmodule">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>hippo:initializeitem</sv:value>
     </sv:property>
@@ -590,5 +590,5 @@
     <sv:property sv:name="hippo:contentroot" sv:type="String">
       <sv:value>/hippo:configuration/hippo:modules</sv:value>
     </sv:property>
-  </sv:node>
+  </sv:node>-->
 </sv:node>

@@ -149,6 +149,10 @@
     <level value="info"/>
   </logger>
 
+  <logger name="org.onehippo.forge.externalresource">
+    <level value="debug"/>
+  </logger>
+
   <root>
     <level value="warn"/>
     <appender-ref ref="site"/>
