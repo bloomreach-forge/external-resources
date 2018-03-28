@@ -11,6 +11,13 @@ Access the Hippo Essentials at http://localhost:8080/essentials.
 After your project is set up, access the CMS at http://localhost:8080/cms and the site at http://localhost:8080/site.
 Logs are located in target/tomcat7x/logs
 
+Configure mediamosa server
+==========================
+
+Using the console application, update the following node with the server endpoint and credentials
+
+/hippo:configuration/hippo:modules/ExternalServicesModule/hippo:moduleconfig/external-mediamosa
+
 Building distribution
 =====================
 
