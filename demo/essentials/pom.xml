@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.forge.externalresourcedemo</groupId>
     <artifactId>externalresourcedemo</artifactId>
-    <version>1.07.08-SNAPSHOT</version>
+    <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>externalresourcedemo-essentials</artifactId>
   <packaging>war</packaging>
@@ -13,14 +13,14 @@
   <description>External Resource Demo Essentials</description>
   <dependencies>
     <dependency>
-      <groupId>org.onehippo.cms7.essentials</groupId>
-      <artifactId>dashboard</artifactId>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-essentials-dashboard</artifactId>
       <version>${essentials.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.onehippo.cms7.essentials</groupId>
-      <artifactId>dashboard-dependencies</artifactId>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-essentials-dashboard-dependencies</artifactId>
       <version>${essentials.version}</version>
       <type>pom</type>
     </dependency>

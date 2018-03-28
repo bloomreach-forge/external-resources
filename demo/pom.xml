@@ -5,26 +5,26 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-release</artifactId>
-    <version>7.9.7</version>
+    <version>10.2.5</version>
   </parent>
 
   <name>External Resource Demo</name>
   <description>External Resource Demo</description>
   <groupId>org.onehippo.forge.externalresourcedemo</groupId>
   <artifactId>externalresourcedemo</artifactId>
-  <version>1.07.08-SNAPSHOT</version>
+  <version>2.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
 
-    <forge.externalresource.version>1.08.03-SNAPSHOT</forge.externalresource.version>
+    <forge.externalresource.version>2.0.1-SNAPSHOT</forge.externalresource.version>
     <!--***START temporary override of versions*** -->
     <!-- ***END temporary override of versions*** -->
 
-    <essentials.version>1.02.08</essentials.version>
-    <jsp-api.version>2.1</jsp-api.version>
-    <jstl.version>1.1.2</jstl.version>
-    <taglibs.version>1.1.2</taglibs.version>
+    <essentials.version>2.2.0</essentials.version>
+    <jsp-api.version>2.2</jsp-api.version>
+    <taglibs.version>1.2.1</taglibs.version>
+    <xalan.version>2.7.1</xalan.version>
     <commons.lang.version>2.6</commons.lang.version>
     <junit.version>4.10</junit.version>
     <easymock.version>3.1</easymock.version>
@@ -33,38 +33,45 @@
     <maven.plugins.filesync.version>1.0.0</maven.plugins.filesync.version>
     <repo.bootstrap>true</repo.bootstrap>
 
-
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.onehippo.cms7.essentials.sdk</groupId>
-        <artifactId>api</artifactId>
+        <groupId>org.onehippo.cms7</groupId>
+        <artifactId>hippo-essentials-plugin-sdk-api</artifactId>
         <version>${essentials.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.onehippo.cms7.essentials.components</groupId>
-        <artifactId>cms</artifactId>
+        <groupId>org.onehippo.cms7</groupId>
+        <artifactId>hippo-essentials-components-cms</artifactId>
         <version>${essentials.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.onehippo.cms7.essentials.components</groupId>
-        <artifactId>hst</artifactId>
+        <groupId>org.onehippo.cms7</groupId>
+        <artifactId>hippo-essentials-components-hst</artifactId>
         <version>${essentials.version}</version>
       </dependency>
 
       <!-- other predefined runtime scope versioned dependencies -->
+
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>jstl</artifactId>
-        <version>${jstl.version}</version>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>${jsp-api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.taglibs</groupId>
+        <artifactId>taglibs-standard-spec</artifactId>
+        <version>${taglibs.version}</version>
         <scope>runtime</scope>
       </dependency>
 
       <dependency>
-        <groupId>taglibs</groupId>
-        <artifactId>standard</artifactId>
+        <groupId>org.apache.taglibs</groupId>
+        <artifactId>taglibs-standard-impl</artifactId>
         <version>${taglibs.version}</version>
         <scope>runtime</scope>
       </dependency>

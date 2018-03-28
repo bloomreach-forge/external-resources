@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.forge.externalresourcedemo</groupId>
     <artifactId>externalresourcedemo</artifactId>
-    <version>1.07.08-SNAPSHOT</version>
+    <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>externalresourcedemo-site</artifactId>
   <packaging>war</packaging>
@@ -18,23 +18,20 @@
       <version>${forge.externalresource.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.onehippo.cms7.essentials.sdk</groupId>
-      <artifactId>api</artifactId>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-essentials-plugin-sdk-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.onehippo.cms7.essentials.components</groupId>
-      <artifactId>hst</artifactId>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-essentials-components-hst</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.apache.taglibs</groupId>
+      <artifactId>taglibs-standard-spec</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
-      <version>${jsp-api.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.onehippo.cms7.hst.dependencies</groupId>
@@ -52,9 +49,8 @@
       <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.apache.taglibs</groupId>
+      <artifactId>taglibs-standard-spec</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
