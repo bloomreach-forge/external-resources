@@ -9,7 +9,9 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.onehippo.forge.externalresource.api.Embeddable;
 import org.onehippo.forge.externalresource.api.ExternalService;
+import org.onehippo.forge.externalresource.api.ResourceHandler;
 import org.onehippo.forge.externalresource.api.Synchronizable;
 import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
 import org.onehippo.repository.modules.AbstractReconfigurableDaemonModule;
@@ -17,7 +19,7 @@ import org.onehippo.repository.modules.ProvidesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ProvidesService(types = {Synchronizable.class})
+@ProvidesService(types = {Synchronizable.class, ResourceHandler.class, Embeddable.class})
 public class ExternalServicesModule extends AbstractReconfigurableDaemonModule {
 
     private static final Logger log = LoggerFactory.getLogger(ExternalServicesModule.class);
@@ -58,12 +60,12 @@ public class ExternalServicesModule extends AbstractReconfigurableDaemonModule {
     }
 
     @Override
-    protected void doInitialize(final Session session) throws RepositoryException {
-
+    protected void doInitialize(final Session session) {
+        log.debug("initialize module");
     }
 
     @Override
     protected void doShutdown() {
-
+        log.debug("shutdown module");
     }
 }

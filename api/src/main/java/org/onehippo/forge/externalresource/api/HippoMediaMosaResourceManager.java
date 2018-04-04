@@ -50,7 +50,7 @@ import static org.hippoecm.repository.quartz.HippoSchedJcrConstants.HIPPOSCHED_W
 /**
  * @version $Id:
  */
-@ProvidesService(types = {Synchronizable.class, ResourceHandler.class, Embeddable.class})
+
 public class HippoMediaMosaResourceManager extends ResourceManager implements Embeddable, Synchronizable, MediamosaRemoteService {
 
     private static final String SYNCHRONIZATION_CRONEXPRESSION = "synchronization.cronexpression";
@@ -224,11 +224,11 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             Calendar modified = assetDetails.getVideotimestampmodified();
             node.setProperty("hippoexternal:lastModifiedSyncDate", modified);
 
-            LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), getWidth());
-
-            if (embedLink != null) {
-                Utils.addEmbeddedNode(node, embedLink.getOutput());
-            }
+//            LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), getWidth());
+//
+//            if (embedLink != null) {
+//                Utils.addEmbeddedNode(node, embedLink.getOutput());
+//            }
 
             String videoCodec = mediafileDetails.getMetadata().getVideoCodec();
             if (StringUtils.isNotBlank(videoCodec)) {

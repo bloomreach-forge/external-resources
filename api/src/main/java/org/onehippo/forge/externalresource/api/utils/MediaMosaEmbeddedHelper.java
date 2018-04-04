@@ -1,23 +1,27 @@
 package org.onehippo.forge.externalresource.api.utils;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
-import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.AssetDetailsType;
-import nl.uva.mediamosa.model.LinkType;
-import nl.uva.mediamosa.model.MediafileDetailsType;
-import nl.uva.mediamosa.util.ServiceException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.onehippo.forge.externalresource.api.EmbeddedHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.config.PersistenceConfiguration;
+import nl.uva.mediamosa.MediaMosaService;
+import nl.uva.mediamosa.model.AssetDetailsType;
+import nl.uva.mediamosa.model.LinkType;
+import nl.uva.mediamosa.model.MediafileDetailsType;
+import nl.uva.mediamosa.model.StillType;
+import nl.uva.mediamosa.util.ServiceException;
 
 public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
 
@@ -71,13 +75,13 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
 
         if (!cacheManager.cacheExists(EMBEDDED_CACHE_NAME)) {
             final int cacheSize = ((Long) getProperty("cache.size", CACHE_DEFAULT_SIZE)).intValue();
-            final boolean overflowToDisk = (Boolean) getProperty("cache.overflowToDisk", false);
             final boolean eternal = (Boolean) getProperty("cache.eternal", false);
             final long timeToLiveSeconds = (Long) getProperty("cache.timeToLiveSeconds", CACHE_DEFAULT_TIME_TO_LIVE);
             final long timeToIdleSeconds = (Long) getProperty("cache.timeToIdleSeconds", CACHE_DEFAULT_TIME_TO_IDLE);
 
             Cache cache = new Cache(new CacheConfiguration(EMBEDDED_CACHE_NAME, cacheSize)
-                    .overflowToDisk(overflowToDisk).eternal(eternal).timeToLiveSeconds(timeToLiveSeconds)
+                    .persistence(new PersistenceConfiguration().strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP))
+                    .eternal(eternal).timeToLiveSeconds(timeToLiveSeconds)
                     .timeToIdleSeconds(timeToIdleSeconds));
             cacheManager.addCache(cache);
             log.info("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
@@ -97,10 +101,12 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
 
                         LinkType embedLink = null;
                         if (mediafileDetails != null) {
-                            embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(),
-                                    (String) getProperty("username"),
-                                    Integer.valueOf(((Long) getProperty("width", DEFAULT_WIDTH)).intValue())
-                            );
+                            String username = (String) getProperty("username");
+                            int width = Integer.valueOf(((Long) getProperty("width", DEFAULT_WIDTH)).intValue());
+                            StillType linkType = mediaMosaService.getStillLink(assetId, username);
+                            if (linkType != null) {
+                                embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), username, width);
+                            }
                         }
                         if (embedLink != null) {
                             embedded = embedLink.getOutput();

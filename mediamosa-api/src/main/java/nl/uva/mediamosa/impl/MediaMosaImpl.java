@@ -57,6 +57,7 @@ import javax.net.ssl.SSLContext;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
@@ -655,13 +656,13 @@ public class MediaMosaImpl implements MediaMosa {
      * @return
      * @throws ServiceException
      */
-    public LinkType getStillLink(String assetId, String userId) throws ServiceException {
+    public StillType getStillLink(String assetId, String userId) throws ServiceException {
         String requestUrl = String.format("/asset/%s/still", assetId);
         String parameters = "user_id=" + userId;
         // parameters += "&is_app_admin=true";
         requestUrl += "?" + parameters;
-        LinkType stillLink = null;
-        Response vpxResponse = null;
+        StillType stillLink = null;
+        Response vpxResponse;
 
         try {
             vpxResponse = doGetRequest(requestUrl);
@@ -672,8 +673,9 @@ public class MediaMosaImpl implements MediaMosa {
         if (vpxResponse.getHeader().getRequestResultId() == ERRORCODE_OKAY) {
 
             ItemsType items = vpxResponse.getItems();
-            if (!items.getLinkOrAssetOrAssetDetails().isEmpty()) {
-                stillLink = (LinkType) items.getLinkOrAssetOrAssetDetails().get(0);
+            Optional<Serializable> stillTypeElement = items.getLinkOrAssetOrAssetDetails().stream().filter(i -> i instanceof StillType).findFirst();
+            if (stillTypeElement.isPresent()) {
+                return (StillType) stillTypeElement.get();
             }
         } else {
             log.error("MM failed request: " + vpxResponse.getHeader().getRequestResultDescription());

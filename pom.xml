@@ -31,7 +31,7 @@
     <hippo.services.version>2.2.1</hippo.services.version>
 
     <!-- mediamosa-api, a submodule with own lifecycle -->
-    <mediamosa-api.version>0.0.6h</mediamosa-api.version>
+    <mediamosa-api.version>0.0.7h-SNAPSHOT</mediamosa-api.version>
 
     <!-- third party -->
     <ehcache.version>2.6.11</ehcache.version>

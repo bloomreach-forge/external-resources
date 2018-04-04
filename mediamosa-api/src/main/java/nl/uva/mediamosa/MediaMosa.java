@@ -131,7 +131,7 @@ public interface MediaMosa {
      * @return <code>LinkType</code> object. The actual url of the still image is obtained by calling LinkType.getOutput()
      * @throws ServiceException
      */
-    LinkType getStillLink(String assetId, String userId) throws ServiceException;
+    StillType getStillLink(String assetId, String userId) throws ServiceException;
 
 
     /**
