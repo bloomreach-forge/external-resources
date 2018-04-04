@@ -11,7 +11,6 @@ import org.hippoecm.repository.api.WorkflowContext;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflowImpl;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
-import org.onehippo.forge.externalresource.api.ResourceManager;
 import org.onehippo.forge.externalresource.api.Synchronizable;
 import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
 
@@ -32,18 +31,18 @@ public class SynchronizedActionsWorkflowImpl extends DefaultWorkflowImpl impleme
     }
 
 
-    public SynchronizationState check(Synchronizable synchronizable) throws WorkflowException, RepositoryException, RemoteException {
+    public SynchronizationState check(Synchronizable synchronizable) throws RepositoryException {
         SynchronizationState synchronizationState = synchronizable.check(this.rootSession.getNodeByIdentifier(document.getIdentity()));
         this.state = synchronizationState.getState();
         return synchronizationState;
     }
 
-    public Document update(Synchronizable synchronizable) throws WorkflowException, RepositoryException, RemoteException {
+    public Document update(Synchronizable synchronizable) throws RepositoryException {
         synchronizable.update(this.rootSession.getNodeByIdentifier(document.getIdentity()));
         return document;
     }
 
-    public Document commit(Synchronizable synchronizable) throws WorkflowException, RepositoryException, RemoteException {
+    public Document commit(Synchronizable synchronizable) throws RepositoryException {
         synchronizable.commit(this.rootSession.getNodeByIdentifier(document.getIdentity()));
         return document;
     }

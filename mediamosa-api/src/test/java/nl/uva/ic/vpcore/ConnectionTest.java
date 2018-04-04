@@ -73,7 +73,7 @@ public class ConnectionTest extends AbstractTest {
 
 	@Test
 	public void testGetStillLink() throws ServiceException, IOException {
-		LinkType stillLink = service.getStillLink("KAk0OAX1tXrJHtmvLFmvUaxx", "hippo-admin");
+		StillType stillLink = service.getStillLink("KAk0OAX1tXrJHtmvLFmvUaxx", "hippo-admin");
 		assertTrue("No StillLink found", stillLink.getOutput().startsWith("http://download.pilot.vpcore.snkn.nl/still/"));
 		// the link is generated on each request, testing by using equals() fails.
 		//assertTrue("No StillLink found",stillLink.getOutput().equals("http://download.pilot.vpcore.snkn.nl/still/eGdLfHlK39wRqJjUSYy0B7IK"));

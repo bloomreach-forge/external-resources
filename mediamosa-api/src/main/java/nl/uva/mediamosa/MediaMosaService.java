@@ -161,7 +161,7 @@ public class MediaMosaService extends Service {
                 responseType);
     }
 
-    public LinkType getStillLink(String assetId, String userId)
+    public StillType getStillLink(String assetId, String userId)
             throws ServiceException, IOException {
         prepare();
         return vpcoreImpl.getStillLink(assetId, userId);
