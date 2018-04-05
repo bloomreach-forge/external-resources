@@ -84,7 +84,7 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
                     .eternal(eternal).timeToLiveSeconds(timeToLiveSeconds)
                     .timeToIdleSeconds(timeToIdleSeconds));
             cacheManager.addCache(cache);
-            log.info("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
+            log.debug("creating cache '{}': {}", EMBEDDED_CACHE_NAME, cache);
         }
     }
 
@@ -127,20 +127,20 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
     }
 
     protected String cacheRetrieve(String assetId) {
-        log.info("trying to retrieving from cache with assetId: {}", assetId);
+        log.debug("trying to retrieving from cache with assetId: {}", assetId);
         Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
         Element element = cache.get(assetId);
         if (element == null) {
-            log.info("trying failed with assetId: {} .. return null", assetId);
+            log.debug("trying failed with assetId: {} .. return null", assetId);
             return null;
         } else {
-            log.info("trying succeeded to retrieving from cache with assetId: {}", assetId);
+            log.debug("trying succeeded to retrieving from cache with assetId: {}", assetId);
             return (String) element.getObjectValue();
         }
     }
 
     protected void cacheStore(String assetId, String embeddedCode) {
-        log.info("storing to cache with assetId: {} and embedded code : {}", assetId, embeddedCode);
+        log.debug("storing to cache with assetId: {} and embedded code : {}", assetId, embeddedCode);
         Cache cache = cacheManager.getCache(EMBEDDED_CACHE_NAME);
         Element element = new Element(assetId, embeddedCode);
         cache.put(element);

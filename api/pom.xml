@@ -114,9 +114,9 @@
     </dependency>
 
     <dependency>
-      <groupId>mediamosa</groupId>
+      <groupId>org.onehippo.forge</groupId>
       <artifactId>mediamosa-api</artifactId>
-      <type>jar</type>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
