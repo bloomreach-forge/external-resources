@@ -19,7 +19,7 @@
     <module>addon</module>
     <module>hst</module>
     <module>api</module>
-<!-- <module>mediamosa-api</module>  -->
+    <module>mediamosa-api</module>
   </modules>
 
 
@@ -29,9 +29,6 @@
     <hippo.hst.version>3.2.5</hippo.hst.version>
     <hippo.repository.version>3.2.7</hippo.repository.version>
     <hippo.services.version>2.2.1</hippo.services.version>
-
-    <!-- mediamosa-api, a submodule with own lifecycle -->
-    <mediamosa-api.version>0.0.7h-SNAPSHOT</mediamosa-api.version>
 
     <!-- third party -->
     <ehcache.version>2.6.11</ehcache.version>
@@ -180,13 +177,6 @@
       </dependency>
 
       <!--other-->
-
-      <dependency>
-        <groupId>mediamosa</groupId>
-        <artifactId>mediamosa-api</artifactId>
-        <version>${mediamosa-api.version}</version>
-        <type>jar</type>
-      </dependency>
 
       <dependency>
         <groupId>junit</groupId>
