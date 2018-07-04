@@ -87,6 +87,13 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.onehippo.forge</groupId>
+        <artifactId>externalresource-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.onehippo.cms7</groupId>
         <artifactId>hippo-essentials-plugin-sdk-api</artifactId>
@@ -162,6 +169,14 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.onehippo.forge</groupId>
+      <artifactId>externalresource-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <defaultGoal>package</defaultGoal>
     <pluginManagement>
@@ -220,6 +235,21 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.cargo</groupId>
+          <artifactId>cargo-maven2-plugin</artifactId>
+          <configuration>
+            <container>
+              <dependencies combine.children="append">
+                <dependency>
+                  <groupId>org.onehippo.forge</groupId>
+                  <artifactId>externalresource-common</artifactId>
+                  <classpath>shared</classpath>
+                </dependency>
+              </dependencies>
+            </container>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -289,10 +319,10 @@
               <configuration>
                 <properties>
                   <catalina.servlet.uriencoding>UTF-8</catalina.servlet.uriencoding>
-                  <cargo.servlet.port>9080</cargo.servlet.port>
-                  <cargo.rmi.port>9205</cargo.rmi.port>
-                  <cargo.tomcat.ajp.port>9009</cargo.tomcat.ajp.port>
-                  <cargo.jvmargs>-agentlib:jdwp=transport=dt_socket,address=9000,server=y,suspend=${cargo.debug.suspend} -noverify ${javaagent} ${cargo.jvm.args}</cargo.jvmargs>
+                  <!--<cargo.servlet.port>9080</cargo.servlet.port>-->
+                  <!--<cargo.rmi.port>9205</cargo.rmi.port>-->
+                  <!--<cargo.tomcat.ajp.port>9009</cargo.tomcat.ajp.port>-->
+                  <!--<cargo.jvmargs>-agentlib:jdwp=transport=dt_socket,address=9000,server=y,suspend=${cargo.debug.suspend} -noverify ${javaagent} ${cargo.jvm.args}</cargo.jvmargs>-->
                 </properties>
                 <configfiles>
                   <configfile>
@@ -389,13 +419,14 @@
       </build>
     </profile>
 
-    <profile>
+   <!-- <profile>
       <id>jrebel-7-mac</id>
       <properties>
         <javaagent>-agentpath:${env.REBEL_HOME}/lib/libjrebel64.dylib</javaagent>
       </properties>
-    </profile>
+    </profile>-->
 
   </profiles>
+
 
 </project>

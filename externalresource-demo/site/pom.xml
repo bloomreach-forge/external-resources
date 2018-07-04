@@ -15,11 +15,6 @@
 
     <dependency>
       <groupId>org.onehippo.forge</groupId>
-      <artifactId>externalresource-common</artifactId>
-      <version>${forge.externalresource.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.onehippo.forge</groupId>
       <artifactId>externalresource-hst</artifactId>
       <version>${forge.externalresource.version}</version>
     </dependency>
