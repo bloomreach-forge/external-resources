@@ -40,6 +40,7 @@ import org.hippoecm.repository.api.NodeNameCodec;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.hippoecm.repository.util.JcrUtils;
+import org.onehippo.forge.externalresource.HippoMediamosaNamespace;
 import org.onehippo.forge.externalresource.api.Synchronizable;
 import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflow;
@@ -387,11 +388,11 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
                 } else {
                     title = NodeNameCodec.encode(title, true);
                 }
-                String jcrType = JcrUtils.getStringProperty(folder, "hippostd:gallerytype", "hippomediamosa:resource");
+                String jcrType = JcrUtils.getStringProperty(folder, "hippostd:gallerytype", HippoMediamosaNamespace.RESOURCE);
                 Document doc = workflow.createGalleryItem(title, jcrType);
                 if (folder.getSession().itemExists(doc.getIdentity())) {
                     Node node = folder.getSession().getNode(doc.getIdentity()); //getnode from doc
-                    node.setProperty("hippomediamosa:assetid", type.getAssetId());
+                    node.setProperty(HippoMediamosaNamespace.ASSETID, type.getAssetId());
                     node.getSession().save();
                     Synchronizable synchronizer = MediaMosaServices.forType(jcrType).getSynchronizable();
                     SynchronizedActionsWorkflow synchronizedActionsWorkflow = (SynchronizedActionsWorkflow) workspace.getWorkflowManager().getWorkflow("synchronization", node);

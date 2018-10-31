@@ -1,10 +1,18 @@
 package org.onehippo.forge.externalresource.api;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.*;
-import nl.uva.mediamosa.util.ServiceException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -22,13 +30,18 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.repository.api.HippoNodeType;
 import org.hippoecm.repository.util.JcrUtils;
+import org.onehippo.forge.externalresource.HippoExternalNamespace;
+import org.onehippo.forge.externalresource.HippoMediamosaNamespace;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobContext;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobListener;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobScheduler;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaThumbnailJob;
 import org.onehippo.forge.externalresource.api.scheduler.synchronization.SynchronizationExecutorJob;
-import org.onehippo.forge.externalresource.api.utils.*;
-import org.onehippo.repository.modules.ProvidesService;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaEmbeddedHelper;
+import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
+import org.onehippo.forge.externalresource.api.utils.ResourceInvocationType;
+import org.onehippo.forge.externalresource.api.utils.SynchronizationState;
+import org.onehippo.forge.externalresource.api.utils.Utils;
 import org.onehippo.repository.scheduling.RepositoryJobCronTrigger;
 import org.onehippo.repository.scheduling.RepositoryJobInfo;
 import org.onehippo.repository.scheduling.RepositoryJobSimpleTrigger;
@@ -36,14 +49,17 @@ import org.onehippo.repository.scheduling.RepositoryScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 
+import nl.uva.mediamosa.MediaMosaService;
+import nl.uva.mediamosa.model.AssetDetailsType;
+import nl.uva.mediamosa.model.JobType;
+import nl.uva.mediamosa.model.LinkType;
+import nl.uva.mediamosa.model.MediafileDetailsType;
+import nl.uva.mediamosa.model.Response;
+import nl.uva.mediamosa.model.UploadTicketType;
+import nl.uva.mediamosa.util.ServiceException;
 import static org.hippoecm.repository.quartz.HippoSchedJcrConstants.HIPPOSCHED_SUBJECT_ID;
 import static org.hippoecm.repository.quartz.HippoSchedJcrConstants.HIPPOSCHED_WORKFLOW_JOB;
 
@@ -55,7 +71,6 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     private static final String SYNCHRONIZATION_CRONEXPRESSION = "synchronization.cronexpression";
     private static final String SYNCHRONIZATION_ENABLED = "synchronization.enabled";
-    private static final String SYNCHRONIZABLE = "synchronizable";
     public static final Long DEFAULT_TTL = 1000L;
     public static final Long DEFAULT_CACHE_SIZE = 100L;
     public static final Long DEFAULT_TTI = 1000L;
@@ -102,7 +117,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 log.error("Service exception on setting media mosa credentials", e);
             }
 
-            this.services = MediaMosaServices.init(JcrUtils.getStringProperty(config, "type", "hippomediamosa:resource"));
+            this.services = MediaMosaServices.init(JcrUtils.getStringProperty(config, "type", HippoMediamosaNamespace.RESOURCE));
 
             Map<String, Object> propertyMap = new HashMap<>();
             propertyMap.put("url", url);
@@ -209,11 +224,11 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             int height = mediafileDetails.getMetadata().getHeight();
             int width = mediafileDetails.getMetadata().getWidth();
 
-            node.setProperty("hippomediamosa:assetid", assetId);
-            node.setProperty("hippomediamosa:mediaid", mediaFile);
-            node.setProperty("hippoexternal:size", size);
-            node.setProperty("hippoexternal:height", height);
-            node.setProperty("hippoexternal:width", width);
+            node.setProperty(HippoMediamosaNamespace.ASSETID, assetId);
+            node.setProperty(HippoMediamosaNamespace.MEDIAID, mediaFile);
+            node.setProperty(HippoExternalNamespace.SIZE, size);
+            node.setProperty(HippoExternalNamespace.HEIGHT, height);
+            node.setProperty(HippoExternalNamespace.WIDTH, width);
 
             final Node handleNode = node.getParent();
 
@@ -240,6 +255,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
                 MediaMosaJobListener listener = new MediaMosaJobListener() {
                     public void whileInprogress(String assetId) {
+                        log.debug("generating still image for assetid {}", assetId);
                     }
 
                     public void onFinished(String assetId) {
@@ -255,12 +271,15 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                     }
 
                     public void whileWaiting(String assetId) {
+                        log.debug("waiting to generate still image for assetid {}", assetId);
                     }
 
                     public void onFailed(String assetId) {
+                        log.warn("still image failed for assetid {}", assetId);
                     }
 
                     public void onCancelled(String assetId) {
+                        log.debug("generation of still image for assetid {} was cancelled", assetId);
                     }
                 };
 
@@ -280,15 +299,14 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     @Override
     public void afterSave(Node node) {
-        log.debug("starting aftersave");
         log.debug("done with aftersave");
     }
 
     @Override
     public void delete(Node node) {
         try {
-            mediaMosaService.deleteAsset(node.getProperty("hippomediamosa:assetid").getString(), getUsername(), true);
-            log.debug("deleting asset");
+            log.debug("deleting asset {}", node.getProperty(HippoMediamosaNamespace.ASSETID).getString());
+            mediaMosaService.deleteAsset(node.getProperty(HippoMediamosaNamespace.ASSETID).getString(), getUsername(), true);
         } catch (RepositoryException | ServiceException | IOException e) {
             log.error("Error deleting asset", e);
         }
@@ -360,28 +378,28 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     public boolean update(Node node) {
         InputStream is = null;
         try {
-            String assetId = node.getProperty("hippomediamosa:assetid").getString();
+            String assetId = node.getProperty(HippoMediamosaNamespace.ASSETID).getString();
             AssetDetailsType assetDetailsType = mediaMosaService.getAssetDetails(assetId);
             Calendar external = assetDetailsType.getVideotimestampmodified();
 
             MediafileDetailsType mediafileDetails = assetDetailsType.getMediafiles().getMediafile().get(0);
-            node.setProperty("hippomediamosa:mediaid", mediafileDetails.getMediafileId());
-            node.setProperty("hippoexternal:title", mediafileDetails.getMediafileId());
-            node.setProperty("hippoexternal:width", mediafileDetails.getMetadata().getWidth());
-            node.setProperty("hippoexternal:height", mediafileDetails.getMetadata().getHeight());
-            node.setProperty("hippoexternal:mimeType", mediafileDetails.getMetadata().getMimeType());
-            node.setProperty("hippoexternal:size", mediafileDetails.getMetadata().getFilesize());
+            node.setProperty(HippoMediamosaNamespace.MEDIAID, mediafileDetails.getMediafileId());
+            node.setProperty(HippoExternalNamespace.TITLE, mediafileDetails.getMediafileId());
+            node.setProperty(HippoExternalNamespace.WIDTH, mediafileDetails.getMetadata().getWidth());
+            node.setProperty(HippoExternalNamespace.HEIGHT, mediafileDetails.getMetadata().getHeight());
+            node.setProperty(HippoExternalNamespace.MIMETYPE, mediafileDetails.getMetadata().getMimeType());
+            node.setProperty(HippoExternalNamespace.SIZE, mediafileDetails.getMetadata().getFilesize());
 
-            node.setProperty("hippoexternal:title", assetDetailsType.getDublinCore().getTitle());
-            node.setProperty("hippoexternal:description", assetDetailsType.getDublinCore().getDescription());
-            node.setProperty("hippoexternal:lastModified", external);
+            node.setProperty(HippoExternalNamespace.TITLE, assetDetailsType.getDublinCore().getTitle());
+            node.setProperty(HippoExternalNamespace.DESCRIPTION, assetDetailsType.getDublinCore().getDescription());
+            node.setProperty(HippoExternalNamespace.LASTMODIFIED, external);
 
             if (assetDetailsType.getMediafileDuration() != null) {
-                node.setProperty("hippoexternal:duration", assetDetailsType.getMediafileDuration().toXMLFormat());
+                node.setProperty(HippoExternalNamespace.DURATION, assetDetailsType.getMediafileDuration().toXMLFormat());
             }
 
-            node.setProperty("hippoexternal:state", SynchronizationState.SYNCHRONIZED.getState());
-            node.setProperty("hippoexternal:lastModifiedSyncDate", external);
+            node.setProperty(HippoExternalNamespace.STATE, SynchronizationState.SYNCHRONIZED.getState());
+            node.setProperty(HippoExternalNamespace.LASTMODIFIEDSYNCDATE, external);
 
             if (StringUtils.isNotEmpty(assetDetailsType.getVpxStillUrl())) {
                 String url = assetDetailsType.getVpxStillUrl();
@@ -395,11 +413,20 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 }
 
                 is = httpResponse.getEntity().getContent();
-                if (node.hasNode("hippoexternal:thumbnail")) {
-                    Node thumbnail = node.getNode("hippoexternal:thumbnail");
+                if (node.hasNode(HippoExternalNamespace.THUMBNAIL)) {
+                    Node thumbnail = node.getNode(HippoExternalNamespace.THUMBNAIL);
                     thumbnail.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(is));
                     thumbnail.setProperty("jcr:mimeType", mimeType);
                     thumbnail.setProperty("jcr:lastModified", Calendar.getInstance());
+                }
+
+                if (node.hasProperty(HippoMediamosaNamespace.MEDIAID) && node.hasProperty(HippoExternalNamespace.WIDTH) && node.hasNode(HippoExternalNamespace.JCR_TYPE)) {
+                    String mediaFileId = node.getProperty(HippoMediamosaNamespace.MEDIAID).getString();
+                    int width = Integer.parseInt(node.getProperty(HippoExternalNamespace.WIDTH).getString());
+                    LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediaFileId, username, width);
+                    if (embedLink != null && embedLink.getOutput() != null) {
+                        Utils.addEmbeddedNode(node, embedLink.getOutput());
+                    }
                 }
             }
             node.getSession().save();
@@ -419,10 +446,10 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     public boolean commit(Node node) {
         try {
-            String assetId = node.getProperty("hippomediamosa:assetid").getString();
+            String assetId = node.getProperty(HippoMediamosaNamespace.ASSETID).getString();
             Map<String, String> map = new HashMap<>();
-            map.put("title", node.getProperty("hippoexternal:title").getString());
-            map.put("description", node.getProperty("hippoexternal:description").getString());
+            map.put("title", node.getProperty(HippoExternalNamespace.TITLE).getString());
+            map.put("description", node.getProperty(HippoExternalNamespace.DESCRIPTION).getString());
 
             Response r = mediaMosaService.setMetadata(assetId, getUsername(), map);
             log.debug(r.getHeader().getRequestResult());
@@ -430,7 +457,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             //lastsyncdate up!
             AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
             Calendar modified = assetDetails.getVideotimestampmodified();
-            node.setProperty("hippoexternal:lastModifiedSyncDate", modified);
+            node.setProperty(HippoExternalNamespace.LASTMODIFIEDSYNCDATE, modified);
             node.getSession().save();
             return true;
         } catch (ServiceException e) {
@@ -445,30 +472,30 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
     public SynchronizationState check(Node node) {
         try {
-            if (!node.hasProperty("hippomediamosa:assetid")) {
-                log.debug("no available hippomediamosa:assetid on node {}", node.getPath());
+            if (!node.hasProperty(HippoMediamosaNamespace.ASSETID)) {
+                log.debug("no available {} on node {}", HippoMediamosaNamespace.ASSETID, node.getPath());
                 return SynchronizationState.UNKNOWN;
             }
 
-            String assetId = node.getProperty("hippomediamosa:assetid").getString();
+            String assetId = node.getProperty(HippoMediamosaNamespace.ASSETID).getString();
             AssetDetailsType assetDetailsType = mediaMosaService.getAssetDetails(assetId);
-            SynchronizationState currentState = SynchronizationState.getType(node.getProperty("hippoexternal:state").getString());
+            SynchronizationState currentState = SynchronizationState.getType(node.getProperty(HippoExternalNamespace.STATE).getString());
             if (assetDetailsType != null) {
                 Calendar external = assetDetailsType.getVideotimestampmodified();
                 Calendar local = null;
-                if (node.hasProperty("hippoexternal:lastModifiedSyncDate")) {
-                    local = node.getProperty("hippoexternal:lastModifiedSyncDate").getDate();
+                if (node.hasProperty(HippoExternalNamespace.LASTMODIFIEDSYNCDATE)) {
+                    local = node.getProperty(HippoExternalNamespace.LASTMODIFIEDSYNCDATE).getDate();
                 }
                 if (local.getTime().equals(external.getTime())) {
                     log.debug("check is correct");
                     if (!currentState.equals(SynchronizationState.SYNCHRONIZED)) {
-                        node.setProperty("hippoexternal:state", SynchronizationState.SYNCHRONIZED.getState());
+                        node.setProperty(HippoExternalNamespace.STATE, SynchronizationState.SYNCHRONIZED.getState());
                         node.getSession().save();
                     }
                     return SynchronizationState.SYNCHRONIZED;
                 } else {
                     if (!currentState.equals(SynchronizationState.UNSYNCHRONIZED)) {
-                        node.setProperty("hippoexternal:state", SynchronizationState.UNSYNCHRONIZED.getState());
+                        node.setProperty(HippoExternalNamespace.STATE, SynchronizationState.UNSYNCHRONIZED.getState());
                         node.getSession().save();
                     }
                     log.debug("check is not correct");
@@ -476,7 +503,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 }
             } else {
                 if (!currentState.equals(SynchronizationState.BROKEN)) {
-                    node.setProperty("hippoexternal:state", SynchronizationState.BROKEN.getState());
+                    node.setProperty(HippoExternalNamespace.STATE, SynchronizationState.BROKEN.getState());
                     node.getSession().save();
                 }
                 return SynchronizationState.BROKEN;

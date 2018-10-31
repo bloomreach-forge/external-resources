@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.onehippo.forge.externalresource.HippoMediamosaNamespace;
 import org.onehippo.forge.externalresource.api.EmbeddedHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,8 +92,8 @@ public class MediaMosaEmbeddedHelper extends EmbeddedHelper {
     public String getEmbedded(Node node) {
         String embedded = "<p>Something happened, can't show video</p>";
         try {
-            if (node.hasProperty("hippomediamosa:assetid")) {
-                String assetId = node.getProperty("hippomediamosa:assetid").getString();
+            if (node.hasProperty(HippoMediamosaNamespace.ASSETID)) {
+                String assetId = node.getProperty(HippoMediamosaNamespace.ASSETID).getString();
                 String cache = cacheRetrieve(assetId);
                 if (cache == null) {
                     AssetDetailsType assetDetails = mediaMosaService.getAssetDetails(assetId);
