@@ -21,7 +21,6 @@
     <module>hst</module>
     <module>api</module>
     <module>mediamosa-api</module>
-    <module>externalresource-demo</module>
   </modules>
 
 
