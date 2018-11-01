@@ -23,9 +23,6 @@
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>hippoexternal:folder</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:mixinTypes" sv:type="Name">
-      <sv:value>hippo:harddocument</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>03e8e70c-4ff7-459d-bd5e-01192b88aabf</sv:value>
     </sv:property>

@@ -7,16 +7,17 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.resource.PackageResourceReference;
-import org.apache.wicket.request.resource.ResourceReference;
 import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
+import org.hippoecm.frontend.plugins.standards.icon.HippoIcon;
 import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.session.UserSession;
+import org.hippoecm.frontend.skin.Icon;
 import org.hippoecm.repository.api.Workflow;
 import org.hippoecm.repository.api.WorkflowDescriptor;
 import org.hippoecm.repository.api.WorkflowException;
@@ -42,12 +43,12 @@ public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
         super(context, config);
 
         add(updateAction = new StdWorkflow("update", new StringResourceModel("update-label", this, null), getModel()) {
-                    @Override
-                    protected ResourceReference getIcon() {
-                        return new PackageResourceReference(getClass(), "update-16.png");
-                    }
+            @Override
+            protected Component getIcon(final String id) {
+                return HippoIcon.fromSprite(id, Icon.ARROW_DOWN);
+            }
 
-                    @Override
+            @Override
                     protected String execute(Workflow wf) throws Exception {
                         SynchronizedActionsWorkflow workflow = (SynchronizedActionsWorkflow) wf;
 
@@ -67,11 +68,10 @@ public class SynchronizedActionsWorkflowPlugin extends RenderPlugin {
         );
 
         add(commitAction = new StdWorkflow("commit", new StringResourceModel("commit-label", this, null), getModel()) {
-                    @Override
-                    protected ResourceReference getIcon
-                            () {
-                        return new PackageResourceReference(getClass(), "commit-16.png");
-                    }
+            @Override
+            protected Component getIcon(final String id) {
+                return HippoIcon.fromSprite(id, Icon.ARROW_UP);
+            }
 
                     @Override
                     protected String execute

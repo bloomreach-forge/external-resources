@@ -1,13 +1,14 @@
 package org.onehippo.forge.externalresource.hst.beans;
 
 import org.hippoecm.hst.content.beans.Node;
+import org.onehippo.forge.externalresource.HippoExternalNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @version $Id$
  */
-@Node(jcrType = "hippoexternal:video")
+@Node(jcrType = HippoExternalNamespace.VIDEO)
 public class HippoExternalVideoResourceBean extends HippoExternalResourceBean {
 
     private HippoExternalDisplayImageBean thumbnail;
@@ -16,30 +17,35 @@ public class HippoExternalVideoResourceBean extends HippoExternalResourceBean {
     private static Logger log = LoggerFactory.getLogger(HippoExternalVideoResourceBean.class);
 
     public String getTitle() {
-        return getProperty("hippoexternal:title");
+        return getProperty(HippoExternalNamespace.TITLE);
     }
 
     public String getDescription() {
-        return getProperty("hippoexternal:description");
+        return getProperty(HippoExternalNamespace.DESCRIPTION);
     }
 
     public Long getWidth() {
-        return getProperty("hippoexternal:width");
+        return getProperty(HippoExternalNamespace.WIDTH);
     }
 
     public Long getHeight() {
-        return getProperty("hippoexternal:height");
+        return getProperty(HippoExternalNamespace.HEIGHT);
     }
 
     public String getDuration() {
-        return getProperty("hippoexternal:duration");
+        return getProperty(HippoExternalNamespace.DURATION);
     }
 
     public HippoExternalDisplayImageBean getThumbnail() {
         if (thumbnail == null) {
             // lazy within one request
-            thumbnail = getBean("hippoexternal:thumbnail", HippoExternalDisplayImageBean.class);
+            thumbnail = getBean(HippoExternalNamespace.THUMBNAIL, HippoExternalDisplayImageBean.class);
         }
         return thumbnail;
     }
+
+    public EmbeddedBean getEmbedded() {
+        return getBean(HippoExternalNamespace.JCR_TYPE);
+    }
+
 }

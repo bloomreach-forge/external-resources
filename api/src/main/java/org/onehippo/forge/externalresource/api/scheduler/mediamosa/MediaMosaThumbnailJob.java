@@ -1,6 +1,7 @@
 package org.onehippo.forge.externalresource.api.scheduler.mediamosa;
 
 import nl.uva.mediamosa.model.AssetDetailsType;
+import nl.uva.mediamosa.model.LinkType;
 import nl.uva.mediamosa.util.ServiceException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -73,6 +74,16 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
                             LOG.error(e.getMessage(), e);
                         } finally {
                             IOUtils.closeQuietly(is);
+                        }
+
+                        if ( mediamosaAsset.hasProperty("hippomediamosa:mediaid") && mediamosaAsset.hasProperty("hippoexternal:width") && mediamosaAsset.hasNode("hippoexternal:embedded")) {
+                            String mediaFileId = mediamosaAsset.getProperty("hippomediamosa:mediaid").getString();
+                            int width = Integer.parseInt(mediamosaAsset.getProperty("hippoexternal:width").getString());
+                            LinkType embedLink = mediamosaRemoteService.service().getPlayLink(assetId, mediaFileId, mediamosaRemoteService.getUsername(), width);
+                            if (embedLink != null && embedLink.getOutput() != null) {
+                                Utils.addEmbeddedNode(mediamosaAsset, embedLink.getOutput());
+                                session.save();
+                            }
                         }
                     }
                 }

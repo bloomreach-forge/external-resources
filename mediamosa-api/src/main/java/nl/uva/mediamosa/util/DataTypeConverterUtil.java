@@ -40,7 +40,7 @@ import java.util.Date;
 @SuppressWarnings({"PMD.AvoidUsingShortType"})
 public class DataTypeConverterUtil {
 
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy hh:mm";
     private static final Logger log = LoggerFactory.getLogger(DataTypeConverterUtil.class.getName());
 
     /**
