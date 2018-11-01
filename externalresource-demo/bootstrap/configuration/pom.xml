@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.forge.externalresourcedemo</groupId>
     <artifactId>externalresource-demo-bootstrap</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>2.0.2</version>
   </parent>
 
   <name>External Resource Demo Bootstrap Configuration</name>
