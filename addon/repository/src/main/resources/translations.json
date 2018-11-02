@@ -1,0 +1,12 @@
+{
+  "hippo:cms": {
+    "sections": {
+      "en": {
+        "section-videos": "Videos"
+      },
+      "nl": {
+        "section-videos": "Videobank"
+      }
+    }
+  }
+}

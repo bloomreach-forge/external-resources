@@ -83,6 +83,18 @@
       <name>Hippo maven 2 repository.</name>
       <url>https://maven.onehippo.com/maven2/</url>
     </repository>
+    <repository>
+      <id>hippo-forge</id>
+      <name>Hippo Forge maven 2 repository.</name>
+      <url>https://maven.onehippo.com/maven2-forge/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <layout>default</layout>
+    </repository>
   </repositories>
 
   <dependencyManagement>
@@ -149,8 +161,21 @@
         <scope>test</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.onehippo.forge</groupId>
+        <artifactId>externalresource-common</artifactId>
+        <version>${forge.externalresource.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.onehippo.forge</groupId>
+      <artifactId>externalresource-common</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <defaultGoal>package</defaultGoal>
@@ -290,6 +315,13 @@
                 </deployable>
               </deployables>
               <container>
+                <dependencies>
+                  <dependency>
+                    <groupId>org.onehippo.forge</groupId>
+                    <artifactId>externalresource-common</artifactId>
+                    <classpath>shared</classpath>
+                  </dependency>
+                </dependencies>
                 <systemProperties>
                   <log4j.configuration>file:${project.basedir}/conf/log4j-dev.xml</log4j.configuration>
                   <rebel.log4j-plugin>true</rebel.log4j-plugin>
@@ -398,6 +430,13 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+       <id>jrebel-7-mac</id>
+       <properties>
+         <javaagent>-agentpath:${env.REBEL_HOME}/lib/libjrebel64.dylib</javaagent>
+       </properties>
+     </profile>
 
   </profiles>
 

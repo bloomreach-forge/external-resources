@@ -8,7 +8,7 @@
   </parent>
   <artifactId>mediamosa-api</artifactId>
   <packaging>jar</packaging>
-  <name>MediaMosa</name>
+  <name>External Resources MediaMosa API</name>
   <description>MediaMosa is a Full Featured, Webservice Oriented Media Management and Distribution platform
   </description>
   <url>http://mediamosa.org</url>
