@@ -15,14 +15,15 @@
  */
 package org.onehippo.forge.externalresource.gallery;
 
-import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -45,7 +46,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
-import org.hippoecm.frontend.i18n.model.NodeTranslator;
 import org.hippoecm.frontend.model.JcrHelper;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
@@ -67,7 +67,6 @@ import org.hippoecm.repository.api.HippoNodeType;
 import org.onehippo.forge.externalresource.gallery.columns.FallbackVideoGalleryListColumnProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import static org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin.Mode.LIST;
 import static org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin.Mode.THUMBNAILS;
@@ -264,8 +263,7 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
                                     itemLink.add(new VideoContainer("thumbnail", new JcrNodeModel((Node) primItem),
                                             getPluginContext(), getPluginConfig()));
 
-                                    itemLink.add(new LabelWithTitle("title", new NodeTranslator(new JcrNodeModel(node))
-                                            .getNodeName()));
+                                    itemLink.add(new LabelWithTitle("title", new JcrNodeModel(node)));
                                     listItem.add(itemLink);
                                 } else {
                                     log.warn("primary item of video set must be of type " + HippoNodeType.NT_RESOURCE);
@@ -291,7 +289,7 @@ public class VideoGalleryPlugin extends ExpandCollapseListingPlugin<Node> {
                     Image folderIcon = new Image("folder-icon", "hippo-gallery-folder.png");
                     itemLink.add(folderIcon);
                     itemLink.add(thumbnail);
-                    itemLink.add(new Label("title", new NodeTranslator(new JcrNodeModel(node)).getNodeName()));
+                    itemLink.add(new Label("title", new JcrNodeModel(node)));
                     listItem.add(itemLink);
                 }
 

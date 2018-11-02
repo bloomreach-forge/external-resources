@@ -46,7 +46,7 @@ import org.hippoecm.frontend.model.JcrItemModel;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
-import org.hippoecm.frontend.plugins.yui.upload.MultiFileUploadDialog;
+import org.hippoecm.frontend.plugins.jquery.upload.multiple.JQueryFileUploadDialog;
 import org.hippoecm.frontend.service.IBrowseService;
 import org.hippoecm.frontend.service.ISettingsService;
 import org.hippoecm.frontend.service.render.RenderPlugin;
@@ -73,20 +73,21 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
 
     private static final Logger log = LoggerFactory.getLogger(VideoGalleryWorkflowPlugin.class);
 
-    public class UploadDialog extends MultiFileUploadDialog {
+    public class UploadDialog extends JQueryFileUploadDialog {
         private static final long serialVersionUID = 1L;
 
         public UploadDialog(IPluginContext pluginContext, IPluginConfig pluginConfig) {
             super(pluginContext, pluginConfig);
         }
 
-        public IModel getTitle() {
-            return new StringResourceModel(VideoGalleryWorkflowPlugin.this.getPluginConfig().getString("option.text", ""), VideoGalleryWorkflowPlugin.this, null);
+        @Override
+        protected void onFileUpload(final FileUpload fileUpload) {
+            log.debug("uploaded file {} with size {}", fileUpload.getClientFileName(), fileUpload.getSize());
+            createGalleryItem(fileUpload);
         }
 
-        @Override
-        protected void handleUploadItem(FileUpload upload) {
-            createGalleryItem(upload);
+        public IModel getTitle() {
+            return new StringResourceModel(VideoGalleryWorkflowPlugin.this.getPluginConfig().getString("option.text", ""), VideoGalleryWorkflowPlugin.this, null);
         }
 
         @Override
@@ -144,8 +145,8 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
                 node = (HippoNode) new JcrNodeModel(new JcrItemModel(document.getIdentity(), false)).getNode();
 
                 DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
-                if (!node.getLocalizedName().equals(localName)) {
-                    defaultWorkflow.localizeName(localName);
+                if (!node.getDisplayName().equals(localName)) {
+                    defaultWorkflow.setDisplayName(localName);
                 }
             } catch (WorkflowException | RepositoryException ex) {
                 VideoGalleryWorkflowPlugin.log.error(ex.getMessage());

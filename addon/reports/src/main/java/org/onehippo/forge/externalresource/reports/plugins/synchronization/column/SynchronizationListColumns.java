@@ -293,7 +293,7 @@ public class SynchronizationListColumns implements IClusterable {
         public String getValue(final Node node) throws RepositoryException {
             if (node instanceof HippoNode) {
                 HippoNode hippoNode = (HippoNode) node;
-                return NodeNameCodec.decode(hippoNode.getLocalizedName());
+                return NodeNameCodec.decode(hippoNode.getDisplayName());
             } else {
                 return NodeNameCodec.decode(node.getName());
             }

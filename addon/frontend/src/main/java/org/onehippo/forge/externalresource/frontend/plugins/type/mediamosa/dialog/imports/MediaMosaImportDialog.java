@@ -357,7 +357,7 @@ public class MediaMosaImportDialog extends AbstractExternalResourceDialog implem
     public IModel getTitle() {
         String folderName = "unknown";
         try {
-            folderName = ((HippoNode) getDefaultModelObject()).getLocalizedName();
+            folderName = ((HippoNode) getDefaultModelObject()).getDisplayName();
         } catch (RepositoryException e) {
             log.error("", e);
         }
