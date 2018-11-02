@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.onehippo.forge.externalresourcedemo</groupId>
     <artifactId>demo-bootstrap</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-
+  <artifactId>demo-bootstrap-webfiles</artifactId>
   <name>Hippo External Resource Project Demo Bootstrap Web Files</name>
   <description>Hippo External Resource Project Demo Bootstrap Web Files</description>
-  <artifactId>demo-bootstrap-webfiles</artifactId>
-
   <dependencies>
-    <!-- ARCHE-555 Add dependency on the site war for IntelliJ bean-definition code completion in ftl files -->
     <dependency>
       <groupId>org.onehippo.forge.externalresourcedemo</groupId>
       <artifactId>demo-site</artifactId>
@@ -27,12 +24,15 @@
       <type>pom</type>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.onehippo.cms7</groupId>
+      <artifactId>hippo-essentials-components-hst</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <includeEmptyDirs>true</includeEmptyDirs>
@@ -40,5 +40,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
