@@ -1,0 +1,58 @@
+{
+  "hippo:templates":   {
+    "en":     {
+      "new-content-folder": "new content folder",
+      "new-content-document": "new content document",
+      "new-resource-bundle": "new resource bundle",
+      "new-untranslated-folder": "new untranslated folder"
+    },
+    "nl":     {
+      "new-content-folder": "nieuwe contentmap",
+      "new-content-document": "nieuw content document",
+      "new-resource-bundle": "nieuwe resource bundle",
+      "new-untranslated-folder": "nieuwe onvertaalde map"
+    },
+    "de":     {
+      "new-content-document": "Neues Content-Document",
+      "new-untranslated-folder": "Neuer nicht übersetzter Ordner",
+      "new-resource-bundle": "Neues Resource-Bundle",
+      "new-content-folder": "Neuer Content-Ordner"
+    },
+    "fr":     {
+      "new-content-document": "nouveau document contenu",
+      "new-untranslated-folder": "nouveau dossier non traduit",
+      "new-resource-bundle": "nouveau resource bundle",
+      "new-content-folder": "nouveau dossier contenu"
+    }
+  },
+  "hippo:types": {"demo:contentdocument":   {
+    "en":     {
+      "demo:content": "Content",
+      "demo:title": "Title",
+      "demo:introduction": "Introduction",
+      "jcr:name": "Simple Document",
+      "demo:publicationdate": "Publication date"
+    },
+    "nl":     {
+      "demo:content": "Inhoud",
+      "demo:title": "Titel",
+      "demo:introduction": "Introductie",
+      "jcr:name": "Eenvoudig Document",
+      "demo:publicationdate": "Publicatiedatum"
+    },
+    "fr":     {
+      "demo:content": "Contenu",
+      "demo:title": "Titre",
+      "demo:introduction": "Introduction",
+      "jcr:name": "Document simple",
+      "demo:publicationdate": "Date de publication"
+    },
+    "de":     {
+      "demo:content": "Inhalt",
+      "demo:title": "Titel",
+      "demo:introduction": "Einführung",
+      "jcr:name": "Einfaches Dokument",
+      "demo:publicationdate": "Publikationsdatum"
+    }
+  }}
+}
