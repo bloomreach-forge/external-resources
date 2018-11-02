@@ -8,5 +8,41 @@
         "section-videos": "Videobank"
       }
     }
+  },
+  "hippo:templates": {
+    "en":   {
+      "new-video": "video",
+      "new-video-folder": "video folder"
+    },
+    "nl":   {
+      "new-video": "video",
+      "new-video-folder": "videobank"
+    }
+  },
+  "hippo:types": {
+    "hippoyoutube:resource": {
+      "en": {
+        "jcr:name": "Youtube video"
+      },
+      "nl": {
+        "jcr:name": "Youtube video"
+      }
+    },
+    "hippomediamosa:resource": {
+      "en": {
+        "jcr:name": "Mediamosa video"
+      },
+      "nl": {
+        "jcr:name": "Mediamosa video"
+      }
+    },
+    "hipporedfive:resource": {
+      "en": {
+        "jcr:name": "Red 5 video"
+      },
+      "nl": {
+        "jcr:name": "Red 5 video"
+      }
+    }
   }
 }
