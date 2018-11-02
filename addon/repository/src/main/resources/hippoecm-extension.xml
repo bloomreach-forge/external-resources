@@ -184,7 +184,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>2.0.2</sv:value>
+      <sv:value>3.0.0</sv:value>
     </sv:property>
   </sv:node>
 
@@ -205,7 +205,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>2.0.2</sv:value>
+      <sv:value>3.0.0</sv:value>
     </sv:property>
   </sv:node>
 
@@ -226,7 +226,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>2.0.2</sv:value>
+      <sv:value>3.0.0</sv:value>
     </sv:property>
   </sv:node>
 
@@ -242,6 +242,12 @@
     </sv:property>
     <sv:property sv:name="hippo:contentroot" sv:type="String">
       <sv:value>/hippo:namespaces/hippoexternal</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:reloadonstartup" sv:type="Boolean">
+      <sv:value>true</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:version" sv:type="String">
+      <sv:value>3.0.0</sv:value>
     </sv:property>
   </sv:node>
 
@@ -262,7 +268,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>2.0.2</sv:value>
+      <sv:value>3.0.0</sv:value>
     </sv:property>
   </sv:node>
 
@@ -283,7 +289,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>2.0.2</sv:value>
+      <sv:value>3.0.0</sv:value>
     </sv:property>
   </sv:node>
 
