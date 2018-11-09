@@ -40,6 +40,7 @@
     <!-- dev related -->
     <junit.version>4.12</junit.version>
     <extension.wagon-svn.version>1.12</extension.wagon-svn.version>
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
   </properties>
 
   <scm>
@@ -261,6 +262,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+        <version>${maven-site-plugin.version}</version>
         <configuration>
           <outputDirectory>docs</outputDirectory>
         </configuration>
@@ -284,6 +286,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-site-plugin</artifactId>
+            <version>${maven-site-plugin.version}</version>
             <configuration>
               <outputDirectory>docs</outputDirectory>
             </configuration>
