@@ -25,7 +25,7 @@
         <p class="smallinfo">Release Date: 18 April 2017</p>
         <ul>
           <li>Upgrade to Hippo 10.2.4. <br/>
-            Contribution from Ebrahim Aharpour, see <a href="https://github.com/onehippo-forge/external-resources/pull/1">pull request #1</a></li>
+            Contribution from Ebrahim Aharpour, see <a href="https://github.com/bloomreach-forge/external-resources/pull/1">pull request #1</a></li>
         </ul>
       </subsection>
       <subsection name="1.09.12">
