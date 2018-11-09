@@ -64,6 +64,7 @@
     <!-- ***END temporary override of versions*** -->
     <forge.externalresource.version>${project.version}</forge.externalresource.version>
 
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
     <essentials.version>2.2.0</essentials.version>
     <jsp-api.version>2.2</jsp-api.version>
     <taglibs.version>1.2.1</taglibs.version>
@@ -87,6 +88,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${maven-site-plugin.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.onehippo.forge</groupId>
