@@ -14,12 +14,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project name="Hippo Forge External Resource Project">
+<project name="Bloomreach Forge External Resource Project">
 
   <skin>
-    <groupId>org.onehippo.forge.mavenskin</groupId>
+    <groupId>org.bloomreach.forge.mavenskin</groupId>
     <artifactId>forge-maven-skin</artifactId>
-    <version>1.04.00</version>
+    <version>3.0.1</version>
   </skin>
 
   <body>

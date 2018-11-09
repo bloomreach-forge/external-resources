@@ -44,9 +44,9 @@
   </properties>
 
   <scm>
-    <connection>scm:git:git@github.com:onehippo-forge/external-resources.git</connection>
-    <developerConnection>scm:git:git@github.com:onehippo-forge/external-resources.git</developerConnection>
-    <url>https://github.com/onehippo-forge/external-resources.git</url>
+    <connection>scm:git:git@github.com:bloomreach-forge/external-resources.git</connection>
+    <developerConnection>scm:git:git@github.com:bloomreach-forge/external-resources.git</developerConnection>
+    <url>https://github.com/bloomreach-forge/external-resources.git</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -65,7 +65,7 @@
 
   <ciManagement>
     <system>Travic CI</system>
-    <url>https://travis-ci.org/onehippo-forge/external-resources</url>
+    <url>https://travis-ci.org/bloomreach-forge/external-resources</url>
   </ciManagement>
 
   <licenses>
