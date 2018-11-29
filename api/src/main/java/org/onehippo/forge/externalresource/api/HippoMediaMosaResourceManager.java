@@ -82,9 +82,9 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private String password;
     private String[] profiles = new String[0];
     private String playbackVideoCodec;
-    private String responseType;
+//    private String responseType;
     private Long width;
-    private boolean createThumbnail;
+//    private boolean createThumbnail;
     private MediaMosaService mediaMosaService;
 
     public static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
@@ -105,9 +105,9 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             this.url = JcrUtils.getStringProperty(config, "url", null);
             this.username = JcrUtils.getStringProperty(config, "username", null);
             this.password = JcrUtils.getStringProperty(config, "password", null);
-            this.responseType = JcrUtils.getStringProperty(config, "responseType", null);
+//            this.responseType = JcrUtils.getStringProperty(config, "responseType", null);
             this.width = JcrUtils.getLongProperty(config, "width", DEFAULT_WIDTH);
-            this.createThumbnail = JcrUtils.getBooleanProperty(config, "createThumbnail", Boolean.FALSE);
+//            this.createThumbnail = JcrUtils.getBooleanProperty(config, "createThumbnail", Boolean.FALSE);
             this.playbackVideoCodec = JcrUtils.getStringProperty(config, "playbackVideoCodec", null);
             this.profiles = getStringArray(config, "profiles");
             this.mediaMosaService = new MediaMosaService(getUrl());
