@@ -232,18 +232,11 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
             final Node handleNode = node.getParent();
 
-            //node.setProperty("hippoexternal:state", "inprogress");
             log.debug(assetDetails.getVideotimestampmodified().toString());
             log.debug(assetDetails.getVideotimestamp().toString());
 
             Calendar modified = assetDetails.getVideotimestampmodified();
             node.setProperty("hippoexternal:lastModifiedSyncDate", modified);
-
-//            LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), getWidth());
-//
-//            if (embedLink != null) {
-//                Utils.addEmbeddedNode(node, embedLink.getOutput());
-//            }
 
             String videoCodec = mediafileDetails.getMetadata().getVideoCodec();
             if (StringUtils.isNotBlank(videoCodec)) {

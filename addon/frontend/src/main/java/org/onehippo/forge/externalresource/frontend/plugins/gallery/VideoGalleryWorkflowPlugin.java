@@ -1,20 +1,7 @@
-/*
- *  Copyright 2009 Hippo.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 package org.onehippo.forge.externalresource.frontend.plugins.gallery;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
@@ -26,7 +13,6 @@ import javax.jcr.RepositoryException;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Session;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -51,12 +37,10 @@ import org.hippoecm.frontend.plugins.jquery.upload.multiple.JQueryFileUploadDial
 import org.hippoecm.frontend.plugins.standardworkflow.AddDocumentArguments;
 import org.hippoecm.frontend.plugins.yui.upload.validation.DefaultUploadValidationService;
 import org.hippoecm.frontend.plugins.yui.upload.validation.FileUploadValidationService;
-import org.hippoecm.frontend.plugins.yui.upload.validation.ImageUploadValidationService;
 import org.hippoecm.frontend.service.IBrowseService;
 import org.hippoecm.frontend.service.ISettingsService;
 import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.session.UserSession;
-import org.hippoecm.frontend.translation.ILocaleProvider;
 import org.hippoecm.frontend.widgets.AbstractView;
 import org.hippoecm.repository.api.Document;
 import org.hippoecm.repository.api.HippoNode;
@@ -77,10 +61,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = LoggerFactory.getLogger(VideoGalleryWorkflowPlugin.class);
-
-//    public String type;
     private List<String> newItems;
-
     private AddDocumentArguments addDocumentModel = new AddDocumentArguments();
 
     public VideoGalleryWorkflowPlugin(IPluginContext context, IPluginConfig config) {
@@ -88,7 +69,6 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
         newItems = new LinkedList<>();
         onModelChanged();
     }
-
 
     @Override
     public void onModelChanged() {
@@ -106,7 +86,9 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
 
     public class UploadDialog extends JQueryFileUploadDialog {
         private static final long serialVersionUID = 1L;
-        private FileUpload fileUpload;
+        private File uploadedVideoFile;
+        private String filename;
+        private String mimetype;
 
         public UploadDialog(IPluginContext pluginContext, IPluginConfig pluginConfig, AddDocumentArguments addDocumentModel) {
             super(pluginContext, pluginConfig);
@@ -117,27 +99,24 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
                 WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this.getDefaultModel();
                 GalleryWorkflow workflow = (GalleryWorkflow) manager.getWorkflow(workflowDescriptorModel.getObject());
                 if (workflow == null) {
-                    VideoGalleryWorkflowPlugin.log.error("No gallery workflow accessible");
+                    log.error("No gallery workflow accessible");
                 } else {
                     galleryTypes = workflow.getGalleryTypes();
                 }
             } catch (RemoteException | RepositoryException ex) {
-                VideoGalleryWorkflowPlugin.log.error(ex.getMessage(), ex);
+                log.error(ex.getMessage(), ex);
             }
 
             Component typeComponent;
 
             final PropertyModel<String> prototypeModel = new PropertyModel<>(addDocumentModel, "prototype");
             if (galleryTypes != null && galleryTypes.size() > 1) {
-//                type = galleryTypes.get(0);
                 typeComponent = new DropDownChoice("type", prototypeModel , galleryTypes,
                         new TypeChoiceRenderer(this)).setNullValid(false).setRequired(true);
             } else if (galleryTypes != null && galleryTypes.size() == 1) {
-//                type = galleryTypes.get(0);
                 typeComponent = new EmptyPanel("type").setVisible(false);
                 prototypeModel.setObject(galleryTypes.iterator().next());
             } else {
-//                type = null;
                 typeComponent = new EmptyPanel("type").setVisible(false);
             }
 
@@ -147,35 +126,37 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
         @Override
         protected void onFileUpload(final FileUpload fileUpload) {
             log.debug("uploaded file {} with size {}", fileUpload.getClientFileName(), fileUpload.getSize());
-            this.fileUpload = fileUpload;
+            try {
+                this.uploadedVideoFile = fileUpload.writeToTempFile();
+                this.filename = fileUpload.getClientFileName();
+                this.mimetype = fileUpload.getContentType();
+            } catch (IOException e) {
+                log.error("cannot store the uploaded file in temp", e);
+            }
         }
 
+        @Override
         public IModel getTitle() {
             return new StringResourceModel(VideoGalleryWorkflowPlugin.this.getPluginConfig().getString("option.text", ""), VideoGalleryWorkflowPlugin.this, null);
         }
 
         @Override
-        protected void onOk() {
-            super.onOk();
-            createGalleryItem();
+        protected FileUploadValidationService getValidator() {
+            FileUploadValidationService fileUploadValidationService = DefaultUploadValidationService.getValidationService(getPluginContext(), getPluginConfig(), "service.gallery.video.validation");
+            return fileUploadValidationService;
         }
 
         @Override
-        protected FileUploadValidationService getValidator() {
-            FileUploadValidationService fileUploadValidationService = DefaultUploadValidationService.getValidationService(getPluginContext(), getPluginConfig(), "service.gallery.video.validation");
-
-            return fileUploadValidationService;
+        protected void onFinished() {
+            createGalleryItem();
+            super.onFinished();
         }
 
         private void createGalleryItem() {
             try {
-                //VideoService service = getVideoService();
                 //this is where the magic starts
-                String filename = fileUpload.getClientFileName();
-                String mimetype;
-
-                mimetype = fileUpload.getContentType();
-                InputStream istream = fileUpload.getInputStream();
+                InputStream istream = new FileInputStream(uploadedVideoFile);
+                uploadedVideoFile.deleteOnExit();
                 WorkflowManager manager = ((UserSession) Session.get()).getWorkflowManager();
                 HippoNode node = null;
                 try {
@@ -195,7 +176,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
                         defaultWorkflow.setDisplayName(localName);
                     }
                 } catch (WorkflowException | RepositoryException ex) {
-                    VideoGalleryWorkflowPlugin.log.error(ex.getMessage());
+                    log.error(ex.getMessage());
                     error(ex);
                 }
                 if (node != null) {
@@ -207,31 +188,37 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
                         processor.afterSave(node);
 
                     } catch (Exception ex) {
-                        if (VideoGalleryWorkflowPlugin.log.isDebugEnabled()) {
-                            VideoGalleryWorkflowPlugin.log.info(ex.getMessage(), ex);
+                        if (log.isDebugEnabled()) {
+                            log.info(ex.getMessage(), ex);
                         } else {
-                            VideoGalleryWorkflowPlugin.log.info(ex.getMessage());
+                            log.info(ex.getMessage());
                         }
                         error(ex);
                         try {
                             DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
                             defaultWorkflow.delete();
                         } catch (WorkflowException | RepositoryException e) {
-                            VideoGalleryWorkflowPlugin.log.error(e.getMessage());
+                            log.warn("error executing workflow delete", e);
                         }
                         try {
                             node.getSession().refresh(false);
                         } catch (RepositoryException e) {
-                            // deliberate ignore
+                            log.warn("could not refresh the session", e);
                         }
                     }
                     newItems.add(node.getPath());
                 }
             } catch (IOException ex) {
-                VideoGalleryWorkflowPlugin.log.info("upload of image truncated");
+                log.warn("upload of image truncated", ex);
                 error((new StringResourceModel("upload-failed-label", VideoGalleryWorkflowPlugin.this, null).getString()));
+                if (uploadedVideoFile != null && uploadedVideoFile.exists()) {
+                    boolean tempFileDeleted = uploadedVideoFile.delete();
+                    if (!tempFileDeleted) {
+                        log.debug("Temp file {} was not deleted",uploadedVideoFile.getAbsolutePath());
+                    }
+                }
             } catch (RepositoryException e) {
-                VideoGalleryWorkflowPlugin.log.error("upload of image failed", e);
+                log.error("upload of image failed", e);
                 error((new StringResourceModel("upload-failed-label", VideoGalleryWorkflowPlugin.this, null).getString()));
             }
 
@@ -244,8 +231,6 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
             newItems.clear();
         }
     }
-
-
 
     protected IDataProvider<StdWorkflow> createListDataProvider(final IPluginContext pluginContext) {
         List<StdWorkflow> list = new LinkedList<>();
@@ -262,7 +247,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
                 return createUploadDialog();
             }
         });
-        if (getPluginConfig().getAsBoolean("importDisabled", false) == false) {
+        if (!getPluginConfig().getAsBoolean("importDisabled", false)) {
             //delegate to the WorkflowitemManager
             list.add(1, new StdWorkflow("import", new StringResourceModel(getPluginConfig().getString("option.label.import", "import-video-label"), this, null, "Add"), pluginContext, (WorkflowDescriptorModel) getDefaultModel()) {
                 private static final long serialVersionUID = 1L;
