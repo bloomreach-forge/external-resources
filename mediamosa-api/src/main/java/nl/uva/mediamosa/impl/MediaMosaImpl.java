@@ -19,10 +19,31 @@
  */
 package nl.uva.mediamosa.impl;
 
-import nl.uva.mediamosa.MediaMosa;
-import nl.uva.mediamosa.MediafileProperties;
-import nl.uva.mediamosa.model.*;
-import nl.uva.mediamosa.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.xml.transform.TransformerException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -52,25 +73,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
+import nl.uva.mediamosa.MediaMosa;
+import nl.uva.mediamosa.MediafileProperties;
+import nl.uva.mediamosa.model.AssetDetailsType;
+import nl.uva.mediamosa.model.AssetIdType;
+import nl.uva.mediamosa.model.AssetType;
+import nl.uva.mediamosa.model.ErrorcodeType;
+import nl.uva.mediamosa.model.ItemsType;
+import nl.uva.mediamosa.model.JobDetailsType;
+import nl.uva.mediamosa.model.JobType;
+import nl.uva.mediamosa.model.LinkType;
+import nl.uva.mediamosa.model.MediafileDetailsType;
+import nl.uva.mediamosa.model.MediafileType;
+import nl.uva.mediamosa.model.ProfileType;
+import nl.uva.mediamosa.model.Response;
+import nl.uva.mediamosa.model.StatsDatauploadType;
+import nl.uva.mediamosa.model.StatsDatausagevideoType;
+import nl.uva.mediamosa.model.StatsPlayedstreamsType;
+import nl.uva.mediamosa.model.StatsPopularcollectionsType;
+import nl.uva.mediamosa.model.StatsPopularstreamsType;
+import nl.uva.mediamosa.model.StillType;
+import nl.uva.mediamosa.model.UploadTicketType;
+import nl.uva.mediamosa.util.ChallengeUtil;
+import nl.uva.mediamosa.util.MD5Util;
+import nl.uva.mediamosa.util.SHA1Util;
+import nl.uva.mediamosa.util.ServiceException;
+import nl.uva.mediamosa.util.UnmarshallUtil;
+import nl.uva.mediamosa.util.XsltUtil;
 import static nl.uva.mediamosa.ErrorCodes.ERRORCODE_COULD_NOT_FIND_STILL;
 import static nl.uva.mediamosa.ErrorCodes.ERRORCODE_OKAY;
 
@@ -1243,7 +1272,9 @@ public class MediaMosaImpl implements MediaMosa {
         } else if (vpxResponse.getHeader().getRequestResultId() == ERRORCODE_COULD_NOT_FIND_STILL) {
             return new StillType();
         } else {
-            log.error("MM failed request: " + vpxResponse.getHeader().getRequestResultDescription());
+            if (log.isDebugEnabled()) {
+                log.warn("MM failed request: " + vpxResponse.getHeader().getRequestResultDescription());
+            }
         }
 
         return null;

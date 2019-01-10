@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><sv:node xmlns:sv="http://www.jcp.org/jcr/sv/1.0" sv:name="videoValidationService">
+  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>frontend:plugin</sv:value>
+  </sv:property>
+  <sv:property sv:name="extensions.allowed" sv:type="String" sv:multiple="true">
+    <sv:value>*.mp4</sv:value>
+  </sv:property>
+  <sv:property sv:name="max.file.size" sv:type="String">
+    <sv:value>4M</sv:value>
+  </sv:property>
+  <sv:property sv:name="plugin.class" sv:type="String">
+    <sv:value>org.hippoecm.frontend.plugins.yui.upload.validation.UploadValidationPlugin</sv:value>
+  </sv:property>
+  <sv:property sv:name="validator.id" sv:type="String">
+    <sv:value>service.gallery.video.validation</sv:value>
+  </sv:property>
+</sv:node>
