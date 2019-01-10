@@ -1,8 +1,15 @@
 package org.onehippo.forge.externalresource.api.scheduler.mediamosa;
 
-import nl.uva.mediamosa.model.AssetDetailsType;
-import nl.uva.mediamosa.model.LinkType;
-import nl.uva.mediamosa.util.ServiceException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -16,14 +23,9 @@ import org.onehippo.repository.scheduling.RepositoryJobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import java.io.IOException;
-import java.io.InputStream;
+import nl.uva.mediamosa.model.AssetDetailsType;
+import nl.uva.mediamosa.model.LinkType;
+import nl.uva.mediamosa.util.ServiceException;
 
 /**
  * @version $Id$
@@ -33,7 +35,6 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
     private static final Logger LOG = LoggerFactory.getLogger(MediaMosaThumbnailJob.class);
     private static final String RESOURCE_QUERY_STRING = "content/videos//element(*,hippomediamosa:resource)[@hippomediamosa:assetid='%s']";
     public static final String ASSET_ID_ATTRIBUTE = "assetId";
-    public static final int CONNECTION_TIMEOUT = 30000;
 
     @Override
     public void execute(RepositoryJobExecutionContext context) throws RepositoryException {
@@ -53,7 +54,6 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
                     AssetDetailsType detail = mediamosaRemoteService.service().getAssetDetails(assetId);
                     if (StringUtils.isNotBlank(detail.getVpxStillUrl())) {
                         String imageUrl = detail.getVpxStillUrl();
-                        //Utils.resolveThumbnailToVideoNode(imageUrl, mediamosaAsset);
                         HttpClient client = Utils.getHttpClient();
                         InputStream is = null;
                         try {
@@ -66,7 +66,6 @@ public class MediaMosaThumbnailJob implements RepositoryJob {
                                     thumbnail.setProperty("jcr:data", session.getValueFactory().createBinary(is));
                                     thumbnail.setProperty("jcr:mimeType", mimeType);
                                     thumbnail.setProperty("jcr:lastModified", java.util.Calendar.getInstance());
-                                    // mediamosaAsset.setProperty("hippoexternal:state", SynchronizationState.SYNCHRONIZED.getState());
                                     session.save();
                                 }
                             }

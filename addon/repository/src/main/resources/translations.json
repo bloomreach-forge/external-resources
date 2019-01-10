@@ -1,0 +1,180 @@
+{
+  "hippo:cms": {
+    "sections": {
+      "en": {
+        "section-videos": "Videos"
+      },
+      "nl": {
+        "section-videos": "Videobank"
+      }
+    }
+  },
+  "hippo:templates": {
+    "en":   {
+      "new-video": "video",
+      "new-video-folder": "video folder"
+    },
+    "nl":   {
+      "new-video": "video",
+      "new-video-folder": "videobank"
+    }
+  },
+  "hippo:types": {
+    "hippoyoutube:resource":     {
+      "en":       {
+        "jcr:name": "Youtube video",
+        "hippoyoutube:thumbnail": "Thumbnail",
+        "hippoyoutube:size": "Size",
+        "hippoyoutube:id": "Identifier",
+        "hippoyoutube:name": "Name",
+        "hippoyoutube:width": "Width",
+        "hippoyoutube:description": "Description",
+        "hippoyoutube:title": "Title",
+        "hippoyoutube:mimeType": "Mime Type",
+        "hippoyoutube:lastModified": "Date",
+        "hippoyoutube:height": "Height"
+      },
+      "nl":       {
+        "jcr:name": "Youtube video",
+        "hippoyoutube:thumbnail": "Preview",
+        "hippoyoutube:size": "Grootte",
+        "hippoyoutube:id": "Identificatie",
+        "hippoyoutube:name": "Naam",
+        "hippoyoutube:width": "Breedte",
+        "hippoyoutube:description": "Introductie",
+        "hippoyoutube:title": "Titel",
+        "hippoyoutube:mimeType": "Mime Type",
+        "hippoyoutube:lastModified": "Datum",
+        "hippoyoutube:height": "Hoogte"
+      }
+    },
+    "hippomediamosa:resource":     {
+      "en":       {
+        "jcr:name": "Mediamosa video",
+        "hippomediamosa:description": "Description",
+        "hippomediamosa:size": "Size",
+        "hippomediamosa:mimeType": "Mime Type",
+        "hippomediamosa:width": "Width",
+        "hippomediamosa:title": "Title",
+        "hippomediamosa:name": "Name",
+        "hippomediamosa:lastModified": "Date",
+        "hippomediamosa:height": "Height",
+        "hippomediamosa:embedded": "Embedded",
+        "hippomediamosa:duration": "Duration",
+        "hippomediamosa:thumbnail": "Thumbnail"
+      },
+      "nl":       {
+        "jcr:name": "Mediamosa video",
+        "hippomediamosa:description": "Introductie",
+        "hippomediamosa:size": "Grootte",
+        "hippomediamosa:mimeType": "Mime Type",
+        "hippomediamosa:width": "Breedte",
+        "hippomediamosa:title": "Titel",
+        "hippomediamosa:name": "Naam",
+        "hippomediamosa:lastModified": "Datum",
+        "hippomediamosa:height": "Hoogte",
+        "hippomediamosa:embedded": "Embedded",
+        "hippomediamosa:duration": "Duur",
+        "hippomediamosa:thumbnail": "Preview"
+      }
+    },
+    "hipporedfive:resource":     {
+      "en":       {
+        "jcr:name": "Red 5 video",
+        "hipporedfive:description": "Description",
+        "hipporedfive:title": "Title",
+        "hipporedfive:mimeType": "Mime Type",
+        "hipporedfive:width": "Width",
+        "hipporedfive:url": "URL",
+        "hipporedfive:height": "Height",
+        "hipporedfive:thumbnail": "Thumbnail",
+        "tags-3d4f2620-704d-4a78-bb16-a63beabdf794": "Tags",
+        "hipporedfive:size": "Size",
+        "hipporedfive:name": "Name",
+        "hipporedfive:lastModified": "Date"
+      },
+      "nl":       {
+        "jcr:name": "Red 5 video",
+        "hipporedfive:description": "Introductie",
+        "hipporedfive:title": "Titel",
+        "hipporedfive:mimeType": "Mime Type",
+        "hipporedfive:width": "Breedte",
+        "hipporedfive:url": "URL",
+        "hipporedfive:height": "Hoogte",
+        "hipporedfive:thumbnail": "Preview",
+        "tags-3d4f2620-704d-4a78-bb16-a63beabdf794": "Tags",
+        "hipporedfive:size": "Grootte",
+        "hipporedfive:name": "Naam",
+        "hipporedfive:lastModified": "Datum"
+      }
+    },
+    "hippoexternal:embedded":     {
+      "nl":       {
+        "jcr:name": "Embedded",
+        "name-45624a00-d171-4434-b8da-a677795e6eda": "Naam"
+      },
+      "en":       {
+        "jcr:name": "Embedded",
+        "name-45624a00-d171-4434-b8da-a677795e6eda": "Name"
+      }
+    },
+    "hippoexternal:resource":     {
+      "nl":       {
+        "hippoexternal:size": "Grootte",
+        "jcr:name": "Externe bron",
+        "hippoexternal:name": "Naam",
+        "hippoexternal:mimeType": "Mime Type",
+        "hippoexternal:lastModified": "Datum"
+      },
+      "en":       {
+        "hippoexternal:size": "Size",
+        "jcr:name": "External resource",
+        "hippoexternal:name": "Name",
+        "hippoexternal:mimeType": "Mime Type",
+        "hippoexternal:lastModified": "Date"
+      }
+    },
+    "hippoexternal:displayimage":     {
+      "nl": {"jcr:name": "Afbeelding"},
+      "en": {"jcr:name": "Thumbnail"},
+      "fr": {"jcr:name": "Image"}
+    },
+    "hippoexternal:video":     {
+      "nl":       {
+        "hippoexternal:size": "Grootte",
+        "hippoexternal:height": "Hoogte",
+        "jcr:name": "Externe video",
+        "hippoexternal:mimeType": "Mime Type",
+        "hippoexternal:width": "Breedte",
+        "hippoexternal:description": "Introductie",
+        "hippoexternal:lastModified": "Datum",
+        "hippoexternal:title": "Titel",
+        "hippoexternal:name": "Naam",
+        "hippoexternal:duration": "Duur",
+        "hippoexternal:thumbnail": "Preview"
+      },
+      "en":       {
+        "hippoexternal:size": "Size",
+        "hippoexternal:height": "Height",
+        "jcr:name": "External video",
+        "hippoexternal:mimeType": "Mime Type",
+        "hippoexternal:width": "Width",
+        "hippoexternal:description": "Description",
+        "hippoexternal:lastModified": "Date",
+        "hippoexternal:title": "Title",
+        "hippoexternal:name": "Name",
+        "hippoexternal:duration": "Duration",
+        "hippoexternal:thumbnail": "Thumbnail"
+      }
+    },
+    "hippoexternal:folder":     {
+      "en": {"jcr:name": "External resource folder"},
+      "nl": {"jcr:name": "Externe bron map"},
+      "fr": {"jcr:name": "Dossier de ressources extérieures"}
+    },
+    "hippoexternal:synchronizable":     {
+      "nl": {"jcr:name": "Onbekend"},
+      "en": {"jcr:name": "Unknown"}
+    }
+  }
+}

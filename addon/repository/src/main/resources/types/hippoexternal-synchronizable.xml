@@ -7,23 +7,6 @@
     <sv:value>mix:referenceable</sv:value>
     <sv:value>hippo:translated</sv:value>
   </sv:property>
-  <sv:node sv:name="hippo:translation">
-    <sv:property sv:name="jcr:primaryType" sv:type="Name">
-      <sv:value>hippo:translation</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:language" sv:type="String">
-      <sv:value>nl</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:message" sv:type="String">
-      <sv:value>Gesynchroniseerd</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:property" sv:type="String">
-      <sv:value>hippoexternal:state</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:value" sv:type="String">
-      <sv:value>synchronized</sv:value>
-    </sv:property>
-  </sv:node>
   <sv:node sv:name="hipposysedit:nodetype">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>hippo:handle</sv:value>
@@ -42,90 +25,5 @@
         <sv:value>http://www.hippoecm.org/hippoexternal/nt/1.0</sv:value>
       </sv:property>
     </sv:node>
-  </sv:node>
-  <sv:node sv:name="hippo:translation">
-    <sv:property sv:name="jcr:primaryType" sv:type="Name">
-      <sv:value>hippo:translation</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:language" sv:type="String">
-      <sv:value>en</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:message" sv:type="String">
-      <sv:value>Synchronized</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:property" sv:type="String">
-      <sv:value>hippoexternal:state</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:value" sv:type="String">
-      <sv:value>synchronized</sv:value>
-    </sv:property>
-  </sv:node>
-  <sv:node sv:name="hippo:translation">
-    <sv:property sv:name="jcr:primaryType" sv:type="Name">
-      <sv:value>hippo:translation</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:language" sv:type="String">
-      <sv:value>nl</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:message" sv:type="String">
-      <sv:value>Niet Gesynchroniseerd</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:property" sv:type="String">
-      <sv:value>hippoexternal:state</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:value" sv:type="String">
-      <sv:value>unsynchronized</sv:value>
-    </sv:property>
-  </sv:node>
-  <sv:node sv:name="hippo:translation">
-    <sv:property sv:name="jcr:primaryType" sv:type="Name">
-      <sv:value>hippo:translation</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:language" sv:type="String">
-      <sv:value>en</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:message" sv:type="String">
-      <sv:value>Unsynchronized</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:property" sv:type="String">
-      <sv:value>hippoexternal:state</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:value" sv:type="String">
-      <sv:value>unsynchronized</sv:value>
-    </sv:property>
-  </sv:node>
-  <sv:node sv:name="hippo:translation">
-    <sv:property sv:name="jcr:primaryType" sv:type="Name">
-      <sv:value>hippo:translation</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:language" sv:type="String">
-      <sv:value>nl</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:message" sv:type="String">
-      <sv:value>Onbekend</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:property" sv:type="String">
-      <sv:value>hippoexternal:state</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:value" sv:type="String">
-      <sv:value>unknown</sv:value>
-    </sv:property>
-  </sv:node>
-  <sv:node sv:name="hippo:translation">
-    <sv:property sv:name="jcr:primaryType" sv:type="Name">
-      <sv:value>hippo:translation</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:language" sv:type="String">
-      <sv:value>en</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:message" sv:type="String">
-      <sv:value>Unknown</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:property" sv:type="String">
-      <sv:value>hippoexternal:state</sv:value>
-    </sv:property>
-    <sv:property sv:name="hippo:value" sv:type="String">
-      <sv:value>unknown</sv:value>
-    </sv:property>
   </sv:node>
 </sv:node>

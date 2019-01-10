@@ -5,7 +5,7 @@ public interface HippoExternalNamespace {
     String NAMESPACE = "hippoexternal:";
     String JCR_TYPE = NAMESPACE +"embedded";
     String VIDEO = NAMESPACE + "video";
-    String TITLE = "title";
+    String TITLE = NAMESPACE + "title";
     String DESCRIPTION = NAMESPACE + "description";
     String WIDTH = NAMESPACE + "width";
     String HEIGHT = NAMESPACE + "height";

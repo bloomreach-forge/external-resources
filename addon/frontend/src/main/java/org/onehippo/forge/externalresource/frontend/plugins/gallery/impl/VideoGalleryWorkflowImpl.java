@@ -15,8 +15,19 @@
  */
 package org.onehippo.forge.externalresource.frontend.plugins.gallery.impl;
 
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+
 import org.hippoecm.repository.api.Document;
-import org.hippoecm.repository.api.MappingException;
 import org.hippoecm.repository.api.WorkflowContext;
 import org.hippoecm.repository.api.WorkflowException;
 import org.hippoecm.repository.ext.InternalWorkflow;
@@ -24,17 +35,6 @@ import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.hippoecm.repository.standardworkflow.FolderWorkflowImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 // FIXME: this implementation should be totally rewritten as it should not
 // implement InternalWorkflow, but could and should be a plain POJO workflow.
@@ -46,20 +46,19 @@ public class VideoGalleryWorkflowImpl extends FolderWorkflowImpl implements Inte
     private static final Logger log = LoggerFactory.getLogger(VideoGalleryWorkflowImpl.class);
 
     private Node subject;
-    private Session session;
+
 
     public VideoGalleryWorkflowImpl(WorkflowContext context, Session userSession, Session rootSession, Node subject) throws RemoteException, RepositoryException {
         super(context, userSession, rootSession, subject);
         this.subject = subject;
-        this.session = rootSession;
     }
 
     public Map<String, Serializable> hints() {
         return null;
     }
 
-    public List<String> getGalleryTypes() throws RemoteException, RepositoryException {
-        List<String> list = new LinkedList<String>();
+    public List<String> getGalleryTypes() throws RepositoryException {
+        List<String> list = new LinkedList<>();
         Value[] values = subject.getProperty("hippostd:gallerytype").getValues();
         for (int i = 0; i < values.length; i++) {
             list.add(values[i].getString());
@@ -81,7 +80,7 @@ public class VideoGalleryWorkflowImpl extends FolderWorkflowImpl implements Inte
     }
 
     @Override
-    public String add(String category, String template, String name) throws WorkflowException, MappingException, RepositoryException, RemoteException {
+    public String add(String category, String template, String name) throws WorkflowException, RepositoryException, RemoteException {
         Map<String, String> arguments = new TreeMap<String, String>();
         arguments.put("name", name);
         return add(category, template, arguments);
