@@ -419,12 +419,12 @@
       </build>
     </profile>
 
-   <!-- <profile>
+    <profile>
       <id>jrebel-7-mac</id>
       <properties>
         <javaagent>-agentpath:${env.REBEL_HOME}/lib/libjrebel64.dylib</javaagent>
       </properties>
-    </profile>-->
+    </profile>
 
   </profiles>
 

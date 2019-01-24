@@ -1,8 +1,19 @@
 package org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.still;
 
-import nl.uva.mediamosa.MediaMosaService;
-import nl.uva.mediamosa.model.*;
-import nl.uva.mediamosa.util.ServiceException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -13,6 +24,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.IHeaderContributor;
@@ -25,18 +37,26 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
-import org.apache.wicket.model.*;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.IValueMap;
 import org.apache.wicket.util.value.ValueMap;
-import org.hippoecm.frontend.behaviors.EventStoppingBehavior;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
-import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidget;
-import org.hippoecm.frontend.plugins.yui.upload.FileUploadWidgetSettings;
+import org.hippoecm.frontend.plugins.jquery.upload.FileUploadViolationException;
+import org.hippoecm.frontend.plugins.jquery.upload.behaviors.FileUploadInfo;
+import org.hippoecm.frontend.plugins.jquery.upload.single.FileUploadPanel;
+import org.hippoecm.frontend.plugins.yui.upload.validation.FileUploadValidationService;
+import org.hippoecm.frontend.plugins.yui.upload.validation.ImageUploadValidationService;
+import org.hippoecm.frontend.widgets.UpdateFeedbackInfo;
+import org.onehippo.forge.externalresource.HippoMediamosaNamespace;
 import org.onehippo.forge.externalresource.api.MediamosaRemoteService;
 import org.onehippo.forge.externalresource.api.scheduler.mediamosa.MediaMosaJobState;
 import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
@@ -45,12 +65,15 @@ import org.onehippo.forge.externalresource.frontend.plugins.type.dialog.Abstract
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
+import nl.uva.mediamosa.MediaMosaService;
+import nl.uva.mediamosa.model.JobDetailsType;
+import nl.uva.mediamosa.model.JobType;
+import nl.uva.mediamosa.model.Response;
+import nl.uva.mediamosa.model.StillDetailType;
+import nl.uva.mediamosa.model.StillType;
+import nl.uva.mediamosa.model.UploadTicketType;
+import nl.uva.mediamosa.util.ServiceException;
+import static nl.uva.mediamosa.ErrorCodes.ERRORCODE_OKAY;
 
 /**
  * @version $Id$
@@ -59,7 +82,6 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     @SuppressWarnings({"UnusedDeclaration"})
     private static Logger log = LoggerFactory.getLogger(StillManagerDialog.class);
 
-    private final StillUploadPanel uploadPanel;
     private final StillCreationPanel creationPanel;
     private StillProgressPanel progressPanel;
     private StillViewPanel viewPanel;
@@ -79,18 +101,24 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
     private boolean created;
     private MediamosaRemoteService resourceManager;
 
+    private final IPluginContext pluginContext;
+    private final IPluginConfig pluginConfig;
+
 
     public StillManagerDialog(IModel iModel, IPluginContext context, IPluginConfig config) {
         super(iModel, context, config);
 
+        this.pluginContext = context;
+        this.pluginConfig = config;
+
         Node node = (Node) getModelObject();
         try {
             node = node.getParent();
-            if (node.hasProperty("hippomediamosa:assetid")) {
-                this.assetId = node.getProperty("hippomediamosa:assetid").getString();
+            if (node.hasProperty(HippoMediamosaNamespace.ASSETID)) {
+                this.assetId = node.getProperty(HippoMediamosaNamespace.ASSETID).getString();
             }
-            if (node.hasProperty("hippomediamosa:mediaid")) {
-                this.mediaId = node.getProperty("hippomediamosa:mediaid").getString();
+            if (node.hasProperty(HippoMediamosaNamespace.MEDIAID)) {
+                this.mediaId = node.getProperty(HippoMediamosaNamespace.MEDIAID).getString();
             }
             this.resourceManager = MediaMosaServices.forNode(node).getMediamosaRemoteService();
             this.service = resourceManager.service();
@@ -98,12 +126,11 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             log.error("Error fetching asset id", e);
         }
 
-        this.uploadPanel = new StillUploadPanel("still-upload");
         this.creationPanel = new StillCreationPanel("still-creation");
         this.progressPanel = new StillProgressPanel("still-progress");
         this.viewPanel = new StillViewPanel("still-view");
 
-        add(uploadPanel);
+        add(createFileUploadPanel());
         add(creationPanel);
         add(progressPanel);
         add(viewPanel);
@@ -119,6 +146,25 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
             }
         };
         add(timer);
+    }
+
+    private FileUploadPanel createFileUploadPanel() {
+        final FileUploadValidationService validator = ImageUploadValidationService.getValidationService(this.pluginContext, this.pluginConfig);
+        final FileUploadPanel panel = new FileUploadPanel("image-upload", this.pluginConfig, validator) {
+
+            @Override
+            protected void onBeforeUpload(final FileUploadInfo fileUploadInfo) {
+                // clear all old feedback messages in other plugin instances (i.e. image variants) via the EditPerspective
+                send(StillManagerDialog.this, Broadcast.BUBBLE, new UpdateFeedbackInfo(null, true));
+            }
+
+            @Override
+            public void onFileUpload(final FileUpload fileUpload) throws FileUploadViolationException {
+                log.debug("handle upload for file {}", fileUpload.getClientFileName());
+                handleUpload(fileUpload);
+            }
+        };
+        return panel;
     }
 
     @Override
@@ -183,81 +229,41 @@ public class StillManagerDialog extends AbstractExternalResourceDialog implement
         return service;
     }
 
-
-    private class StillUploadPanel extends Panel {
-
-        private FileUploadForm form;
-
-        public StillUploadPanel(String id) {
-            super(id);
-
-            add(form = new FileUploadForm("form"));
-            String mode = config.getString("mode", "edit");
-            form.setVisible("edit".equals(mode));
-            add(new EventStoppingBehavior("onclick"));
-        }
-
-        private class FileUploadForm extends Form {
-            private static final long serialVersionUID = 1L;
-
-            private FileUploadWidget widget;
-
-            public FileUploadForm(String name) {
-                super(name);
-
-
-                FileUploadWidgetSettings settings = new FileUploadWidgetSettings();
-                settings.setAutoUpload(true);
-                settings.setClearAfterUpload(true);
-                settings.setClearTimeout(1000);
-                settings.setHideBrowseDuringUpload(true);
-                settings.setButtonWidth("154px");
-                if (config.containsKey("file.extensions")) {
-                    settings.setFileExtensions(config.getStringArray("file.extensions"));
-                }
-
-
-                add(widget = new FileUploadWidget("multifile", settings) {
-                    @Override
-                    protected void onFileUpload(FileUpload fileUpload) {
-                        handleUpload(fileUpload);
-                    }
-
-                });
-
-            }
-
-            private void handleUpload(FileUpload upload) {
-                InputStream stream = null;
-                try {
-                    stream = upload.getInputStream();
-                    String filename = upload.getClientFileName();
-                    String mimeType = upload.getContentType();
-
-                    UploadTicketType ticket = service.createUploadTicket(mediaId, resourceManager.getUsername(), true);
-                    String action = ticket.getAction();
-                    String uploadTicket = action.substring(action.indexOf('=') + 1);
-
-                    URL actionUrl = new URL(action);
-                    String uploadHost = actionUrl.getProtocol() + "://" + actionUrl.getAuthority();
-
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("upload_ticket", uploadTicket);
-                    map.put("mediafile_id", mediaId);
-
-                    Response response = service.uploadStill(uploadHost, assetId, map, stream, mimeType, filename);
-                    //timer.put(viewPanel, response.getHeader().getRequestResult().equals("success"));
-                    timer.put(viewPanel, true);
-                } catch (IOException | ServiceException e) {
-                    log.error("", e);
-                    error(e.getLocalizedMessage());
-                } finally {
-                    org.apache.commons.io.IOUtils.closeQuietly(stream);
-                }
-            }
-        }
+    protected FileUploadValidationService getValidator() {
+        return ImageUploadValidationService.getValidationService(pluginContext, pluginConfig);
     }
 
+    private void handleUpload(FileUpload upload) {
+        InputStream stream = null;
+        try {
+            stream = upload.getInputStream();
+            String filename = upload.getClientFileName();
+            String mimeType = upload.getContentType();
+
+            UploadTicketType ticket = service.createUploadTicket(mediaId, resourceManager.getUsername(), true);
+            String action = ticket.getAction();
+            String uploadTicket = action.substring(action.indexOf('=') + 1);
+
+            URL actionUrl = new URL(action);
+            String uploadHost = actionUrl.getProtocol() + "://" + actionUrl.getAuthority();
+
+            Map<String, String> map = new HashMap<>();
+            map.put("upload_ticket", uploadTicket);
+            map.put("mediafile_id", mediaId);
+
+            Response response = service.uploadStill(uploadHost, assetId, map, stream, mimeType, filename);
+            if (response.getHeader().getRequestResultId() != ERRORCODE_OKAY) {
+                error(response.getHeader().getRequestResultDescription());
+            }
+            //timer.put(viewPanel, response.getHeader().getRequestResult().equals("success"));
+            timer.put(viewPanel, true);
+        } catch (IOException | ServiceException e) {
+            log.error("", e);
+            error(e.getLocalizedMessage());
+        } finally {
+            org.apache.commons.io.IOUtils.closeQuietly(stream);
+        }
+    }
 
     private class StillCreationPanel extends Panel {
 
