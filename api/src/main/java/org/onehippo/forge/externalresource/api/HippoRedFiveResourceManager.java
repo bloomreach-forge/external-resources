@@ -1,5 +1,22 @@
 package org.onehippo.forge.externalresource.api;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.Calendar;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.MemoryCacheImageInputStream;
+import javax.jcr.Node;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -26,18 +43,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
-import javax.jcr.Node;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Calendar;
-
 /**
  * @version $Id$
  */
@@ -52,60 +57,59 @@ public class HippoRedFiveResourceManager extends ResourceManager implements Exte
 
     public HippoRedFiveResourceManager(ResourceInvocationType type) {
         super(type);
-       /* if (config.containsKey("url")) {
-            this.url = config.getString("url");
-        }
-        if (config.containsKey("username")) {
-            this.username = config.getString("username");
-        }
-        if (config.containsKey("password")) {
-            this.password = config.getString("password");
-        }*/
     }
 
     @Override
-    public void create(Node node, InputStream istream, String mimetype) throws Exception {
+    public void create(Node node, InputStream istream, String mimetype) throws ResourceManagerException{
 
-        String response = submitFile(istream, getUrl(), mimetype, node.getName());
+        String response;
+        try {
+            response = submitFile(istream, getUrl(), mimetype, node.getName());
 
-        Document document = parseXmlFile(response, true);
 
-        String videoUrl = document.getElementsByTagName("url").item(0).getTextContent();
-        String imageUrl = document.getElementsByTagName("image").item(0).getTextContent();
+            Document document = parseXmlFile(response, true);
 
-        HttpClient client = Utils.getHttpClient();
-        HttpResponse httpResponse = client.execute(new HttpGet(imageUrl));
+            String videoUrl = document.getElementsByTagName("url").item(0).getTextContent();
+            String imageUrl = document.getElementsByTagName("image").item(0).getTextContent();
 
-        InputStream is = httpResponse.getEntity().getContent();
-        String mimeType = httpResponse.getFirstHeader("content-type").getValue();
+            HttpClient client = Utils.getHttpClient();
+            HttpResponse httpResponse = client.execute(new HttpGet(imageUrl));
 
-        Node preview;
-        if (node.hasNode("hippoexternal:preview")) {
-            preview = node.getNode("hippoexternal:preview");
-        } else {
-            preview = node.addNode("hippoexternal:preview", "hippo:resource");
+            InputStream is = httpResponse.getEntity().getContent();
+            String mimeType = httpResponse.getFirstHeader("content-type").getValue();
+
+            Node preview;
+            if (node.hasNode("hippoexternal:preview")) {
+                preview = node.getNode("hippoexternal:preview");
+            } else {
+                preview = node.addNode("hippoexternal:preview", "hippo:resource");
+            }
+
+            preview.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(is));
+            preview.setProperty("jcr:mimeType", mimeType);
+            preview.setProperty("jcr:lastModified", Calendar.getInstance());
+
+            Node thumbnail;
+            if (node.hasNode("hippoexternal:thumbnail")) {
+                thumbnail = node.getNode("hippoexternal:thumbnail");
+            } else {
+                thumbnail = node.addNode("hippoexternal:thumbnail", "hippo:resource");
+            }
+
+            InputStream stream = preview.getProperty("jcr:data").getBinary().getStream();
+
+            ImageProcessorRule rule = new ResizeToFitResizeRule(60, 60);
+            InputStream out = createThumbnailWithResizeRule(stream, rule, mimeType);
+            thumbnail.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(out));
+            thumbnail.setProperty("jcr:mimeType", mimeType);
+            thumbnail.setProperty("jcr:lastModified", Calendar.getInstance());
+
+            node.setProperty("hipporedfive:url", videoUrl);
+
+        } catch (Exception e) {
+            log.error("cannot create resource manager", e);
+            throw new ResourceManagerException(e);
         }
-
-        preview.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(is));
-        preview.setProperty("jcr:mimeType", mimeType);
-        preview.setProperty("jcr:lastModified", Calendar.getInstance());
-
-        Node thumbnail;
-        if (node.hasNode("hippoexternal:thumbnail")) {
-            thumbnail = node.getNode("hippoexternal:thumbnail");
-        } else {
-            thumbnail = node.addNode("hippoexternal:thumbnail", "hippo:resource");
-        }
-
-        InputStream stream = preview.getProperty("jcr:data").getBinary().getStream();
-
-        ImageProcessorRule rule = new ResizeToFitResizeRule(60, 60);
-        InputStream out = createThumbnailWithResizeRule(stream, rule, mimeType);
-        thumbnail.setProperty("jcr:data", ResourceHelper.getValueFactory(node).createBinary(out));
-        thumbnail.setProperty("jcr:mimeType", mimeType);
-        thumbnail.setProperty("jcr:lastModified", Calendar.getInstance());
-
-        node.setProperty("hipporedfive:url", videoUrl);
     }
 
     @Override

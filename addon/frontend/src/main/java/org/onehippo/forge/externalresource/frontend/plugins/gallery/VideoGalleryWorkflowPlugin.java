@@ -52,6 +52,7 @@ import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.gallery.GalleryWorkflow;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
+import org.onehippo.forge.externalresource.api.ResourceManagerException;
 import org.onehippo.forge.externalresource.api.utils.MediaMosaServices;
 import org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.imports.MediaMosaImportDialog;
 import org.slf4j.Logger;
@@ -92,6 +93,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
 
         public UploadDialog(IPluginContext pluginContext, IPluginConfig pluginConfig, AddDocumentArguments addDocumentModel) {
             super(pluginContext, pluginConfig);
+            setMultiPart(false);
 
             List<String> galleryTypes = null;
             try {
@@ -128,6 +130,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
             log.debug("uploaded file {} with size {}", fileUpload.getClientFileName(), fileUpload.getSize());
             try {
                 this.uploadedVideoFile = fileUpload.writeToTempFile();
+                this.uploadedVideoFile.deleteOnExit();
                 this.filename = fileUpload.getClientFileName();
                 this.mimetype = fileUpload.getContentType();
             } catch (IOException e) {
@@ -148,18 +151,19 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
 
         @Override
         protected void onFinished() {
-            createGalleryItem();
             super.onFinished();
+            createGalleryItem();
         }
 
         private void createGalleryItem() {
+            DefaultWorkflow defaultWorkflow = null;
+            HippoNode node = null;
             try {
                 //this is where the magic starts
-                InputStream istream = new FileInputStream(uploadedVideoFile);
-                uploadedVideoFile.deleteOnExit();
-                WorkflowManager manager = ((UserSession) Session.get()).getWorkflowManager();
-                HippoNode node = null;
-                try {
+                if (uploadedVideoFile != null && uploadedVideoFile.exists()) {
+                    InputStream istream = new FileInputStream(uploadedVideoFile);
+                    WorkflowManager manager = ((UserSession) Session.get()).getWorkflowManager();
+
                     WorkflowDescriptorModel workflowDescriptorModel = (WorkflowDescriptorModel) VideoGalleryWorkflowPlugin.this
                             .getDefaultModel();
                     GalleryWorkflow workflow = (GalleryWorkflow) manager.getWorkflow(workflowDescriptorModel.getObject());
@@ -171,57 +175,43 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
 
                     node = (HippoNode) new JcrNodeModel(new JcrItemModel(document.getIdentity(), false)).getNode();
 
-                    DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
+                    defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
                     if (!node.getDisplayName().equals(localName)) {
                         defaultWorkflow.setDisplayName(localName);
                     }
-                } catch (WorkflowException | RepositoryException ex) {
-                    log.error(ex.getMessage());
-                    error(ex);
-                }
-                if (node != null) {
-                    try {
+
+                    if (node != null) {
+
                         node.setProperty("hippoexternal:mimeType", mimetype);
                         final ResourceHandler processor = MediaMosaServices.forNode(node).getResourceHandler();
                         processor.create(node, istream, mimetype);
                         node.getSession().save();
                         processor.afterSave(node);
 
-                    } catch (Exception ex) {
-                        if (log.isDebugEnabled()) {
-                            log.info(ex.getMessage(), ex);
-                        } else {
-                            log.info(ex.getMessage());
-                        }
-                        error(ex);
-                        try {
-                            DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
-                            defaultWorkflow.delete();
-                        } catch (WorkflowException | RepositoryException e) {
-                            log.warn("error executing workflow delete", e);
-                        }
-                        try {
-                            node.getSession().refresh(false);
-                        } catch (RepositoryException e) {
-                            log.warn("could not refresh the session", e);
-                        }
+                        newItems.add(node.getPath());
                     }
-                    newItems.add(node.getPath());
                 }
-            } catch (IOException ex) {
-                log.warn("upload of image truncated", ex);
+            } catch (IOException|RepositoryException|WorkflowException| ResourceManagerException ex) {
+                log.error("Error creating gallery item", ex);
                 error((new StringResourceModel("upload-failed-label", VideoGalleryWorkflowPlugin.this, null).getString()));
+
+                try {
+                    if (defaultWorkflow != null) {
+                        defaultWorkflow.delete();
+                    }
+                    if (node != null) {
+                        node.getSession().refresh(false);
+                    }
+                } catch (RepositoryException | WorkflowException | RemoteException e) {}
+
+            } finally {
                 if (uploadedVideoFile != null && uploadedVideoFile.exists()) {
                     boolean tempFileDeleted = uploadedVideoFile.delete();
-                    if (!tempFileDeleted) {
-                        log.debug("Temp file {} was not deleted",uploadedVideoFile.getAbsolutePath());
+                    if (!tempFileDeleted && log.isDebugEnabled()) {
+                        log.debug("Temp file {} was not deleted", uploadedVideoFile.getAbsolutePath());
                     }
                 }
-            } catch (RepositoryException e) {
-                log.error("upload of image failed", e);
-                error((new StringResourceModel("upload-failed-label", VideoGalleryWorkflowPlugin.this, null).getString()));
             }
-
             int threshold = getPluginConfig().getAsInteger("select.after.create.threshold", 1);
             if (newItems.size() <= threshold) {
                 for (String path : newItems) {
@@ -272,7 +262,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
         try {
             node = workflowDescriptorModel.getNode();
         } catch (RepositoryException e) {
-            log.error("", e);
+            log.error("Error creating import dialog", e);
         }
         JcrNodeModel nodeModel = new JcrNodeModel(node);
 
@@ -315,7 +305,7 @@ public class VideoGalleryWorkflowPlugin extends RenderPlugin<GalleryWorkflow> {
                     browser.browse(nodeModel);
                 }
             } catch (RepositoryException ex) {
-                log.error(ex.getClass().getName() + ": " + ex.getMessage(), ex);
+                log.error("Error creating select from model", ex);
             }
         }
     }
