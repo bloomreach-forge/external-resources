@@ -6,7 +6,7 @@ import javax.jcr.Node;
 
 public interface ResourceHandler {
 
-    void create(Node node, InputStream istream, String mimetype) throws Exception;
+    void create(Node node, InputStream istream, String mimetype) throws ResourceManagerException;
 
     void afterSave(Node node);
 

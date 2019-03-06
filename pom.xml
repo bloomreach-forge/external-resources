@@ -5,14 +5,14 @@
 
   <parent>
     <groupId>org.onehippo.cms7</groupId>
-    <artifactId>hippo-cms7-project</artifactId>
-    <version>27.7</version>
+    <artifactId>hippo-cms7-release</artifactId>
+    <version>11.2.9</version>
   </parent>
 
   <name>Hippo External Resource Project</name>
   <groupId>org.onehippo.forge</groupId>
   <artifactId>externalresource</artifactId>
-  <version>2.0.2</version>
+  <version>3.0.0</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -21,17 +21,10 @@
     <module>hst</module>
     <module>api</module>
     <module>mediamosa-api</module>
-    <module>externalresource-demo</module>
   </modules>
 
 
   <properties>
-    <!-- 10.2.4 versioning -->
-    <hippo.cms.version>3.2.6</hippo.cms.version>
-    <hippo.hst.version>3.2.5</hippo.hst.version>
-    <hippo.repository.version>3.2.7</hippo.repository.version>
-    <hippo.services.version>2.2.1</hippo.services.version>
-
     <!-- third party -->
     <ehcache.version>2.6.11</ehcache.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
@@ -249,7 +242,7 @@
       <id>hippo-maven2</id>
       <name>Hippo Maven 2 Repository.</name>
       <url>http://maven.onehippo.com/maven2/</url>
-      <snapshots/>
+      <snapshots />
       <releases>
         <updatePolicy>never</updatePolicy>
       </releases>

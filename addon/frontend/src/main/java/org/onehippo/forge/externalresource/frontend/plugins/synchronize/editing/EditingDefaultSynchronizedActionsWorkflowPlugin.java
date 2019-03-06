@@ -5,17 +5,19 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.resource.PackageResourceReference;
 import org.hippoecm.addon.workflow.StdWorkflow;
 import org.hippoecm.addon.workflow.WorkflowDescriptorModel;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.plugin.IPluginContext;
 import org.hippoecm.frontend.plugin.config.IPluginConfig;
+import org.hippoecm.frontend.plugins.standards.icon.HippoIcon;
 import org.hippoecm.frontend.service.IEditor;
 import org.hippoecm.frontend.service.IEditorFilter;
 import org.hippoecm.frontend.service.IEditorManager;
 import org.hippoecm.frontend.service.render.RenderPlugin;
+import org.hippoecm.frontend.skin.Icon;
 import org.hippoecm.frontend.validation.IValidationResult;
 import org.hippoecm.frontend.validation.IValidationService;
 import org.hippoecm.frontend.validation.ValidationException;
@@ -59,8 +61,7 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
             }
         }, context.getReference(editor).getServiceId());
 
-        add(new StdWorkflow("save", new StringResourceModel("save", this, null, "Save"),
-                new PackageResourceReference(EditingDefaultSynchronizedActionsWorkflowPlugin.class, "document-save-16.png"), getModel()) {
+        add(new StdWorkflow("save", new StringResourceModel("save", this, null, "Save"), getModel()) {
             @Override
             protected String execute(Workflow wf) throws Exception {
                 validate();
@@ -76,9 +77,14 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
 
                 return null;
             }
+
+            @Override
+            protected Component getIcon(final String id) {
+                return HippoIcon.fromSprite(id, Icon.FLOPPY);
+            }
         });
 
-        add(new StdWorkflow("done", new StringResourceModel("done", this, null, "Done"), new PackageResourceReference(getClass(), "document-saveclose-16.png"), getModel()) {
+        add(new StdWorkflow("done", new StringResourceModel("done", this, null, "Done"), getModel()) {
 
             @Override
             protected String execute(Workflow wf) throws Exception {
@@ -110,6 +116,10 @@ public class EditingDefaultSynchronizedActionsWorkflowPlugin extends RenderPlugi
                 workflow.commit(synchronizable);
 
                 return null;
+            }
+            @Override
+            protected Component getIcon(final String id) {
+                return HippoIcon.fromSprite(id, Icon.FLOPPY);
             }
         });
     }

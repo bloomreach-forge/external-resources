@@ -1,0 +1,60 @@
+{
+  "hippo:templates":   {
+    "en":     {
+      "new-content-folder": "new content folder",
+      "new-content-document": "new content document",
+      "new-resource-bundle": "new resource bundle",
+      "new-untranslated-folder": "new untranslated folder"
+    },
+    "nl":     {
+      "new-content-folder": "nieuwe contentmap",
+      "new-content-document": "nieuw content document",
+      "new-resource-bundle": "nieuwe resource bundle",
+      "new-untranslated-folder": "nieuwe onvertaalde map"
+    },
+    "de":     {
+      "new-content-folder": "Neuer Content-Ordner",
+      "new-content-document": "Neues Content-Document",
+      "new-untranslated-folder": "Neuer nicht übersetzter Ordner",
+      "new-resource-bundle": "Neues Resource-Bundle"
+    },
+    "fr":     {
+      "new-content-folder": "nouveau dossier contenu",
+      "new-content-document": "nouveau document contenu",
+      "new-untranslated-folder": "nouveau dossier non traduit",
+      "new-resource-bundle": "nouveau resource bundle"
+    }
+  },
+  "hippo:types":   {
+    "demo:contentdocument":     {
+      "en":       {
+        "demo:introduction": "Introduction",
+        "jcr:name": "Simple Document",
+        "demo:publicationdate": "Publication date",
+        "demo:content": "Content",
+        "demo:title": "Title"
+      },
+      "nl":       {
+        "demo:introduction": "Introductie",
+        "jcr:name": "Eenvoudig Document",
+        "demo:publicationdate": "Publicatiedatum",
+        "demo:content": "Inhoud",
+        "demo:title": "Titel"
+      },
+      "fr":       {
+        "demo:introduction": "Introduction",
+        "jcr:name": "Document simple",
+        "demo:publicationdate": "Date de publication",
+        "demo:content": "Contenu",
+        "demo:title": "Titre"
+      },
+      "de":       {
+        "demo:introduction": "Einführung",
+        "jcr:name": "Einfaches Dokument",
+        "demo:publicationdate": "Publikationsdatum",
+        "demo:content": "Inhalt",
+        "demo:title": "Titel"
+      }
+    }
+  }
+}

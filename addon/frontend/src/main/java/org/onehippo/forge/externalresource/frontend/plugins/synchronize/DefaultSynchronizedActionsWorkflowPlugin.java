@@ -1,10 +1,11 @@
 package org.onehippo.forge.externalresource.frontend.plugins.synchronize;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -12,7 +13,11 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.*;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.string.Strings;
@@ -26,7 +31,6 @@ import org.hippoecm.frontend.dialog.IDialogService;
 import org.hippoecm.frontend.editor.workflow.CopyNameHelper;
 import org.hippoecm.frontend.editor.workflow.dialog.DeleteDialog;
 import org.hippoecm.frontend.editor.workflow.dialog.WhereUsedDialog;
-import org.hippoecm.frontend.i18n.model.NodeTranslator;
 import org.hippoecm.frontend.i18n.types.TypeTranslator;
 import org.hippoecm.frontend.model.JcrNodeModel;
 import org.hippoecm.frontend.model.NodeModelWrapper;
@@ -40,7 +44,14 @@ import org.hippoecm.frontend.service.IEditorManager;
 import org.hippoecm.frontend.service.ISettingsService;
 import org.hippoecm.frontend.service.render.RenderPlugin;
 import org.hippoecm.frontend.session.UserSession;
-import org.hippoecm.repository.api.*;
+import org.hippoecm.repository.api.Document;
+import org.hippoecm.repository.api.HippoNode;
+import org.hippoecm.repository.api.StringCodec;
+import org.hippoecm.repository.api.StringCodecFactory;
+import org.hippoecm.repository.api.Workflow;
+import org.hippoecm.repository.api.WorkflowDescriptor;
+import org.hippoecm.repository.api.WorkflowException;
+import org.hippoecm.repository.api.WorkflowManager;
 import org.hippoecm.repository.standardworkflow.DefaultWorkflow;
 import org.onehippo.forge.externalresource.api.ResourceHandler;
 import org.onehippo.forge.externalresource.api.Synchronizable;
@@ -131,8 +142,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
             protected IDialogService.Dialog createRequestDialog() {
                 try {
                     uriName = ((WorkflowDescriptorModel) getDefaultModel()).getNode().getName();
-                    targetName = ((HippoNode) ((WorkflowDescriptorModel) getDefaultModel()).getNode())
-                            .getLocalizedName();
+                    targetName = ((HippoNode) ((WorkflowDescriptorModel) getDefaultModel()).getNode()).getDisplayName();
                 } catch (RepositoryException ex) {
                     uriName = targetName = "";
                 }
@@ -155,8 +165,8 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
                 if (!((WorkflowDescriptorModel) getDefaultModel()).getNode().getName().equals(nodeName)) {
                     ((DefaultWorkflow) wf).rename(nodeName);
                 }
-                if (!node.getLocalizedName().equals(localName)) {
-                    defaultWorkflow.localizeName(localName);
+                if (!node.getDisplayName().equals(localName)) {
+                    defaultWorkflow.setDisplayName(localName);
                 }
                 return null;
             }
@@ -179,7 +189,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
                         "copyof", DefaultSynchronizedActionsWorkflowPlugin.this, null).getString());
                 try {
                     name = copyNameHelper.getCopyName(((HippoNode) ((WorkflowDescriptorModel) getDefaultModel())
-                            .getNode()).getLocalizedName(), destination.getNodeModel().getNode());
+                            .getNode()).getDisplayName(), destination.getNodeModel().getNode());
                 } catch (RepositoryException ex) {
                     return new ExceptionDialog(ex);
                 }
@@ -209,10 +219,10 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
                 HippoNode node = (HippoNode) copyMode.getNode().getNode(nodeName);
 
                 String localName = getLocalizeCodec().encode(name);
-                if (!node.getLocalizedName().equals(localName)) {
+                if (!node.getDisplayName().equals(localName)) {
                     WorkflowManager manager = ((UserSession) Session.get()).getWorkflowManager();
                     DefaultWorkflow defaultWorkflow = (DefaultWorkflow) manager.getWorkflow("core", node);
-                    defaultWorkflow.localizeName(localName);
+                    defaultWorkflow.setDisplayName(localName);
                 }
                 browseTo(copyMode);
                 return null;
@@ -338,8 +348,7 @@ public class DefaultSynchronizedActionsWorkflowPlugin extends RenderPlugin {
 
     IModel<String> getDocumentName() {
         try {
-            return (new NodeTranslator(new JcrNodeModel(((WorkflowDescriptorModel) getDefaultModel()).getNode())))
-                    .getNodeName();
+            return new Model<>(((HippoNode) ((WorkflowDescriptorModel) getDefaultModel()).getNode()).getDisplayName());
         } catch (RepositoryException ex) {
             try {
                 return new Model<>(((WorkflowDescriptorModel) getDefaultModel()).getNode().getName());

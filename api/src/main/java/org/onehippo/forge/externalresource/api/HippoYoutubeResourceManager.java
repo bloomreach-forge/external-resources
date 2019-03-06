@@ -20,7 +20,7 @@ public class HippoYoutubeResourceManager extends ResourceManager implements Exte
     }
 
     @Override
-    public void create(Node node, InputStream istream, String mimetype) throws Exception {
+    public void create(Node node, InputStream istream, String mimetype) {
     }
 
     @Override

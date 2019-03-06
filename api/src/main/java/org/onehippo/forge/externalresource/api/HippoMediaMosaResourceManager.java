@@ -17,16 +17,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.hippoecm.frontend.editor.plugins.resource.ResourceHelper;
 import org.hippoecm.repository.api.HippoNodeType;
 import org.hippoecm.repository.util.JcrUtils;
@@ -82,9 +82,8 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     private String password;
     private String[] profiles = new String[0];
     private String playbackVideoCodec;
-    private String responseType;
+
     private Long width;
-    private boolean createThumbnail;
     private MediaMosaService mediaMosaService;
 
     public static final String MASS_SYNC_JOB = "MediaMosaMassSyncJob";
@@ -105,9 +104,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
             this.url = JcrUtils.getStringProperty(config, "url", null);
             this.username = JcrUtils.getStringProperty(config, "username", null);
             this.password = JcrUtils.getStringProperty(config, "password", null);
-            this.responseType = JcrUtils.getStringProperty(config, "responseType", null);
             this.width = JcrUtils.getLongProperty(config, "width", DEFAULT_WIDTH);
-            this.createThumbnail = JcrUtils.getBooleanProperty(config, "createThumbnail", Boolean.FALSE);
             this.playbackVideoCodec = JcrUtils.getStringProperty(config, "playbackVideoCodec", null);
             this.profiles = getStringArray(config, "profiles");
             this.mediaMosaService = new MediaMosaService(getUrl());
@@ -190,7 +187,7 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
     @Override
-    public void create(Node node, InputStream istream, String mimetype) throws Exception {
+    public void create(Node node, InputStream istream, String mimetype) throws ResourceManagerException {
         try {
 
             String userId = getUsername();
@@ -232,18 +229,11 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
 
             final Node handleNode = node.getParent();
 
-            //node.setProperty("hippoexternal:state", "inprogress");
             log.debug(assetDetails.getVideotimestampmodified().toString());
             log.debug(assetDetails.getVideotimestamp().toString());
 
             Calendar modified = assetDetails.getVideotimestampmodified();
             node.setProperty("hippoexternal:lastModifiedSyncDate", modified);
-
-//            LinkType embedLink = mediaMosaService.getPlayLink(assetId, mediafileDetails.getMediafileId(), getUsername(), getWidth());
-//
-//            if (embedLink != null) {
-//                Utils.addEmbeddedNode(node, embedLink.getOutput());
-//            }
 
             String videoCodec = mediafileDetails.getMetadata().getVideoCodec();
             if (StringUtils.isNotBlank(videoCodec)) {
@@ -292,8 +282,9 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
                 MediaMosaJobScheduler.getInstance().offer(context);
                 log.debug("trying to request still creation");
             }
-        } catch (ServiceException | IOException e) {
+        } catch (Exception e) {
             log.error("Error executing create", e);
+            throw new ResourceManagerException(e);
         }
     }
 
@@ -322,24 +313,25 @@ public class HippoMediaMosaResourceManager extends ResourceManager implements Em
     }
 
     public static int submitFile(final InputStream inputStream, final String serverUrl, String mimeType, String fileName, String[] profiles) throws Exception {
-        HttpClient httpclient = new DefaultHttpClient();
-        httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-        HttpPost httppost = new HttpPost(serverUrl);
-        MultipartEntity mpEntity = new MultipartEntity();
-        ContentBody cbFile = new InputStreamBody(inputStream, mimeType, fileName);
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            HttpPost httppost = new HttpPost(serverUrl);
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            ContentBody cbFile =new InputStreamBody(inputStream, ContentType.create(mimeType), fileName);
+            builder.addPart("file", cbFile);
 
-        mpEntity.addPart("file", cbFile);
-
-        for (String profile : profiles) {
-            mpEntity.addPart("transcode[]", new StringBody(profile));
+            for (String profile : profiles) {
+                builder.addPart("transcode[]", new StringBody(profile));
+            }
+            httppost.setEntity(builder.build());
+            HttpResponse response = httpclient.execute(httppost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            log.debug("Status {}", response.getStatusLine());
+            return statusCode;
+        }finally {
+            httpclient.close();
         }
-        httppost.setEntity(mpEntity);
-        HttpResponse response = httpclient.execute(httppost);
-        int statusCode = response.getStatusLine().getStatusCode();
-        log.debug("Status {}", response.getStatusLine());
-        httpclient.getConnectionManager().shutdown();
-        return statusCode;
     }
 
 
