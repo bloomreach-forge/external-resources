@@ -25,12 +25,6 @@
 
 
   <properties>
-    <!-- 10.2.4 versioning -->
-    <!--<hippo.cms.version>3.2.6</hippo.cms.version>-->
-    <!--<hippo.hst.version>3.2.5</hippo.hst.version>-->
-    <!--<hippo.repository.version>3.2.7</hippo.repository.version>-->
-    <!--<hippo.services.version>2.2.1</hippo.services.version>-->
-
     <!-- third party -->
     <ehcache.version>2.6.11</ehcache.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
