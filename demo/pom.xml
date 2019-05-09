@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-release</artifactId>
-    <version>11.2.9</version>
+    <version>11.2.11</version>
   </parent>
 
   <name>Hippo External Resource Project Demo</name>
