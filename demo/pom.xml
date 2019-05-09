@@ -5,14 +5,14 @@
   <parent>
     <groupId>org.onehippo.cms7</groupId>
     <artifactId>hippo-cms7-release</artifactId>
-    <version>11.2.9</version>
+    <version>11.2.11</version>
   </parent>
 
   <name>Hippo External Resource Project Demo</name>
   <description>Hippo External Resource Project Demo</description>
   <groupId>org.onehippo.forge.externalresourcedemo</groupId>
   <artifactId>demo</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1</version>
   <packaging>pom</packaging>
   <!-- 
     The below project elements are emptied/overridden as otherwise their metadata would be

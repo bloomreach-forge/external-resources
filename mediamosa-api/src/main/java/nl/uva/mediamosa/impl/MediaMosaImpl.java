@@ -71,7 +71,6 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestTemplate;
 
 import nl.uva.mediamosa.MediaMosa;
 import nl.uva.mediamosa.MediafileProperties;
@@ -1401,7 +1400,7 @@ public class MediaMosaImpl implements MediaMosa {
             vpxResponse = doGetRequest(requestUrl);
             if (vpxResponse.getHeader().getRequestResultId() == ERRORCODE_OKAY) {
                 ItemsType items = vpxResponse.getItems();
-                popularStreams = new ArrayList<StatsPopularstreamsType>();
+                popularStreams = new ArrayList<>();
 
                 for (Object o : items.getLinkOrAssetOrAssetDetails()) {
                     if (o instanceof StatsPopularstreamsType) {
@@ -1488,61 +1487,6 @@ public class MediaMosaImpl implements MediaMosa {
             throw new ServiceException(e);
         }
         return dataUploads;
-    }
-
-
-    /**
-     * @param url
-     * @param properties
-     * @param parameters
-     * @return
-     * @throws IOException
-     */
-    public Response doPostRequestWithParameters(String url, Map properties, Map parameters) throws IOException {
-        RestTemplate template = new RestTemplate();
-        String uri = template.getForObject(url, String.class, properties);
-        String paramstring = "";
-
-        if (parameters != null) {
-            // iterate over key value pairs
-            Iterator it = parameters.entrySet().iterator();
-            StringBuilder sb = new StringBuilder();
-            while (it.hasNext()) {
-                sb.append('&');
-                Map.Entry pairs = (Map.Entry) it.next();
-                sb.append(pairs.getKey()).append('=').append(pairs.getValue());
-            }
-            paramstring = sb.toString();
-        }
-
-        return doPostRequest(uri, paramstring);
-    }
-
-    /**
-     * @param url
-     * @param properties
-     * @param parameters
-     * @return
-     * @throws IOException
-     */
-    public Response doGetRequestWithParameters(String url, Map properties, Map parameters) throws IOException {
-        RestTemplate template = new RestTemplate();
-        String uri = template.getForObject(url, String.class, properties);
-        String paramstring = "";
-
-        if (parameters != null) {
-            // iterate over key value pairs
-            Iterator it = parameters.entrySet().iterator();
-            StringBuilder sb = new StringBuilder();
-            while (it.hasNext()) {
-                sb.append('&');
-                Map.Entry pairs = (Map.Entry) it.next();
-                sb.append(pairs.getKey()).append('=').append(pairs.getValue());
-            }
-            paramstring += "?" + sb.toString();
-        }
-
-        return doGetRequest(uri + paramstring);
     }
 
 }
