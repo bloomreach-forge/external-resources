@@ -1,0 +1,94 @@
+{
+  "hippo:reports":   {
+    "mm-data-usage-video":     {
+      "en":       {
+        "title": "Data Usage Video Statistics",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Data Usage Video Statistieken",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "mm-uploaded-videos-per-group":     {
+      "en":       {
+        "title": "Total Uploaded Diskspace per Group",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Totaal Geuploade Diskspace per Group",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "mm-played-videos-per-type-for-group-hippo":     {
+      "en":       {
+        "title": "Played Videos per Type for Group: Hippo",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Afgespeelde Videos per Type voor Group: Hippo",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "mm-popular-streams":     {
+      "en":       {
+        "title": "Popular Media Files",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Populaire Media Bestanden",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "mm-played-streams":     {
+      "en":       {
+        "title": "Played Streams",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Gespeelde Streams",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "mm-popular-collections":     {
+      "en":       {
+        "title": "Popular Collections",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Populaire Collecties",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "mm-video-type-distribution":     {
+      "en":       {
+        "title": "Video Type Distribution (Diskspace per type)",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Video Type Distributie (Diskspace per type)",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "mm-data-upload":     {
+      "en":       {
+        "title": "Data Upload Statistics",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Data Upload Statistieken",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    },
+    "synchronization-translator":     {
+      "en":       {
+        "title": "Sync",
+        "no-data": "Data not available"
+      },
+      "nl":       {
+        "title": "Sync",
+        "no-data": "Gegevens niet beschikbaar"
+      }
+    }
+  }
+}
