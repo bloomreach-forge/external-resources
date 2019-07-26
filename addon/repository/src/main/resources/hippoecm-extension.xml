@@ -538,7 +538,7 @@
     </sv:property>
   </sv:node>
 
-  <sv:node sv:name="demo-hippo-configuration-hippo-frontend-cms-cms-services-videoValidationService">
+  <sv:node sv:name="external-hippo-configuration-hippo-frontend-cms-cms-services-videoValidationService">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>hippo:initializeitem</sv:value>
     </sv:property>

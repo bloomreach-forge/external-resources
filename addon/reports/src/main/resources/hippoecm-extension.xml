@@ -44,5 +44,216 @@
     </sv:property>
   </sv:node>
 
+  <!--Translation-->
+  <sv:node sv:name="external-resources-reports-translations">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:resourcebundles" sv:type="String">
+      <sv:value>translations.json</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>21085</sv:value>
+    </sv:property>
+  </sv:node>
 
+  <sv:node sv:name="synchronization-translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/synchronization-translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-played-streams.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-streams.translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-data-usage-video.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-usage-video.translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-data-upload.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-upload.translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-popular-collections.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-collections.translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-popular-streams.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-streams.translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-video-type-distribution.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-video-type-distribution.translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-played-videos-per-type-for-group-hippo.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-videos-per-type-for-group-hippo.translator</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-uploaded-videos-per-group.translator-deletenode">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-uploaded-videos-per-group.translator</sv:value>
+    </sv:property>
+  </sv:node>
+
+  <sv:node sv:name="synchronization-plugin-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/synchronization-plugin/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-played-streams-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-streams/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-data-usage-video-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-usage-video/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-data-upload-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-upload/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-popular-collections-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-collections/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-video-type-distribution-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-video-type-distribution/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-popular-streams-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-streams/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-played-videos-per-type-for-group-hippo-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-videos-per-type-for-group-hippo/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="mm-uploaded-videos-per-group-translator.id-deleteproperty">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>hippo:initializeitem</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:sequence" sv:type="Double">
+      <sv:value>31000</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:contentpropdelete" sv:type="String">
+      <sv:value>/hippo:configuration/hippo:frontend/cms/hippo-reports/mm-uploaded-videos-per-group/translator.id</sv:value>
+    </sv:property>
+  </sv:node>
 </sv:node>

@@ -12,7 +12,7 @@
   <description>Hippo External Resource Project Demo</description>
   <groupId>org.onehippo.forge.externalresourcedemo</groupId>
   <artifactId>demo</artifactId>
-  <version>3.0.1</version>
+  <version>3.0.2</version>
   <packaging>pom</packaging>
   <!-- 
     The below project elements are emptied/overridden as otherwise their metadata would be
