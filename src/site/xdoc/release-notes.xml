@@ -21,6 +21,24 @@
   </properties>
   <body>
     <section name="Release Notes">
+      <subsection name="3.0.2">
+        <p class="smallinfo">Release Date: 26 July 2019</p>
+        <ul>
+          <li>Fix translations for reports</li>
+        </ul>
+      </subsection>
+      <subsection name="3.0.1">
+        <p class="smallinfo">Release Date: 9 May 2019</p>
+        <ul>
+          <li>Remove dependencies from jaxb, use latest hippo 11.2.11</li>
+        </ul>
+      </subsection>
+      <subsection name="3.0.0">
+        <p class="smallinfo">Release Date: 6 March 2019</p>
+        <ul>
+          <li>Upgrade to Hippo 11</li>
+        </ul>
+      </subsection>
       <subsection name="2.0.0">
         <p class="smallinfo">Release Date: 18 April 2017</p>
         <ul>
