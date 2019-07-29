@@ -35,17 +35,11 @@
     <sv:property sv:name="model.folder.root" sv:type="String">
       <sv:value>/content/videos</sv:value>
     </sv:property>
-    <!--<sv:property sv:name="nodetypes" sv:type="String">
-      <sv:value>${nodetypes}</sv:value>
-    </sv:property>-->
     <sv:property sv:name="plugin.class" sv:type="String">
       <sv:value>org.hippoecm.frontend.plugins.cms.browse.section.SearchingSectionPlugin</sv:value>
     </sv:property>
     <sv:property sv:name="title" sv:type="String">
       <sv:value>section-videos</sv:value>
-    </sv:property>
-    <sv:property sv:name="translator.id" sv:type="String">
-      <sv:value>service.translator.config</sv:value>
     </sv:property>
     <sv:property sv:name="wicket.extensions" sv:type="String">
       <sv:value>extension.tree</sv:value>
@@ -104,7 +98,6 @@
       <sv:property sv:name="workflow.categories" sv:type="String">
         <sv:value>threepane</sv:value>
         <sv:value>gallery</sv:value>
-        <!--<sv:value>folder-translations</sv:value>-->
       </sv:property>
     </sv:node>
     <sv:node sv:name="filters">
@@ -229,9 +222,6 @@
     <sv:property sv:name="workflow.enabled" sv:type="String">
       <sv:value>${workflow.enabled}</sv:value>
     </sv:property>
-    <!--<sv:property sv:name="workflow.translated" sv:type="String">
-      <sv:value>new-translated-folder</sv:value>
-    </sv:property>-->
   </sv:node>
 
 </sv:node>

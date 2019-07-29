@@ -176,5 +176,13 @@
       "nl": {"jcr:name": "Onbekend"},
       "en": {"jcr:name": "Unknown"}
     }
+  },
+  "hippo:workflows": {
+    "en": {
+      "synchronization": "Synchronization"
+    },
+    "nl": {
+      "synchronization": "Synchronisatie"
+    }
   }
 }

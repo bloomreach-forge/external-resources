@@ -106,7 +106,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -127,7 +127,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -148,7 +148,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -164,6 +164,12 @@
     </sv:property>
     <sv:property sv:name="hippo:contentroot" sv:type="String">
       <sv:value>/hippo:namespaces/hippoexternal</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:reloadonstartup" sv:type="Boolean">
+      <sv:value>true</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:version" sv:type="String">
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -184,7 +190,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -205,7 +211,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -226,7 +232,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -247,7 +253,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -268,7 +274,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -289,7 +295,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -325,7 +331,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -356,6 +362,12 @@
     </sv:property>
     <sv:property sv:name="hippo:sequence" sv:type="Double">
       <sv:value>12100.5</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:reloadonstartup" sv:type="Boolean">
+      <sv:value>true</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:version" sv:type="String">
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -415,6 +427,12 @@
     <sv:property sv:name="hippo:sequence" sv:type="Double">
       <sv:value>21084</sv:value>
     </sv:property>
+    <sv:property sv:name="hippo:reloadonstartup" sv:type="Boolean">
+      <sv:value>true</sv:value>
+    </sv:property>
+    <sv:property sv:name="hippo:version" sv:type="String">
+      <sv:value>3.0.3</sv:value>
+    </sv:property>
   </sv:node>
 
   <!--important-->
@@ -452,7 +470,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
@@ -473,7 +491,7 @@
       <sv:value>true</sv:value>
     </sv:property>
     <sv:property sv:name="hippo:version" sv:type="String">
-      <sv:value>3.0.0</sv:value>
+      <sv:value>3.0.3</sv:value>
     </sv:property>
   </sv:node>
 
