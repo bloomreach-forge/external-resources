@@ -95,20 +95,6 @@
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
           <sv:value>hipposys:types</sv:value>
         </sv:property>
-        <!--<sv:node sv:name="org.onehippo.forge.externalresource.synchronize.workflow.SynchronizableDocument">
-          <sv:property sv:name="jcr:primaryType" sv:type="Name">
-            <sv:value>hipposys:type</sv:value>
-          </sv:property>
-          <sv:property sv:name="hipposys:classname" sv:type="String">
-            <sv:value>org.onehippo.forge.externalresource.synchronize.workflow.SynchronizableDocument</sv:value>
-          </sv:property>
-          <sv:property sv:name="hipposys:display" sv:type="String">
-            <sv:value>SynchronizableDocument</sv:value>
-          </sv:property>
-          <sv:property sv:name="hipposys:nodetype" sv:type="String">
-            <sv:value>hippoexternal:synchronizable</sv:value>
-          </sv:property>
-        </sv:node>-->
       </sv:node>
     </sv:node>
   </sv:node>
@@ -116,31 +102,6 @@
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>hipposys:workflowcategory</sv:value>
     </sv:property>
-    <sv:property sv:multiple="true" sv:name="jcr:mixinTypes" sv:type="Name">
-      <sv:value>hippo:translated</sv:value>
-    </sv:property>
-    <sv:node sv:name="hippo:translation">
-      <sv:property sv:name="jcr:primaryType" sv:type="Name">
-        <sv:value>hippo:translation</sv:value>
-      </sv:property>
-      <sv:property sv:name="hippo:language" sv:type="String">
-        <sv:value>nl</sv:value>
-      </sv:property>
-      <sv:property sv:name="hippo:message" sv:type="String">
-        <sv:value>Synchronisatie</sv:value>
-      </sv:property>
-    </sv:node>
-    <sv:node sv:name="hippo:translation">
-      <sv:property sv:name="jcr:primaryType" sv:type="Name">
-        <sv:value>hippo:translation</sv:value>
-      </sv:property>
-      <sv:property sv:name="hippo:language" sv:type="String">
-        <sv:value>en</sv:value>
-      </sv:property>
-      <sv:property sv:name="hippo:message" sv:type="String">
-        <sv:value>Synchronization</sv:value>
-      </sv:property>
-    </sv:node>
     <sv:node sv:name="button">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>frontend:workflow</sv:value>

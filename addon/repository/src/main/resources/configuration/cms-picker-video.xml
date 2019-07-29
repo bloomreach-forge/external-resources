@@ -90,9 +90,6 @@
     <sv:property sv:name="root.paths" sv:type="String">
       <sv:value>/content/videos</sv:value>
     </sv:property>
-    <sv:property sv:name="translator.id" sv:type="String">
-      <sv:value>service.translator.config</sv:value>
-    </sv:property>
     <sv:property sv:name="wicket.id" sv:type="String">
       <sv:value>service.dialog.breadcrumb</sv:value>
     </sv:property>
