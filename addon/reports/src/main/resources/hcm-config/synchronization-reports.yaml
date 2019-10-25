@@ -16,7 +16,6 @@ definitions:
           by @jcr:score descending
         title.color: highlighted
         title.size: large
-        translator.id: service.reports.synchronization.translator
         wicket.id: service.reports.synchronization
         width: '1'
       /statistics:
@@ -64,7 +63,6 @@ definitions:
         plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
         statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularCollectionsStatisticsProvider\n\
           \      "
-        translator.id: service.reports.mm-popular-collections.translator
         wicket.id: service.reports.statistics
       /mm-popular-streams[2]:
         jcr:primaryType: frontend:plugin

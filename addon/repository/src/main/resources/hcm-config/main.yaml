@@ -13,11 +13,6 @@ definitions:
       uri: http://www.hippoecm.org/nt/hippomediamosa/1.0
       cnd: types/mediamosa/hippo-mediamosa.cnd
   config:
-    /hippo:configuration/hippo:translations:
-      /hippo:cms:
-        jcr:primaryType: hipposys:resourcebundles
-      /hippo:types:
-        jcr:primaryType: hipposys:resourcebundles
     /hippo:configuration/hippo:frontend/cms/cms-preview/workflowPlugin:
       workflow.categories:
         operation: add
