@@ -1,0 +1,44 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:derivatives/videogallery:
+      jcr:primaryType: hipposys:deriveddefinition
+      hipposys:classname: org.onehippo.forge.externalresource.gallery.deriveddata.ThumbnailGenerator
+      hipposys:nodetype: hippoexternal:resource2
+      hipposys:serialver: 1
+      /hipposys:accessed:
+        jcr:primaryType: hipposys:propertyreferences
+        /name:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:name
+        /preview:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:preview/jcr:data
+        /title:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:title
+        /mimeType:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:preview/jcr:mimeType
+        /lastModified:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:preview/jcr:lastModified
+      /hipposys:derived:
+        jcr:primaryType: hipposys:propertyreferences
+        /name:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:name
+        /thumbnail:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:thumbnail/jcr:data
+        /title:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:title
+        /mimeType:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:thumbnail/jcr:mimeType
+        /lastModified:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:thumbnail/jcr:lastModified
+        /date:
+          jcr:primaryType: hipposys:relativepropertyreference
+          hipposys:relPath: hippoexternal:lastModified

@@ -1,0 +1,18 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:queries/hippo:templates/new-video-folder:
+      jcr:primaryType: hippostd:templatequery
+      jcr:mixinTypes: ['hipposys:implementation']
+      hippostd:icon: addfolder_ico
+      hippostd:modify: [./_name, $name]
+      hipposys:classname: org.hippoecm.repository.impl.query.DirectPath
+      jcr:language: xpath
+      jcr:statement: "/jcr:root/hippo:configuration/hippo:queries/hippo:templates/new-video-folder/hippostd:templates/node()\n\
+        \    "
+      /hippostd:templates:
+        jcr:primaryType: hippostd:templates
+        /hippoexternal:folder:
+          jcr:primaryType: hippoexternal:folder
+          hippostd:foldertype: [new-video, new-video-folder]
+          hippostd:gallerytype: ['hippoyoutube:resource', 'hipporedfive:resource',
+            'hippomediamosa:resource']

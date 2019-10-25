@@ -1,0 +1,49 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:workflows:
+      /default:
+        jcr:primaryType: hipposys:workflowcategory
+        /synchronize:
+          .meta:order-before: edit-model
+          jcr:primaryType: frontend:workflow
+          hipposys:classname: org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflowImpl
+          hipposys:display: synchrinoze workflow events for document
+          hipposys:nodetype: hippoexternal:synchronizable
+          /hipposys:types:
+            jcr:primaryType: hipposys:types
+          /frontend:renderer:
+            jcr:primaryType: frontend:plugin
+            browser.id: ${browser.id}
+            editor.id: ${editor.id}
+            plugin.class: org.onehippo.forge.externalresource.frontend.plugins.synchronize.DefaultSynchronizedActionsWorkflowPlugin
+      /editing:
+        jcr:primaryType: hipposys:workflowcategory
+        /synchronize:
+          .meta:order-before: default
+          jcr:primaryType: frontend:workflow
+          hipposys:classname: org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflowImpl
+          hipposys:display: Editing synchronizable documents
+          hipposys:nodetype: hippoexternal:synchronizable
+          /frontend:renderer:
+            jcr:primaryType: frontend:plugin
+            browser.id: ${browser.id}
+            editor.id: ${editor.id}
+            model.id: ${model.id}
+            plugin.class: org.onehippo.forge.externalresource.frontend.plugins.synchronize.editing.EditingDefaultSynchronizedActionsWorkflowPlugin
+            validator.id: ${validator.id}
+          /hipposys:types:
+            jcr:primaryType: hipposys:types
+      /synchronization:
+        jcr:primaryType: hipposys:workflowcategory
+        /button:
+          jcr:primaryType: frontend:workflow
+          hipposys:classname: org.onehippo.forge.externalresource.api.workflow.SynchronizedActionsWorkflowImpl
+          hipposys:display: External resource synchronization
+          hipposys:nodetype: hippoexternal:synchronizable
+          /frontend:renderer:
+            jcr:primaryType: frontend:plugin
+            browser.id: ${browser.id}
+            editor.id: ${editor.id}
+            plugin.class: org.onehippo.forge.externalresource.frontend.plugins.synchronize.actions.SynchronizedActionsWorkflowPlugin
+          /hipposys:types:
+            jcr:primaryType: hipposys:types

@@ -1,0 +1,25 @@
+definitions:
+  namespace:
+    hippoexternal:
+      uri: http://www.hippoecm.org/hippoexternal/nt/1.0
+      cnd: hippoexternal.cnd
+    hippoyoutube:
+      uri: http://www.hippoecm.org/nt/hippoyoutube/1.0
+      cnd: types/youtube/hippo-youtube.cnd
+    hipporedfive:
+      uri: http://www.hippoecm.org/nt/hipporedfive/1.0
+      cnd: types/red5/hippo-red5.cnd
+    hippomediamosa:
+      uri: http://www.hippoecm.org/nt/hippomediamosa/1.0
+      cnd: types/mediamosa/hippo-mediamosa.cnd
+  config:
+    /hippo:configuration/hippo:translations:
+      /hippo:cms:
+        jcr:primaryType: hipposys:resourcebundles
+      /hippo:types:
+        jcr:primaryType: hipposys:resourcebundles
+    /hippo:configuration/hippo:frontend/cms/cms-preview/workflowPlugin:
+      workflow.categories:
+        operation: add
+        type: string
+        value: [synchronization]

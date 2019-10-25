@@ -1,0 +1,79 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:frontend/cms/cms-tree-views/videos:
+      jcr:primaryType: frontend:plugincluster
+      frontend:properties: [use.width.from.classname, bind.to.layout.unit, workflow.enabled]
+      frontend:references: [browser.id, editor.id]
+      frontend:services: [wicket.id, model.folder]
+      model.folder: ${cluster.id}.model.folder
+      /sectionPlugin:
+        jcr:primaryType: frontend:plugin
+        extension.addfolder: ${cluster.id}.addfolder
+        extension.tree: ${cluster.id}.tree
+        model.folder: ${model.folder}
+        model.folder.root: /content/videos
+        plugin.class: org.hippoecm.frontend.plugins.cms.browse.section.SearchingSectionPlugin
+        title: section-videos
+        wicket.extensions: [extension.tree, extension.addfolder]
+        wicket.id: ${wicket.id}
+      /videoBrowser:
+        jcr:primaryType: frontend:plugin
+        bind.to.layout.unit: ${bind.to.layout.unit}
+        nodename.max.length: 23
+        path: /content/videos
+        plugin.class: org.hippoecm.frontend.plugins.cms.browse.tree.FolderTreePlugin
+        rootless: 'true'
+        use.width.from.classname: ${use.width.from.classname}
+        wicket.id: ${cluster.id}.tree
+        wicket.model: ${model.folder}
+        workflow.enabled: ${workflow.enabled}
+        /module.workflow:
+          jcr:primaryType: frontend:plugin
+          browser.id: ${browser.id}
+          editor.id: ${editor.id}
+          plugin.class: org.hippoecm.addon.workflow.ContextWorkflowPlugin
+          workflow.categories: [threepane, gallery]
+        /filters:
+          jcr:primaryType: frontend:pluginconfig
+          /showVideoBank:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippoexternal:folder
+            display: true
+          /showGalleryType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippostd:gallery
+            display: true
+          /hideUnstructuredType:
+            jcr:primaryType: frontend:pluginconfig
+            child: nt:unstructured
+            display: false
+          /hideHandleType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippo:handle
+            display: false
+          /hideFacetSearchType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippo:facetsearch
+            display: false
+          /hideFolderType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippostd:folder
+            display: false
+          /hideDirectoryType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippostd:directory
+            display: false
+          /hideFacNavType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippofacnav:facetnavigation
+            display: false
+      /addfolderPlugin:
+        jcr:primaryType: frontend:plugin
+        browser.id: ${browser.id}
+        editor.id: ${editor.id}
+        option.location: /content/videos
+        plugin.class: org.hippoecm.frontend.plugins.standardworkflow.FolderShortcutPlugin
+        wicket.id: ${cluster.id}.addfolder
+        wicket.variant: addfolder
+        workflow.categories: threepane
+        workflow.enabled: ${workflow.enabled}

@@ -1,0 +1,50 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:translations:
+      /hippo:reports:
+        jcr:primaryType: hipposys:resourcebundles
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-upload:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-upload.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-usage-video:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-data-usage-video.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-streams:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-streams.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-videos-per-type-for-group-hippo:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-played-videos-per-type-for-group-hippo.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-collections:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-collections.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-streams:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-popular-streams.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-uploaded-videos-per-group:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-uploaded-videos-per-group.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-video-type-distribution:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/mm-video-type-distribution.translator:
+      .meta:delete: true
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/synchronization-plugin:
+      translator.id:
+        operation: delete
+    /hippo:configuration/hippo:frontend/cms/hippo-reports/synchronization-translator:
+      .meta:delete: true

@@ -1,0 +1,208 @@
+definitions:
+  config:
+    /hippo:namespaces/hippoyoutube:
+      jcr:primaryType: hipposysedit:namespace
+      jcr:mixinTypes: ['mix:referenceable']
+      /resource:
+        jcr:primaryType: hipposysedit:templatetype
+        jcr:mixinTypes: ['mix:referenceable', 'editor:editable']
+        /hipposysedit:nodetype:
+          jcr:primaryType: hippo:handle
+          /hipposysedit:nodetype:
+            jcr:primaryType: hipposysedit:nodetype
+            jcr:mixinTypes: ['hipposysedit:remodel']
+            hipposysedit:node: true
+            hipposysedit:supertype: ['hippoexternal:video']
+            hipposysedit:uri: http://www.hippoecm.org/nt/hippoyoutube/1.0
+            /name:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:name
+              hipposysedit:primary: false
+              hipposysedit:type: String
+            /title:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:title
+              hipposysedit:primary: false
+              hipposysedit:type: String
+            /description:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:description
+              hipposysedit:primary: false
+              hipposysedit:type: Text
+            /mimeType:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: true
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:mimeType
+              hipposysedit:primary: false
+              hipposysedit:type: String
+            /lastModified:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:lastModified
+              hipposysedit:primary: false
+              hipposysedit:type: Date
+            /size:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:size
+              hipposysedit:primary: false
+              hipposysedit:type: Long
+            /width:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:width
+              hipposysedit:primary: false
+              hipposysedit:type: Long
+            /height:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:height
+              hipposysedit:primary: false
+              hipposysedit:type: Long
+            /thumbnail:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: true
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoexternal:thumbnail
+              hipposysedit:primary: true
+              hipposysedit:type: hippoexternal:displayimage
+            /id:
+              jcr:primaryType: hipposysedit:field
+              hipposysedit:mandatory: false
+              hipposysedit:multiple: false
+              hipposysedit:ordered: false
+              hipposysedit:path: hippoyoutube:id
+              hipposysedit:primary: false
+              hipposysedit:type: String
+        /hipposysedit:prototypes:
+          jcr:primaryType: hipposysedit:prototypeset
+          /hipposysedit:prototype:
+            jcr:primaryType: hippoyoutube:resource
+            hippo:availability: [live, preview]
+            hippoexternal:description: ''
+            hippoexternal:mimeType: test
+            hippoexternal:title: ''
+            hippoyoutube:id: ''
+            /hippoexternal:thumbnail:
+              jcr:primaryType: hippoexternal:displayimage
+              jcr:data:
+                type: binary
+                resource: /namespaces/hippoyoutube/resource/prototypes/prototype/thumbnail/data.png
+              jcr:lastModified: 2011-01-31T08:50:45.276-05:00
+              jcr:mimeType: image/png
+        /editor:templates:
+          jcr:primaryType: editor:templateset
+          /_default_:
+            jcr:primaryType: frontend:plugincluster
+            frontend:properties: [mode]
+            frontend:references: [engine, wicket.model, model.compareTo]
+            frontend:services: [wicket.id]
+            /root:
+              jcr:primaryType: frontend:plugin
+              item: ${cluster.id}.field
+              plugin.class: org.hippoecm.frontend.service.render.ListViewPlugin
+              wicket.id: ${wicket.id}
+            /name:
+              jcr:primaryType: frontend:plugin
+              engine: ${engine}
+              field: name
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}
+              /cluster.options:
+                jcr:primaryType: frontend:pluginconfig
+            /title:
+              jcr:primaryType: frontend:plugin
+              engine: ${engine}
+              field: title
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}
+              /cluster.options:
+                jcr:primaryType: frontend:pluginconfig
+            /description:
+              jcr:primaryType: frontend:plugin
+              engine: ${engine}
+              field: description
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}
+              /cluster.options:
+                jcr:primaryType: frontend:pluginconfig
+            /width:
+              jcr:primaryType: frontend:plugin
+              engine: ${engine}
+              field: width
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}
+              /cluster.options:
+                jcr:primaryType: frontend:pluginconfig
+            /height:
+              jcr:primaryType: frontend:plugin
+              engine: ${engine}
+              field: height
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}
+              /cluster.options:
+                jcr:primaryType: frontend:pluginconfig
+            /thumbnail:
+              jcr:primaryType: frontend:plugin
+              engine: ${engine}
+              field: thumbnail
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.hippoecm.frontend.editor.plugins.field.NodeFieldPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}
+              /cluster.options:
+                jcr:primaryType: frontend:pluginconfig
+            /id:
+              jcr:primaryType: frontend:plugin
+              engine: ${engine}
+              field: id
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}
+              /cluster.options:
+                jcr:primaryType: frontend:pluginconfig
+            /display:
+              jcr:primaryType: frontend:plugin
+              mode: ${mode}
+              model.compareTo: ${model.compareTo}
+              plugin.class: org.onehippo.forge.externalresource.plugin.EmbeddedDisplayPlugin
+              wicket.id: ${cluster.id}.field
+              wicket.model: ${wicket.model}

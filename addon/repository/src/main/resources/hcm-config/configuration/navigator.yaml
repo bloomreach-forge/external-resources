@@ -1,0 +1,11 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:frontend/cms/cms-static:
+      jcr:primaryType: frontend:plugincluster
+      /navigator:
+        jcr:primaryType: frontend:plugin
+        section.videos: service.browse.tree.videos
+        sections:
+          operation: add
+          type: string
+          value: [section.videos]

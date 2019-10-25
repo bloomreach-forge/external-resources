@@ -1,0 +1,4 @@
+definitions:
+  config:
+    /content:
+      jcr:primaryType: hippostd:directory

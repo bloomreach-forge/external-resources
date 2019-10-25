@@ -1,0 +1,40 @@
+definitions:
+  config:
+    /hippo:namespaces/hippoexternal/link:
+      jcr:primaryType: hipposysedit:templatetype
+      jcr:mixinTypes: ['mix:referenceable', 'editor:editable']
+      /hipposysedit:nodetype:
+        jcr:primaryType: hippo:handle
+        /hipposysedit:nodetype:
+          jcr:primaryType: hipposysedit:nodetype
+          jcr:mixinTypes: ['hipposysedit:remodel']
+          hipposysedit:node: true
+          hipposysedit:supertype: ['hippo:facetselect']
+          hipposysedit:uri: http://www.hippoecm.org/hippoexternal/nt/1.0
+      /editor:templates:
+        jcr:primaryType: editor:templateset
+        /_default_:
+          jcr:primaryType: frontend:plugincluster
+          frontend:properties: [mode]
+          frontend:references: [model.compareTo, wicket.model]
+          frontend:services: [wicket.id]
+          /root:
+            jcr:primaryType: frontend:plugin
+            cluster.name: cms-pickers/videos
+            dialog.height: '550'
+            mode: ${mode}
+            model.compareTo: ${model.compareTo}
+            plugin.class: org.onehippo.addon.frontend.gallerypicker.GalleryPickerPlugin
+            preview.height: ''
+            preview.width: '50'
+            supported.paths: /content/videos/
+            wicket.id: ${wicket.id}
+            wicket.model: ${wicket.model}
+      /hipposysedit:prototypes:
+        jcr:primaryType: hipposysedit:prototypeset
+        /hipposysedit:prototype:
+          jcr:primaryType: hippoexternal:link
+          hippo:docbase: 03e8e70c-4ff7-459d-bd5e-01192b88aabf
+          hippo:facets: []
+          hippo:modes: []
+          hippo:values: []

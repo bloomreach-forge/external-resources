@@ -1,0 +1,15 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:frontend/cms/cms-browser:
+      /videosTreeLoader:
+        .meta:order-before: assetsTreeLoader
+        jcr:primaryType: frontend:plugin
+        cluster.name: cms-tree-views/videos
+        plugin.class: org.hippoecm.frontend.plugin.loader.PluginClusterLoader
+        /cluster.config:
+          jcr:primaryType: frontend:pluginconfig
+          bind.to.layout.unit: true
+          browser.id: service.browse
+          editor.id: service.edit
+          wicket.id: service.browse.tree.videos
+          workflow.enabled: true

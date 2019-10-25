@@ -1,0 +1,107 @@
+definitions:
+  config:
+    /hippo:namespaces/hippoexternal/resource:
+      jcr:primaryType: hipposysedit:templatetype
+      jcr:mixinTypes: ['mix:referenceable', 'editor:editable']
+      /hipposysedit:nodetype:
+        jcr:primaryType: hippo:handle
+        /hipposysedit:nodetype:
+          jcr:primaryType: hipposysedit:nodetype
+          jcr:mixinTypes: ['hipposysedit:remodel']
+          hipposysedit:node: true
+          hipposysedit:supertype: ['hippo:document']
+          hipposysedit:uri: http://www.hippoecm.org/hippoexternal/nt/1.0
+          /name:
+            jcr:primaryType: hipposysedit:field
+            hipposysedit:mandatory: false
+            hipposysedit:multiple: false
+            hipposysedit:ordered: false
+            hipposysedit:path: hippoexternal:name
+            hipposysedit:primary: false
+            hipposysedit:type: String
+          /mimeType:
+            jcr:primaryType: hipposysedit:field
+            hipposysedit:mandatory: true
+            hipposysedit:multiple: false
+            hipposysedit:ordered: false
+            hipposysedit:path: hippoexternal:mimeType
+            hipposysedit:primary: false
+            hipposysedit:type: String
+          /lastModified:
+            jcr:primaryType: hipposysedit:field
+            hipposysedit:mandatory: false
+            hipposysedit:multiple: false
+            hipposysedit:ordered: false
+            hipposysedit:path: hippoexternal:lastModified
+            hipposysedit:primary: false
+            hipposysedit:type: Date
+          /size:
+            jcr:primaryType: hipposysedit:field
+            hipposysedit:mandatory: false
+            hipposysedit:multiple: false
+            hipposysedit:ordered: false
+            hipposysedit:path: hippoexternal:size
+            hipposysedit:primary: false
+            hipposysedit:type: Long
+      /hipposysedit:prototypes:
+        jcr:primaryType: hipposysedit:prototypeset
+        /hipposysedit:prototype:
+          jcr:primaryType: hippoexternal:resource
+          hippo:availability: [live, preview]
+          hippoexternal:mimeType: test
+      /editor:templates:
+        jcr:primaryType: editor:templateset
+        /_default_:
+          jcr:primaryType: frontend:plugincluster
+          frontend:properties: [mode]
+          frontend:references: [engine, wicket.model, model.compareTo]
+          frontend:services: [wicket.id]
+          /root:
+            jcr:primaryType: frontend:plugin
+            item: ${cluster.id}.field
+            plugin.class: org.hippoecm.frontend.service.render.ListViewPlugin
+            wicket.id: ${wicket.id}
+          /name:
+            jcr:primaryType: frontend:plugin
+            engine: ${engine}
+            field: name
+            mode: ${mode}
+            model.compareTo: ${model.compareTo}
+            plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+            wicket.id: ${cluster.id}.field
+            wicket.model: ${wicket.model}
+            /cluster.options:
+              jcr:primaryType: frontend:pluginconfig
+          /mimeType:
+            jcr:primaryType: frontend:plugin
+            engine: ${engine}
+            field: mimeType
+            mode: ${mode}
+            model.compareTo: ${model.compareTo}
+            plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+            wicket.id: ${cluster.id}.field
+            wicket.model: ${wicket.model}
+            /cluster.options:
+              jcr:primaryType: frontend:pluginconfig
+          /lastModified:
+            jcr:primaryType: frontend:plugin
+            engine: ${engine}
+            field: lastModified
+            mode: ${mode}
+            model.compareTo: ${model.compareTo}
+            plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+            wicket.id: ${cluster.id}.field
+            wicket.model: ${wicket.model}
+            /cluster.options:
+              jcr:primaryType: frontend:pluginconfig
+          /size:
+            jcr:primaryType: frontend:plugin
+            engine: ${engine}
+            field: size
+            mode: ${mode}
+            model.compareTo: ${model.compareTo}
+            plugin.class: org.hippoecm.frontend.editor.plugins.field.PropertyFieldPlugin
+            wicket.id: ${cluster.id}.field
+            wicket.model: ${wicket.model}
+            /cluster.options:
+              jcr:primaryType: frontend:pluginconfig
