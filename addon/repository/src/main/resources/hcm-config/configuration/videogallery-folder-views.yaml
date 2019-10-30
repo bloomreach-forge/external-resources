@@ -1,68 +1,66 @@
 definitions:
   config:
-    /hippo:configuration/hippo:frontend/cms/cms-folder-views:
-      jcr:primaryType: frontend:clusterfolder
-      /hippoexternal:folder:
-        .meta:order-before: hippogallery:stdImageGallery
-        jcr:primaryType: frontend:plugincluster
-        frontend:properties: [list.page.size, list.view.size]
-        frontend:references: [model.folder, model.document]
-        frontend:services: [wicket.id]
-        list.page.size: '500'
-        list.view.size: '3'
-        /root:
-          jcr:primaryType: frontend:plugin
-          column.id: ${cluster.id}.columns
-          expand.collapse.supported: true
-          list.page.size: ${list.page.size}
-          list.view.size: ${list.view.size}
-          model.document: ${model.document}
-          plugin.class: org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin
-          videobank.thumbnail.size: '60'
-          wicket.id: ${wicket.id}
-          wicket.model: ${model.folder}
-          /yui.config:
+    /hippo:configuration/hippo:frontend/cms/cms-folder-views/hippoexternal:folder:
+      .meta:order-before: hippogallery:stdImageGallery
+      jcr:primaryType: frontend:plugincluster
+      frontend:properties: [list.page.size, list.view.size]
+      frontend:references: [model.folder, model.document]
+      frontend:services: [wicket.id]
+      list.page.size: '500'
+      list.view.size: '3'
+      /root:
+        jcr:primaryType: frontend:plugin
+        column.id: ${cluster.id}.columns
+        expand.collapse.supported: true
+        list.page.size: ${list.page.size}
+        list.view.size: ${list.view.size}
+        model.document: ${model.document}
+        plugin.class: org.onehippo.forge.externalresource.gallery.VideoGalleryPlugin
+        videobank.thumbnail.size: '60'
+        wicket.id: ${wicket.id}
+        wicket.model: ${model.folder}
+        /yui.config:
+          jcr:primaryType: frontend:pluginconfig
+          groups: drop-on-xinha
+        /filters:
+          jcr:primaryType: frontend:pluginconfig
+          /hideAttic:
             jcr:primaryType: frontend:pluginconfig
-            groups: drop-on-xinha
-          /filters:
+            display: false
+            path: /content/attic
+          /showGalleryType:
             jcr:primaryType: frontend:pluginconfig
-            /hideAttic:
-              jcr:primaryType: frontend:pluginconfig
-              display: false
-              path: /content/attic
-            /showGalleryType:
-              jcr:primaryType: frontend:pluginconfig
-              child: hippostd:gallery
-              display: true
-            /showHandleType:
-              jcr:primaryType: frontend:pluginconfig
-              child: hippo:handle
-              display: true
-            /hideFacetSearchType:
-              jcr:primaryType: frontend:pluginconfig
-              child: hippo:facetsearch
-              display: false
-            /hideFolderType:
-              jcr:primaryType: frontend:pluginconfig
-              child: hippostd:folder
-              display: false
-            /hideDirectoryType:
-              jcr:primaryType: frontend:pluginconfig
-              child: hippostd:directory
-              display: false
-            /showVideoBank:
-              jcr:primaryType: frontend:pluginconfig
-              child: hippoexternal:folder
-              display: true
-            /hideUnstructuredType:
-              jcr:primaryType: frontend:pluginconfig
-              child: nt:unstructured
-              display: false
-            /hideFacNavType:
-              jcr:primaryType: frontend:pluginconfig
-              child: hippofacnav:facetnavigation
-              display: false
-        /defaultColumns:
-          jcr:primaryType: frontend:plugin
-          column.id: ${cluster.id}.columns
-          plugin.class: org.onehippo.forge.externalresource.gallery.columns.VideoGalleryColumnProviderPlugin
+            child: hippostd:gallery
+            display: true
+          /showHandleType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippo:handle
+            display: true
+          /hideFacetSearchType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippo:facetsearch
+            display: false
+          /hideFolderType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippostd:folder
+            display: false
+          /hideDirectoryType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippostd:directory
+            display: false
+          /showVideoBank:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippoexternal:folder
+            display: true
+          /hideUnstructuredType:
+            jcr:primaryType: frontend:pluginconfig
+            child: nt:unstructured
+            display: false
+          /hideFacNavType:
+            jcr:primaryType: frontend:pluginconfig
+            child: hippofacnav:facetnavigation
+            display: false
+      /defaultColumns:
+        jcr:primaryType: frontend:plugin
+        column.id: ${cluster.id}.columns
+        plugin.class: org.onehippo.forge.externalresource.gallery.columns.VideoGalleryColumnProviderPlugin

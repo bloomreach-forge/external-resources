@@ -1,7 +1,7 @@
-group: hippo-forge
-project:
-  name: externalresources
-  after: [hippo-repository, hippo-cms]
+group:
+  name: hippo-forge
+  after: hippo-cms
+project: externalresources
 module:
   name: externalresources-reports
   after: externalresources-repository

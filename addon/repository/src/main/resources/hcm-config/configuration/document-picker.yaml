@@ -1,11 +1,12 @@
 definitions:
   config:
     /hippo:configuration/hippo:frontend/cms/cms-pickers/documents:
-      jcr:primaryType: frontend:plugincluster
       /navigator:
-        jcr:primaryType: frontend:plugin
         section.videos: service.dialog.tree.videos
-        sections: section.videos
+        sections:
+          operation: add
+          type: string
+          value: [section.videos]
       /videosTreeLoader:
         jcr:primaryType: frontend:plugin
         cluster.name: cms-tree-views/videos

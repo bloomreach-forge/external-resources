@@ -4,7 +4,7 @@ definitions:
       /synchronization:
         jcr:primaryType: frontend:plugin
         plugin.class: org.onehippo.forge.externalresource.reports.panel.SynchronizationPlugin
-      /synchronization-plugin[2]:
+      /synchronization-plugin:
         jcr:primaryType: frontend:plugin
         auto.expand.column: name
         columns: [name, type, lastSynchronized, synchState, syncActions]
@@ -21,7 +21,7 @@ definitions:
       /statistics:
         jcr:primaryType: frontend:plugin
         plugin.class: org.onehippo.forge.externalresource.reports.panel.StatisticsReportPlugin
-      /mm-played-streams[2]:
+      /mm-played-streams:
         jcr:primaryType: frontend:plugin
         auto.expand.column: mediafileId
         columns: [played, mediafileId, filesize, containerType, ownerId]
@@ -33,7 +33,7 @@ definitions:
         statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider\n\
           \      "
         wicket.id: service.reports.statistics
-      /mm-data-usage-video[2]:
+      /mm-data-usage-video:
         jcr:primaryType: frontend:plugin
         columns: [containerType, userId, groupId, type, appId, diskspaceMb]
         page.size: 10
@@ -44,7 +44,7 @@ definitions:
         statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider\n\
           \      "
         wicket.id: service.reports.statistics
-      /mm-data-upload[2]:
+      /mm-data-upload:
         jcr:primaryType: frontend:plugin
         columns: [appId, ownerId, groupId, fileSize, timestamp]
         page.size: 10
@@ -54,7 +54,7 @@ definitions:
         service.parameter.values: ['{currentYear}', '{currentMonth}']
         statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUploadStatisticsProvider
         wicket.id: service.reports.statistics
-      /mm-popular-collections[2]:
+      /mm-popular-collections:
         jcr:primaryType: frontend:plugin
         auto.expand.column: title
         columns: [collId, ownerId, title, description, created, count]
@@ -64,7 +64,7 @@ definitions:
         statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularCollectionsStatisticsProvider\n\
           \      "
         wicket.id: service.reports.statistics
-      /mm-popular-streams[2]:
+      /mm-popular-streams:
         jcr:primaryType: frontend:plugin
         auto.expand.column: filename
         columns: [mediafileId, filename, requested]
@@ -76,7 +76,7 @@ definitions:
         statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularMediaFilesStatisticsProvider\n\
           \      "
         wicket.id: service.reports.statistics
-      /mm-video-type-distribution[2]:
+      /mm-video-type-distribution:
         jcr:primaryType: frontend:plugin
         chart.type: pie
         legend.position: right
@@ -87,7 +87,7 @@ definitions:
           \      "
         store.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore
         wicket.id: service.reports.statistics
-      /mm-played-videos-per-type-for-group-hippo[2]:
+      /mm-played-videos-per-type-for-group-hippo:
         jcr:primaryType: frontend:plugin
         chart.type: column
         legend.position: right
@@ -98,7 +98,7 @@ definitions:
           \      "
         store.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore
         wicket.id: service.reports.statistics
-      /mm-uploaded-videos-per-group[2]:
+      /mm-uploaded-videos-per-group:
         jcr:primaryType: frontend:plugin
         chart.type: bar
         legend.position: right
