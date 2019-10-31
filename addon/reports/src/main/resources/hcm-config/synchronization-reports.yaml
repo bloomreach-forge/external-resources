@@ -30,8 +30,7 @@ definitions:
         plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
         service.parameter.names: [year, month, playType]
         service.parameter.values: ['{currentYear}', '{currentMonth}', object]
-        statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider\n\
-          \      "
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider
         wicket.id: service.reports.statistics
       /mm-data-usage-video:
         jcr:primaryType: frontend:plugin
@@ -41,8 +40,7 @@ definitions:
         plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
         service.parameter.names: [year, month, type]
         service.parameter.values: ['{currentYear}', '{currentMonth}', container]
-        statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider\n\
-          \      "
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider
         wicket.id: service.reports.statistics
       /mm-data-upload:
         jcr:primaryType: frontend:plugin
@@ -61,8 +59,7 @@ definitions:
         page.size: 10
         paging: true
         plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
-        statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularCollectionsStatisticsProvider\n\
-          \      "
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularCollectionsStatisticsProvider
         wicket.id: service.reports.statistics
       /mm-popular-streams:
         jcr:primaryType: frontend:plugin
@@ -73,8 +70,7 @@ definitions:
         plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
         service.parameter.names: [orderBy, orderDirection]
         service.parameter.values: [created, asc]
-        statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularMediaFilesStatisticsProvider\n\
-          \      "
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularMediaFilesStatisticsProvider
         wicket.id: service.reports.statistics
       /mm-video-type-distribution:
         jcr:primaryType: frontend:plugin
@@ -83,8 +79,7 @@ definitions:
         plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartPlugin
         service.parameter.names: [year, month, type]
         service.parameter.values: ['{currentYear}', '{currentMonth}', container]
-        statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider\n\
-          \      "
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider
         store.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore
         wicket.id: service.reports.statistics
       /mm-played-videos-per-type-for-group-hippo:
@@ -94,8 +89,7 @@ definitions:
         plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartPlugin
         service.parameter.names: [year, month, playType, groupId]
         service.parameter.values: ['{currentYear}', '{currentMonth}', object, Hippo]
-        statistics.provider.class: "org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider\n\
-          \      "
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider
         store.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore
         wicket.id: service.reports.statistics
       /mm-uploaded-videos-per-group:
