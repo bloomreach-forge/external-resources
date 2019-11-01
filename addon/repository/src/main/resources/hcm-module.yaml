@@ -1,3 +1,5 @@
-group: hippo-forge
+group:
+  name: bloomreach-forge
+  after: hippo-cms
 project: externalresources
 module: externalresources-repository
