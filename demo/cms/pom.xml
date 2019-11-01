@@ -23,11 +23,23 @@
       <artifactId>externalresource-addon-repository</artifactId>
       <version>${forge.externalresource.version}</version>
     </dependency>
+
+    <!-- The 'externalresource-addon-reports' module works only on an Enterprise project, since its bootstrapping
+        depends on the two reporting-dashboard dependencies below. See also /pom.xml.
     <dependency>
       <groupId>org.onehippo.forge</groupId>
       <artifactId>externalresource-addon-reports</artifactId>
       <version>${forge.externalresource.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.onehippo.cms7</groupId>
+      <artifactId>hippo-addon-reporting-dashboard-frontend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.onehippo.cms7</groupId>
+      <artifactId>hippo-addon-reporting-dashboard-repository</artifactId>
+    </dependency>
+-->
 
     <dependency>
       <groupId>org.onehippo.cms7.hst.dependencies</groupId>
