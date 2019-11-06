@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN" "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2011-2013 Hippo
+    Copyright 2011-2019 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -46,11 +46,9 @@
 
       <subsection name="Add version properties to the project pom">
         <p>In the main <code>pom.xml</code> of the project, in the properties section, add this property. For the correct version number, check the <a href="release-notes.html">Release Notes</a> page.</p>
-        <div class="brush: xml">
-          <source><![CDATA[
-    <forge.externalresource.version>version.number</forge.externalresource.version>
-        ]]></source>
-        </div>
+        <source><![CDATA[
+  <forge.externalresource.version>version.number</forge.externalresource.version>
+      ]]></source>
       </subsection>
 
       <subsection name="The CMS">

@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2007-2019 Bloomreach, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the  "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS"
+  BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -6,11 +22,11 @@
     <artifactId>externalresource</artifactId>
     <version>4.0.0-SNAPSHOT</version>
   </parent>
+
   <artifactId>mediamosa-api</artifactId>
-  <packaging>jar</packaging>
   <name>External Resources MediaMosa API</name>
-  <description>MediaMosa is a Full Featured, Webservice Oriented Media Management and Distribution platform
-  </description>
+  <description>MediaMosa is a Full Featured, Webservice Oriented Media Management and Distribution platform</description>
+  <packaging>jar</packaging>
   <url>http://mediamosa.org</url>
 
   <repositories>
@@ -53,7 +69,9 @@
     </dependency>
 
   </dependencies>
+
   <inceptionYear>2009</inceptionYear>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -61,6 +79,7 @@
       <distribution />
     </license>
   </licenses>
+
   <developers>
     <developer>
       <id>tkuiper1</id>
@@ -78,10 +97,12 @@
       <email>M.T.J.Veerman@uva.nl</email>
     </developer>
   </developers>
+
   <organization>
     <name>Universiteit van Amsterdam</name>
     <url>http://www.uva.nl</url>
   </organization>
+
   <contributors>
     <contributor>
       <name>Gilgamesh Nootebos</name>
@@ -92,6 +113,7 @@
       </roles>
     </contributor>
   </contributors>
+
   <build>
     <defaultGoal>verify</defaultGoal>
     <plugins>
@@ -136,6 +158,14 @@
         <version>2.10.3</version>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${maven-site-plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
         <version>1.10.b1</version>
@@ -166,13 +196,6 @@
         </executions>
       </plugin>
     </plugins>
-    <extensions>
-      <extension>
-        <groupId>org.jvnet.wagon-svn</groupId>
-        <artifactId>wagon-svn</artifactId>
-        <version>1.12</version>
-      </extension>
-    </extensions>
   </build>
 
   <profiles>
@@ -183,6 +206,17 @@
       </properties>
       <build>
         <defaultGoal>site</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>${maven-site-plugin.version}</version>
+            <configuration>
+              <skip>false</skip>
+              <outputDirectory>docs</outputDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
       </build>
       <reporting>
         <plugins>
