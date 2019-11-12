@@ -1,0 +1,12 @@
+definitions:
+  config:
+    /hippo:namespaces/hippoexternal/synchronizable:
+      jcr:primaryType: hipposysedit:templatetype
+      jcr:mixinTypes: ['mix:referenceable']
+      /hipposysedit:nodetype:
+        jcr:primaryType: hippo:handle
+        jcr:uuid: 64bd9741-ad85-4a8c-bdae-0a872da32f14
+        /hipposysedit:nodetype:
+          jcr:primaryType: hipposysedit:nodetype
+          jcr:mixinTypes: ['hipposysedit:remodel']
+          hipposysedit:uri: http://www.hippoecm.org/hippoexternal/nt/1.0

@@ -1,0 +1,8 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:frontend/cms/cms-static/navigator:
+      section.videos: service.browse.tree.videos
+      sections:
+        operation: add
+        type: string
+        value: [section.videos]

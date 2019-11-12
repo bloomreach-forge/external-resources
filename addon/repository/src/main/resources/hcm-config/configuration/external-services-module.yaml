@@ -1,0 +1,24 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:modules/ExternalServicesModule:
+      jcr:primaryType: hipposys:module
+      hipposys:className: org.onehippo.forge.externalresource.api.module.ExternalServicesModule
+      /hippo:moduleconfig:
+        jcr:primaryType: nt:unstructured
+        /external-mediamosa:
+          jcr:primaryType: nt:unstructured
+          createThumbnail: true
+          password:
+            .meta:category: system
+            value: VERttUnK2fWlc0F3IceA21awRj
+          plugin.class: org.onehippo.forge.externalresource.api.HippoMediaMosaResourceManager
+          resource: hippomediamosa:resource
+          synchronization.cronexpression: 0 0/1 * 1/1 * ? *
+          synchronization.enabled: true
+          type: hippomediamosa:resource
+          url:
+            .meta:category: system
+            value: http://mediamosa.io
+          username:
+            .meta:category: system
+            value: Hippo

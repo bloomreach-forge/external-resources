@@ -1,0 +1,26 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:workflows/gallery/video-gallery:
+      jcr:primaryType: frontend:workflow
+      hipposys:classname: org.onehippo.forge.externalresource.frontend.plugins.gallery.impl.VideoGalleryWorkflowImpl
+      hipposys:display: Workflow on video gallery folders
+      hipposys:nodetype: hippoexternal:folder
+      hipposys:privileges: ['hippo:author']
+      /hipposys:types:
+        jcr:primaryType: hipposys:types
+      /frontend:renderer:
+        jcr:primaryType: frontend:plugin
+        browser.id: ${browser.id}
+        editor.id: ${editor.id}
+        gallery.thumbnail.size: 60
+        importDisabled: false
+        option.label: upload-video-label
+        option.text: upload-video-label
+        plugin.class: org.onehippo.forge.externalresource.frontend.plugins.gallery.VideoGalleryWorkflowPlugin
+        validator.id: service.gallery.video.validation
+      /hipposys:config:
+        jcr:primaryType: nt:unstructured
+        attic:
+          type: path
+          value: /content/attic
+        modify-on-copy: ['./hippotranslation:id', $uuid]

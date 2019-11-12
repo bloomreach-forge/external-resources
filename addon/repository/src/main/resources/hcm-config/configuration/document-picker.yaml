@@ -1,0 +1,19 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:frontend/cms/cms-pickers/documents:
+      /navigator:
+        section.videos: service.dialog.tree.videos
+        sections:
+          operation: add
+          type: string
+          value: [section.videos]
+      /videosTreeLoader:
+        jcr:primaryType: frontend:plugin
+        cluster.name: cms-tree-views/videos
+        plugin.class: org.hippoecm.frontend.plugin.loader.PluginClusterLoader
+        /cluster.config:
+          jcr:primaryType: frontend:pluginconfig
+          bind.to.layout.unit: false
+          use.width.from.classname: hippo-picker-tree
+          wicket.id: service.dialog.tree.videos
+          workflow.enabled: false

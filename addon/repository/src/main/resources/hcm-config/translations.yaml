@@ -1,0 +1,200 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:translations/hippo:cms/sections:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        section-videos: Videos
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        section-videos: Videobank
+    /hippo:configuration/hippo:translations/hippo:types/hippoexternal:folder:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: External resource folder
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Dossier de ressources extérieures
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Externe bron map
+    /hippo:configuration/hippo:translations/hippo:types/hippoexternal:resource:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        hippoexternal:lastModified: Date
+        hippoexternal:mimeType: Mime Type
+        hippoexternal:name: Name
+        hippoexternal:size: Size
+        jcr:name: External resource
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        hippoexternal:lastModified: Datum
+        hippoexternal:mimeType: Mime Type
+        hippoexternal:name: Naam
+        hippoexternal:size: Grootte
+        jcr:name: Externe bron
+    /hippo:configuration/hippo:translations/hippo:types/hipporedfive:resource:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        hipporedfive:description: Description
+        hipporedfive:height: Height
+        hipporedfive:lastModified: Date
+        hipporedfive:mimeType: Mime Type
+        hipporedfive:name: Name
+        hipporedfive:size: Size
+        hipporedfive:thumbnail: Thumbnail
+        hipporedfive:title: Title
+        hipporedfive:url: URL
+        hipporedfive:width: Width
+        jcr:name: Red 5 video
+        tags-3d4f2620-704d-4a78-bb16-a63beabdf794: Tags
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        hipporedfive:description: Introductie
+        hipporedfive:height: Hoogte
+        hipporedfive:lastModified: Datum
+        hipporedfive:mimeType: Mime Type
+        hipporedfive:name: Naam
+        hipporedfive:size: Grootte
+        hipporedfive:thumbnail: Preview
+        hipporedfive:title: Titel
+        hipporedfive:url: URL
+        hipporedfive:width: Breedte
+        jcr:name: Red 5 video
+        tags-3d4f2620-704d-4a78-bb16-a63beabdf794: Tags
+    /hippo:configuration/hippo:translations/hippo:types/hippomediamosa:resource:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        hippomediamosa:description: Description
+        hippomediamosa:duration: Duration
+        hippomediamosa:embedded: Embedded
+        hippomediamosa:height: Height
+        hippomediamosa:lastModified: Date
+        hippomediamosa:mimeType: Mime Type
+        hippomediamosa:name: Name
+        hippomediamosa:size: Size
+        hippomediamosa:thumbnail: Thumbnail
+        hippomediamosa:title: Title
+        hippomediamosa:width: Width
+        jcr:name: Mediamosa video
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        hippomediamosa:description: Introductie
+        hippomediamosa:duration: Duur
+        hippomediamosa:embedded: Embedded
+        hippomediamosa:height: Hoogte
+        hippomediamosa:lastModified: Datum
+        hippomediamosa:mimeType: Mime Type
+        hippomediamosa:name: Naam
+        hippomediamosa:size: Grootte
+        hippomediamosa:thumbnail: Preview
+        hippomediamosa:title: Titel
+        hippomediamosa:width: Breedte
+        jcr:name: Mediamosa video
+    /hippo:configuration/hippo:translations/hippo:types/hippoexternal:synchronizable:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Unknown
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Onbekend
+    /hippo:configuration/hippo:translations/hippo:types/hippoexternal:video:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        hippoexternal:description: Description
+        hippoexternal:duration: Duration
+        hippoexternal:height: Height
+        hippoexternal:lastModified: Date
+        hippoexternal:mimeType: Mime Type
+        hippoexternal:name: Name
+        hippoexternal:size: Size
+        hippoexternal:thumbnail: Thumbnail
+        hippoexternal:title: Title
+        hippoexternal:width: Width
+        jcr:name: External video
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        hippoexternal:description: Introductie
+        hippoexternal:duration: Duur
+        hippoexternal:height: Hoogte
+        hippoexternal:lastModified: Datum
+        hippoexternal:mimeType: Mime Type
+        hippoexternal:name: Naam
+        hippoexternal:size: Grootte
+        hippoexternal:thumbnail: Preview
+        hippoexternal:title: Titel
+        hippoexternal:width: Breedte
+        jcr:name: Externe video
+    /hippo:configuration/hippo:translations/hippo:types/hippoyoutube:resource:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        hippoyoutube:description: Description
+        hippoyoutube:height: Height
+        hippoyoutube:id: Identifier
+        hippoyoutube:lastModified: Date
+        hippoyoutube:mimeType: Mime Type
+        hippoyoutube:name: Name
+        hippoyoutube:size: Size
+        hippoyoutube:thumbnail: Thumbnail
+        hippoyoutube:title: Title
+        hippoyoutube:width: Width
+        jcr:name: Youtube video
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        hippoyoutube:description: Introductie
+        hippoyoutube:height: Hoogte
+        hippoyoutube:id: Identificatie
+        hippoyoutube:lastModified: Datum
+        hippoyoutube:mimeType: Mime Type
+        hippoyoutube:name: Naam
+        hippoyoutube:size: Grootte
+        hippoyoutube:thumbnail: Preview
+        hippoyoutube:title: Titel
+        hippoyoutube:width: Breedte
+        jcr:name: Youtube video
+    /hippo:configuration/hippo:translations/hippo:types/hippoexternal:embedded:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Embedded
+        name-45624a00-d171-4434-b8da-a677795e6eda: Name
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Embedded
+        name-45624a00-d171-4434-b8da-a677795e6eda: Naam
+    /hippo:configuration/hippo:translations/hippo:types/hippoexternal:displayimage:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Thumbnail
+      /fr:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Image
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        jcr:name: Afbeelding
+    /hippo:configuration/hippo:translations/hippo:workflows:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        synchronization: Synchronization
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        synchronization: Synchronisatie
+    /hippo:configuration/hippo:translations/hippo:templates:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        new-video: video
+        new-video-folder: video folder
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        new-video: video
+        new-video-folder: videobank

@@ -1,0 +1,104 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:frontend/cms/hippo-reports:
+      /synchronization:
+        jcr:primaryType: frontend:plugin
+        plugin.class: org.onehippo.forge.externalresource.reports.panel.SynchronizationPlugin
+      /synchronization-plugin:
+        jcr:primaryType: frontend:plugin
+        auto.expand.column: name
+        columns: [name, type, lastSynchronized, synchState, syncActions]
+        height: '400'
+        page.size: 10
+        paging: true
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.synchronization.SynchronizationListPlugin
+        query: //content/videos//**element(*, hippoexternal:synchronizable) order
+          by @jcr:score descending
+        title.color: highlighted
+        title.size: large
+        wicket.id: service.reports.synchronization
+        width: '1'
+      /statistics:
+        jcr:primaryType: frontend:plugin
+        plugin.class: org.onehippo.forge.externalresource.reports.panel.StatisticsReportPlugin
+      /mm-played-streams:
+        jcr:primaryType: frontend:plugin
+        auto.expand.column: mediafileId
+        columns: [played, mediafileId, filesize, containerType, ownerId]
+        page.size: 10
+        paging: true
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
+        service.parameter.names: [year, month, playType]
+        service.parameter.values: ['{currentYear}', '{currentMonth}', object]
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider
+        wicket.id: service.reports.statistics
+      /mm-data-usage-video:
+        jcr:primaryType: frontend:plugin
+        columns: [containerType, userId, groupId, type, appId, diskspaceMb]
+        page.size: 10
+        paging: true
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
+        service.parameter.names: [year, month, type]
+        service.parameter.values: ['{currentYear}', '{currentMonth}', container]
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider
+        wicket.id: service.reports.statistics
+      /mm-data-upload:
+        jcr:primaryType: frontend:plugin
+        columns: [appId, ownerId, groupId, fileSize, timestamp]
+        page.size: 10
+        paging: true
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
+        service.parameter.names: [year, month]
+        service.parameter.values: ['{currentYear}', '{currentMonth}']
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUploadStatisticsProvider
+        wicket.id: service.reports.statistics
+      /mm-popular-collections:
+        jcr:primaryType: frontend:plugin
+        auto.expand.column: title
+        columns: [collId, ownerId, title, description, created, count]
+        page.size: 10
+        paging: true
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularCollectionsStatisticsProvider
+        wicket.id: service.reports.statistics
+      /mm-popular-streams:
+        jcr:primaryType: frontend:plugin
+        auto.expand.column: filename
+        columns: [mediafileId, filename, requested]
+        page.size: 10
+        paging: true
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.list.StatisticsListPlugin
+        service.parameter.names: [orderBy, orderDirection]
+        service.parameter.values: [created, asc]
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPopularMediaFilesStatisticsProvider
+        wicket.id: service.reports.statistics
+      /mm-video-type-distribution:
+        jcr:primaryType: frontend:plugin
+        chart.type: pie
+        legend.position: right
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartPlugin
+        service.parameter.names: [year, month, type]
+        service.parameter.values: ['{currentYear}', '{currentMonth}', container]
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUsageVideoStatisticsProvider
+        store.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore
+        wicket.id: service.reports.statistics
+      /mm-played-videos-per-type-for-group-hippo:
+        jcr:primaryType: frontend:plugin
+        chart.type: column
+        legend.position: right
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartPlugin
+        service.parameter.names: [year, month, playType, groupId]
+        service.parameter.values: ['{currentYear}', '{currentMonth}', object, Hippo]
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMPlayedStreamsStatisticsProvider
+        store.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore
+        wicket.id: service.reports.statistics
+      /mm-uploaded-videos-per-group:
+        jcr:primaryType: frontend:plugin
+        chart.type: bar
+        legend.position: right
+        plugin.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartPlugin
+        service.parameter.names: [year, month]
+        service.parameter.values: ['{currentYear}', '{currentMonth}']
+        statistics.provider.class: org.onehippo.forge.externalresource.reports.plugins.statistics.MMDataUploadStatisticsProvider
+        store.class: org.onehippo.forge.externalresource.reports.plugins.statistics.chart.StatisticsChartStore
+        wicket.id: service.reports.statistics

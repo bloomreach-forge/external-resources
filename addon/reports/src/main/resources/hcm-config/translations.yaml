@@ -1,0 +1,92 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:translations/hippo:reports/mm-played-streams:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Played Streams
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Gespeelde Streams
+    /hippo:configuration/hippo:translations/hippo:reports/mm-popular-streams:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Popular Media Files
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Populaire Media Bestanden
+    /hippo:configuration/hippo:translations/hippo:reports/mm-data-usage-video:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Data Usage Video Statistics
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Data Usage Video Statistieken
+    /hippo:configuration/hippo:translations/hippo:reports/mm-video-type-distribution:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Video Type Distribution (Diskspace per type)
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Video Type Distributie (Diskspace per type)
+    /hippo:configuration/hippo:translations/hippo:reports/mm-uploaded-videos-per-group:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Total Uploaded Diskspace per Group
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Totaal Geuploade Diskspace per Group
+    /hippo:configuration/hippo:translations/hippo:reports/mm-data-upload:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Data Upload Statistics
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Data Upload Statistieken
+    /hippo:configuration/hippo:translations/hippo:reports/mm-popular-collections:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Popular Collections
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Populaire Collecties
+    /hippo:configuration/hippo:translations/hippo:reports/synchronization-translator:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: Sync
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: Sync
+    /hippo:configuration/hippo:translations/hippo:reports/mm-played-videos-per-type-for-group-hippo:
+      jcr:primaryType: hipposys:resourcebundles
+      /en:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Data not available
+        title: 'Played Videos per Type for Group: Hippo'
+      /nl:
+        jcr:primaryType: hipposys:resourcebundle
+        no-data: Gegevens niet beschikbaar
+        title: 'Afgespeelde Videos per Type voor Group: Hippo'

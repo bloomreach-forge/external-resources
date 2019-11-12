@@ -80,6 +80,11 @@ public class VideoGalleryWorkflowImpl extends FolderWorkflowImpl implements Inte
     }
 
     @Override
+    public Document createGalleryItem(String name, String type, String filename) throws RemoteException, RepositoryException, WorkflowException {
+        return createGalleryItem(name, type);
+    }
+
+    @Override
     public String add(String category, String template, String name) throws WorkflowException, RepositoryException, RemoteException {
         Map<String, String> arguments = new TreeMap<String, String>();
         arguments.put("name", name);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2007-2013 Hippo
+  Copyright 2007-2019 Bloomreach, Inc.
 
   Licensed under the Apache License, Version 2.0 (the  "License");
   you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.onehippo.forge</groupId>
     <artifactId>externalresource-addon</artifactId>
-    <version>3.0.3</version>
+    <version>4.0.0</version>
   </parent>
 
   <artifactId>externalresource-addon-frontend</artifactId>
@@ -54,17 +54,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <scope>runtime</scope>
-    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

@@ -1,0 +1,8 @@
+definitions:
+  config:
+    /hippo:configuration/hippo:frontend/cms/cms-services/videoValidationService:
+      jcr:primaryType: frontend:plugin
+      extensions.allowed: ['*.mp4']
+      max.file.size: 4M
+      plugin.class: org.hippoecm.frontend.plugins.yui.upload.validation.UploadValidationPlugin
+      validator.id: service.gallery.video.validation

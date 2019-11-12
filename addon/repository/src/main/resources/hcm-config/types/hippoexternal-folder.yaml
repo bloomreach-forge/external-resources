@@ -1,0 +1,11 @@
+definitions:
+  config:
+    /hippo:namespaces/hippoexternal/folder:
+      jcr:primaryType: hipposysedit:templatetype
+      jcr:mixinTypes: ['mix:referenceable']
+      /hipposysedit:nodetype:
+        jcr:primaryType: hippo:handle
+        /hipposysedit:nodetype:
+          jcr:primaryType: hipposysedit:nodetype
+          jcr:mixinTypes: ['hipposysedit:remodel']
+          hipposysedit:uri: http://www.hippoecm.org/hippoexternal/nt/1.0

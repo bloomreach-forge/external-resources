@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2007-2009 Hippo
+  Copyright 2007-22019 Bloomreach, Inc.
 
   Licensed under the Apache License, Version 2.0 (the  "License");
   you may not use this file except in compliance with the License.
@@ -15,20 +15,16 @@
   limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.onehippo.forge</groupId>
     <artifactId>externalresource-addon</artifactId>
-    <version>3.0.3</version>
+    <version>4.0.0</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.onehippo.forge</groupId>
   <artifactId>externalresource-addon-reports</artifactId>
   <name>External Resources CMS Reports Package</name>
-
-  <!--<properties>
-    <org.datanucleus.version>2.2.2</org.datanucleus.version>
-  </properties>-->
 
   <dependencies>
 
@@ -58,17 +54,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <scope>runtime</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.onehippo.cms7</groupId>

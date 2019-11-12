@@ -1,0 +1,8 @@
+definitions:
+  config:
+    /content/videos:
+      .meta:residual-child-node-category: content
+      jcr:primaryType: hippoexternal:folder
+      jcr:mixinTypes: ['mix:referenceable']
+      jcr:uuid: 03e8e70c-4ff7-459d-bd5e-01192b88aabf
+      hippostd:foldertype: [new-video-folder]

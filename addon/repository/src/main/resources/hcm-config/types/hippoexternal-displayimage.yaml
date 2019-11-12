@@ -1,0 +1,46 @@
+definitions:
+  config:
+    /hippo:namespaces/hippoexternal/displayimage:
+      jcr:primaryType: hipposysedit:templatetype
+      jcr:mixinTypes: ['mix:referenceable', 'editor:editable']
+      /hipposysedit:nodetype:
+        jcr:primaryType: hippo:handle
+        /hipposysedit:nodetype:
+          jcr:primaryType: hipposysedit:nodetype
+          jcr:mixinTypes: ['hipposysedit:remodel']
+          hipposysedit:node: true
+          hipposysedit:supertype: ['hippo:resource']
+          hipposysedit:uri: http://www.hippoecm.org/hippoexternal/nt/1.0
+      /editor:templates:
+        jcr:primaryType: editor:templateset
+        /_default_:
+          jcr:primaryType: frontend:plugincluster
+          frontend:properties: [mode]
+          frontend:references: [wicket.model, model.compareTo, engine]
+          frontend:services: [wicket.id]
+          /root:
+            jcr:primaryType: frontend:plugin
+            extension.display: ${cluster.id}.display
+            item: ${cluster.id}.field
+            plugin.class: org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.still.field.plugin.PreviewThumbnailButtons
+            wicket.extensions: [extension.display]
+            wicket.id: ${wicket.id}
+          /display:
+            jcr:primaryType: frontend:plugin
+            display.max.height: 1000
+            display.max.width: 1000
+            mode: ${mode}
+            model.compareTo: ${model.compareTo}
+            plugin.class: org.onehippo.forge.externalresource.frontend.plugins.type.mediamosa.dialog.still.field.plugin.ImageDisplayPlugin
+            wicket.id: ${cluster.id}.display
+            wicket.model: ${wicket.model}
+      /hipposysedit:prototypes:
+        jcr:primaryType: hipposysedit:prototypeset
+        /hipposysedit:prototype:
+          jcr:primaryType: hippoexternal:displayimage
+          jcr:data:
+            type: binary
+            resource: /namespaces/hippoexternal/displayimage/prototypes/prototype/data.jpg
+          jcr:encoding: UTF-8
+          jcr:lastModified: 2008-03-26T12:03:00+01:00
+          jcr:mimeType: image/jpeg
