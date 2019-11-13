@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN" "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <!--
-    Copyright 2011-2017 Hippo
+    Copyright 2011-2019 Hippo
 
     Licensed under the Apache License, Version 2.0 (the  "License");
     you may not use this file except in compliance with the License.
@@ -24,18 +24,23 @@
     <section name="Introduction">
 
       <subsection name="What is the External Resource Project?">
-        <p>An API which enables a developer to manage external resources in Hippo CMS.</p>
-        <p>We currently only support MediaMosa video platform integration.</p>
+        <p>An API which enables a developer to manage external resources in Bloomreach Experience Manager.</p>
+        <p>We currently support MediaMosa video platform integration.</p>
       </subsection>
 
       <subsection name="Code base on GitHub">
         <p>The code of this project is on GitHub at <a href="https://github.com/bloomreach-forge/external-resources/">https://github.com/bloomreach-forge/external-resources/</a>.</p>
       </subsection>
 
-      <subsection name="Info, screenshots and movies">
+      <subsection name="Info and movies">
         <p><a href="http://mediamosa.org/content/we-proudly-present-our-progress">Blog at mediamosa.org</a></p>
         <p>Youtube movie: <a href="http://www.youtube.com/watch?v=ptAPYIsm0lE">Hippo going MediaMosa integration - admin/reports manual</a></p>
         <p>Youtube movie: <a href="http://www.youtube.com/watch?v=COm-W5uwUkI">Hippo going MediaMosa integration - user manual</a></p>
+      </subsection>
+
+      <subsection name="Project status">
+        <p>The latest version of the External Resource Project is <b>4.0.0</b> and compatible with
+          Bloomreach Experience Manager 12. See also the <a href="release-notes.html">Release Notes</a>.</p>
       </subsection>
 
       <subsection name="Getting started">
@@ -43,11 +48,6 @@
           <a href="install.html">Install</a> the external resource add-ons, and
           <a href="usage.html">use it</a>!
         </p>
-      </subsection>
-
-      <subsection name="Project status">
-        <p>The latest version of the External Resource Project is <b>2.0.0</b>. This version is compatible with
-           Hippo 10.</p>
       </subsection>
 
     </section>
