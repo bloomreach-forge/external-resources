@@ -48,7 +48,7 @@
     <commons-io.version>2.4</commons-io.version>
 
     <!-- dev related -->
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <maven-site-plugin.version>3.7</maven-site-plugin.version>
   </properties>
 
