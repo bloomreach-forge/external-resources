@@ -45,7 +45,7 @@
     <httpcomponents-httpclient.version>4.5</httpcomponents-httpclient.version>
     <httpcomponents-httpmime.version>4.5</httpcomponents-httpmime.version>
     <jcip.version>1.0</jcip.version>
-    <commons-io.version>2.4</commons-io.version>
+    <commons-io.version>2.7</commons-io.version>
 
     <!-- dev related -->
     <junit.version>4.12</junit.version>
